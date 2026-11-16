@@ -1757,21 +1757,12 @@
     const activeStep = window.currentMobileFormStep || 1;
 
     container.innerHTML = `
-      <!-- Header Navigasi Halaman Baru Formulir Pengajuan -->
-      <div class="mobile-page-header" style="margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-          <button type="button" class="mobile-btn-back" style="display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: #059669; font-size: 0.825rem; font-weight: 700; padding: 4px 0; cursor: pointer;" onclick="window.mobileCloseFormPengajuan()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            <span id="mBtnHeaderBackText">${activeStep === 2 ? 'Langkah Sebelumnya' : 'Kembali'}</span>
-          </button>
-          <span class="mobile-badge ${isEmergency ? 'darurat' : 'disetujui'}" style="font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">
-            ${isEmergency ? 'Izin Darurat' : 'Izin Keluar'}
-          </span>
-        </div>
-        <h1 class="mobile-page-title" style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; line-height: 1.3;">
+      <!-- Header Navigasi Halaman Baru Formulir Pengajuan (Clean & Compact) -->
+      <div class="mobile-page-header" style="margin-bottom: 12px; padding-top: 4px;">
+        <h1 class="mobile-page-title" style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; line-height: 1.3;">
           ${isEditing ? `Edit Pengajuan Izin — ${window.editingTicketId}` : (isEmergency ? 'Formulir Izin Darurat (Emergency Pass)' : 'Formulir Pengajuan Izin Keluar')}
         </h1>
-        <p class="mobile-page-subtitle" style="font-size: 0.775rem; color: #64748b; margin: 0;">
+        <p class="mobile-page-subtitle" style="font-size: 0.725rem; color: #64748b; margin: 0; line-height: 1.35;">
           ${isEditing ? 'Perbarui data formulir izin keluar Anda sebelum disetujui Atasan' : (isEmergency ? 'Penerbitan izin darurat untuk evakuasi/keadaan mendesak' : 'Lengkapi detail perizinan Anda secara bertahap')}
         </p>
       </div>
@@ -1827,13 +1818,6 @@
         <form id="mobileCreatePermitForm" novalidate onsubmit="window.mobileSubmitPermitForm(event, ${!!isEmergency})">
           <!-- TAHAP 1: KATEGORI & BERKAS -->
           <div id="mFormStep1" style="display: ${activeStep === 1 ? 'block' : 'none'};">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0;">
-              <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">
-                <span style="color: ${isEmergency ? '#dc2626' : '#059669'};">Langkah 1:</span> Kategori & Berkas Persyaratan
-              </span>
-              <span style="font-size: 0.675rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">Tahap 1 dari 2</span>
-            </div>
-
             <!-- 1. Pilih Atasan Langsung (Searchable Combobox) -->
             <div class="mobile-form-group" style="margin-bottom: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -1898,13 +1882,10 @@
 
             <!-- 2B. Anggota Rombongan Tim (Khusus Dinas Kantor) -->
             <div class="mobile-form-group" id="mGroupDinasWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <label class="mobile-form-label" style="margin: 0; color: #0f172a; font-weight: 700;">Tambahkan Anggota Tim (Dinas Bersama)</label>
-                <span style="font-size: 0.675rem; color: #64748b;">Opsional (Maks. 5 Orang)</span>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                <label class="mobile-form-label" style="margin: 0; color: #0f172a; font-weight: 700; font-size: 0.775rem;">Tambahkan Anggota Tim (Dinas Bersama)</label>
+                <span style="font-size: 0.625rem; font-weight: 500; color: #94a3b8; white-space: nowrap; margin-left: 6px;">Opsional (Maks. 5 Orang)</span>
               </div>
-              <p style="font-size: 0.7rem; color: #64748b; margin: 0 0 8px 0; line-height: 1.35;">
-                Dapat menambahkan rekan kerja lintas departemen maupun lintas atasan.
-              </p>
               <div style="position: relative;">
                 <div style="display: flex; align-items: center; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 10px; gap: 8px;">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1957,13 +1938,6 @@
 
           <!-- TAHAP 2: TUJUAN & WAKTU -->
           <div id="mFormStep2" style="display: ${activeStep === 2 ? 'block' : 'none'};">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0;">
-              <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">
-                <span style="color: ${isEmergency ? '#dc2626' : '#059669'};">Langkah 2:</span> Detail Tujuan & Waktu Perizinan
-              </span>
-              <span style="font-size: 0.675rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">Tahap 2 dari 2</span>
-            </div>
-
             <!-- 3. Lokasi / Tujuan Keluar -->
             <div class="mobile-form-group" style="margin-bottom: 12px;">
               <label class="mobile-form-label">Lokasi / Tujuan Keluar <span class="req">*</span></label>
@@ -1976,15 +1950,15 @@
               <textarea class="mobile-textarea" id="mFormReason" placeholder="${initialType === 'Pulang Mendahului' ? 'Masukkan alasan keperluan izin dan memilih pulang lebih awal...' : (isEmergency ? 'Masukkan alasan kondisi kedaruratan...' : 'Masukkan alasan keperluan izin...')}" required style="min-height: 65px;">${initialReason}</textarea>
             </div>
 
-            <!-- 5. Rencana Waktu Keluar & Perkiraan Waktu Kembali (Anti Waktu Lampau) -->
+            <!-- 5. Rencana Waktu Keluar & Perkiraan Waktu Kembali (Anti Waktu Lampau & Aturan Kategori) -->
             <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;">
               <div class="mobile-form-group" style="margin: 0;">
                 <label class="mobile-form-label">Rencana Waktu Keluar <span class="req">*</span></label>
-                <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)">
+                <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)">
               </div>
               <div class="mobile-form-group" id="mFormWrapReturn" style="margin: 0; display: ${initialType === 'Pulang Mendahului' ? 'none' : 'block'};">
                 <label class="mobile-form-label">Perkiraan Waktu Kembali <span class="req">*</span></label>
-                <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)">
+                <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)">
               </div>
             </div>
 
@@ -2494,20 +2468,49 @@
     const pad = n => String(n).padStart(2, '0');
     const maxHourStr = (now.getDay() === 5) ? '16:30' : '16:00';
     const todayEnd = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${maxHourStr}`;
+    const nowLocal = formatDateTimeLocal(now);
 
     const groupWrap = document.getElementById('mGroupDinasWrapper');
     const suratWrap = document.getElementById('mSuratPerintahWrapper');
 
     if (val === 'Urusan Pribadi') {
-      if (exitInput) exitInput.max = todayEnd;
-      if (retInput) retInput.max = todayEnd;
+      if (exitInput) {
+        exitInput.min = nowLocal;
+        exitInput.max = todayEnd;
+        if (exitInput.value) {
+          const d = new Date(exitInput.value);
+          if (d.getDate() !== now.getDate() || d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear() || d < now) {
+            exitInput.value = formatDateTimeLocal(new Date(now.getTime() + 5 * 60000));
+          }
+        }
+      }
+      if (retInput) {
+        retInput.min = (exitInput && exitInput.value) ? exitInput.value : nowLocal;
+        retInput.max = todayEnd;
+        if (retInput.value) {
+          const rd = new Date(retInput.value);
+          if (rd.getDate() !== now.getDate() || rd.getMonth() !== now.getMonth() || rd.getFullYear() !== now.getFullYear() || (exitInput && rd <= new Date(exitInput.value))) {
+            const baseExit = exitInput ? new Date(exitInput.value) : now;
+            retInput.value = formatDateTimeLocal(new Date(baseExit.getTime() + 60 * 60000));
+          }
+        }
+      }
       if (groupWrap) groupWrap.style.display = 'none';
       if (suratWrap) suratWrap.style.display = 'none';
       window._selectedGroupMembersMobile = [];
       window._currentSuratPerintahMobile = null;
     } else {
-      if (exitInput) exitInput.removeAttribute('max');
-      if (retInput) retInput.removeAttribute('max');
+      if (exitInput) {
+        exitInput.min = nowLocal;
+        exitInput.removeAttribute('max');
+        if (exitInput.value && new Date(exitInput.value) < new Date(now.getTime() - 30000)) {
+          exitInput.value = formatDateTimeLocal(new Date(now.getTime() + 5 * 60000));
+        }
+      }
+      if (retInput) {
+        retInput.min = (exitInput && exitInput.value) ? exitInput.value : nowLocal;
+        retInput.removeAttribute('max');
+      }
       if (groupWrap) groupWrap.style.display = 'block';
       if (suratWrap) suratWrap.style.display = 'block';
     }
@@ -2683,13 +2686,18 @@
   window.mobileHandleExitChange = function (val) {
     const exitInput = document.getElementById('mFormPlannedExit');
     const retInput = document.getElementById('mFormEstimatedReturn');
+    const cat = document.getElementById('mFormCategory')?.value || '';
     if (!val) return;
 
     const now = new Date();
-    // VALIDASI KETAT ANTI MASA LALU (Toleransi 30 detik)
+    const pad = n => String(n).padStart(2, '0');
+    const maxHourStr = (now.getDay() === 5) ? '16:30' : '16:00';
+    const todayEnd = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${maxHourStr}`;
+
+    // 1. VALIDASI KETAT ANTI MASA LALU (Toleransi 30 detik)
     if (new Date(val).getTime() < now.getTime() - 30000) {
       if (typeof window.showToast === 'function') {
-        window.showToast('Rencana waktu keluar tidak boleh memilih waktu atau jam yang sudah berlalu! Disesuaikan otomatis.', 'warning');
+        window.showToast('Rencana waktu keluar tidak boleh memilih hari kemarin atau jam yang sudah berlalu! Disesuaikan otomatis.', 'warning');
       }
       const adjusted = new Date(now.getTime() + 5 * 60000);
       if (exitInput) {
@@ -2698,8 +2706,26 @@
       }
     }
 
+    // 2. VALIDASI KHUSUS URUSAN PRIBADI (HANYA HARI INI & JAM KERJA)
+    if (cat === 'Urusan Pribadi') {
+      const d = new Date(val);
+      if (d.getDate() !== now.getDate() || d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear()) {
+        if (typeof window.showToast === 'function') {
+          window.showToast('Untuk keperluan Urusan Pribadi, izin keluar hanya berlaku untuk hari ini (jam maju)!', 'warning');
+        }
+        const adjusted = new Date(now.getTime() + 5 * 60000);
+        if (exitInput) {
+          exitInput.value = formatDateTimeLocal(adjusted);
+          val = exitInput.value;
+        }
+      }
+    }
+
     if (retInput && val) {
       retInput.min = val;
+      if (cat === 'Urusan Pribadi') {
+        retInput.max = todayEnd;
+      }
       if (retInput.value && new Date(retInput.value) <= new Date(val)) {
         const exitDt = new Date(val);
         retInput.value = formatDateTimeLocal(new Date(exitDt.getTime() + 2 * 60 * 60000));
