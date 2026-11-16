@@ -197,12 +197,16 @@
 
   function isDeletedByCurrentMobileApprover(t) {
     if (!t) return false;
+    // Tiket aktif/berjalan tidak boleh pernah tersembunyi sebagai tiket terhapus
+    const isFinished = (t.status === 'Selesai' || t.status === 'Ditolak' || t.status === 'Dibatalkan' || t.status === 'Kedaluwarsa');
+    if (!isFinished) return false;
+    if (t.deletedByApprover) return true;
     const app = getActiveApprover();
     const aName = (app.name || '').toLowerCase();
     if (aName.includes('dewi')) {
-      return Boolean(t.deletedByApprover2);
+      return Boolean(t.deletedByApprover2 || t.deletedByApprover);
     }
-    return Boolean(t.deletedByApprover1);
+    return Boolean(t.deletedByApprover1 || t.deletedByApprover);
   }
 
   function getTeamTickets() {
@@ -301,6 +305,8 @@
       renderAtasanRiwayat(container);
     } else if (currentAtasanTab === 'detail') {
       renderAtasanDetailFullPage(container, viewingTicketId);
+    } else {
+      renderAtasanDashboard(container);
     }
   }
 
@@ -574,7 +580,10 @@
 
             ${isReassignedAway ? `
               <div style="margin-top: 8px;">
-                <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+                <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                  <span>Detail Pengajuan</span>
+                </button>
               </div>
             ` : `
               <div style="display: flex; gap: 8px;">
@@ -586,7 +595,10 @@
                 </button>
               </div>
               <div style="margin-top: 8px;">
-                <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+                <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                  <span>Detail Pengajuan</span>
+                </button>
               </div>
             `}
           </div>
@@ -618,7 +630,10 @@
 
           ${isReassignedAway ? `
             <div style="margin-top: 8px;">
-              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                <span>Detail Pengajuan</span>
+              </button>
             </div>
           ` : `
             <div style="display: flex; gap: 8px;">
@@ -631,7 +646,10 @@
             </div>
             <!-- Tombol Detail Pengajuan di Bawah Tombol Setujui atau Tolak -->
             <div style="margin-top: 8px;">
-              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                <span>Detail Pengajuan</span>
+              </button>
             </div>
           `}
         </div>
@@ -1066,24 +1084,6 @@
                 </div>
               </div>
 
-              ${(t.isGroupDinas && Array.isArray(t.members) && t.members.length > 0) ? `
-                <div style="margin: 6px 0 8px 0; padding: 6px 8px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;">
-                  <div style="font-size: 0.675rem; font-weight: 700; color: #1e40af; margin-bottom: 3px;">
-                    👥 Tim Dinas (${((t.initiatorCancelled ? 0 : 1) + t.members.filter(m => m.status !== 'batal').length)} Orang):
-                  </div>
-                  <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                    <span style="font-size: 0.675rem; background: #dbeafe; color: #1e40af; font-weight: 700; padding: 1px 6px; border-radius: 4px;">
-                      ${escapeHtml(t.applicantName)} (Inisiator)
-                    </span>
-                    ${t.members.map(m => `
-                      <span style="font-size: 0.675rem; background: ${m.status === 'batal' ? '#fee2e2' : '#ffffff'}; color: ${m.status === 'batal' ? '#dc2626' : '#334155'}; padding: 1px 6px; border-radius: 4px; border: 1px solid #cbd5e1; ${m.status === 'batal' ? 'text-decoration: line-through;' : ''}">
-                        ${escapeHtml(m.name)}${m.status === 'batal' ? ' (Batal)' : ''}
-                      </span>
-                    `).join('')}
-                  </div>
-                </div>
-              ` : ''}
-
               ${isEmg ? (isReassignedAway ? `
                 <div style="margin-top: 8px;">
                   <button type="button" class="mobile-btn-secondary" style="width: 100%; min-height: 42px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
@@ -1104,34 +1104,11 @@
                     Setujui
                   </button>
                 </div>
-              `) : (t.isGroupDinas && !isReassignedAway ? (
-                isTicketAssignedToMobileApprover(t) ? `
-                  <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 42px; padding: 6px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                      <span>Detail</span>
-                    </button>
-                    <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 42px; padding: 6px; font-size: 0.775rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileAtasanExecuteDecision('${t.id}', 'reject')">
-                      Tolak Tim
-                    </button>
-                    <button type="button" class="mobile-btn-primary" style="flex: 1.2; min-height: 42px; padding: 6px; font-size: 0.775rem; font-weight: 800; background: #059669; border-color: #059669; color: #ffffff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileQuickApproveTicket('${t.id}')">
-                      Setujui Tim
-                    </button>
-                  </div>
-                ` : `
-                  <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; font-size: 0.72rem; color: #1e40af; margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span>📋 <strong>Tembusan:</strong> Staf Anda ikut dinas</span>
-                    <span style="font-weight: 700;">Peninjau: ${t.approverName ? t.approverName.split(',')[0] : 'Atasan Utama'}</span>
-                  </div>
-                  <button type="button" class="mobile-btn-primary" style="margin-top: 6px; background: #2563eb; border-color: #2563eb;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
-                    Detail Pengajuan
-                  </button>
-                `
-              ) : `
+              `) : `
                 <button type="button" class="mobile-btn-primary" style="margin-top: 4px; ${isReassignedAway ? 'background: #475569; border-color: #475569;' : ''}" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
                   ${isReassignedAway ? 'Pantau Rincian' : 'Tinjau'}
                 </button>
-              `)}
+              `}
             </div>
           `;
         }).join('');
@@ -1902,14 +1879,13 @@
             </div>
           ` : ''}
 
-          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenAtasanDetailModal('${t.id}', '${isHistoryStatus(t) ? 'riwayat' : 'pelacakan'}')">
-              📄
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 6px;">
+            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenAtasanDetailModal('${t.id}', '${isHistoryStatus(t) ? 'riwayat' : 'pelacakan'}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
             </button>
             ${(t.status === 'Selesai' || t.status === 'Ditolak' || t.status === 'Dibatalkan' || t.status === 'Kedaluwarsa') ? `
-              <button type="button" class="mobile-btn-danger" style="padding: 6px 12px; font-size: 0.725rem; width: auto; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'approver')">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                <span style="color: #ffffff;">Hapus</span>
+              <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'approver')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               </button>
             ` : ''}
           </div>
@@ -2086,15 +2062,6 @@
           ${totalTimItems} tiket pelacakan (${allActiveCards.length} aktif • ${allHistoryCards.length} selesai)
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <!-- Tombol Hapus Semua (Icon Tong Sampah Putih #ffffff) -->
-          <button type="button" class="mobile-btn-clear-history mobile-touch-hit-44" ${hasDeletableTickets ? '' : 'disabled'} title="Hapus Semua Riwayat Selesai" aria-label="Hapus Semua Riwayat Selesai" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; border-radius: 10px; background: ${hasDeletableTickets ? '#dc2626' : '#e2e8f0'}; border: 1.5px solid ${hasDeletableTickets ? '#dc2626' : '#cbd5e1'}; color: #ffffff; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; cursor: ${hasDeletableTickets ? 'pointer' : 'not-allowed'}; box-shadow: ${hasDeletableTickets ? '0 1px 3px rgba(220, 38, 38, 0.25)' : 'none'};" onclick="window.mobileOpenAtasanClearModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${hasDeletableTickets ? '#ffffff' : '#94a3b8'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-          </button>
           <!-- Tombol Filter Status & Hari Pelacakan -->
           <button type="button" class="mobile-filter-toggle-btn mobile-touch-hit-44 ${isAtasanTimFilterOpen ? 'active' : ''}" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1.5px solid ${isAtasanTimFilterOpen ? '#059669' : '#cbd5e1'}; background: ${isAtasanTimFilterOpen ? '#ecfdf5' : '#ffffff'}; color: ${isAtasanTimFilterOpen ? '#047857' : '#334155'}; cursor: pointer; box-sizing: border-box; position: relative;" onclick="window.mobileToggleAtasanTimFilter()" title="Filter Pelacakan" aria-label="Filter Pelacakan">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
@@ -2169,6 +2136,7 @@
       // Riwayat Atasan strictly berstatus final (Selesai, Ditolak, Dibatalkan, Kedaluwarsa)
       return t.status === 'Selesai' || t.status === 'Ditolak' || t.status === 'Dibatalkan' || t.status === 'Kedaluwarsa';
     });
+    const hasDeletableTickets = tickets.length > 0;
 
     const emergencyCount = tickets.filter(t => Boolean(t.isEmergency || (t.id && t.id.includes('-EMG-')))).length;
     const approverDecidedCount = Math.max(0, tickets.length - emergencyCount);
@@ -2288,11 +2256,10 @@
             </div>
           </div>
 
-          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenAtasanDetailModal('${t.id}', 'riwayat')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
-            <button type="button" class="mobile-btn-danger" style="padding: 6px 12px; font-size: 0.725rem; width: auto; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'approver')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              <span style="color: #ffffff;">Hapus</span>
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 6px;">
+            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenAtasanDetailModal('${t.id}', 'riwayat')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+            <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'approver')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
         </div>
@@ -2311,6 +2278,16 @@
           ${filtered.length} riwayat tim
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
+          <!-- Tombol Hapus Semua Riwayat Selesai Atasan (Tong Sampah Merah) -->
+          <button type="button" class="mobile-btn-clear-history mobile-touch-hit-44" ${hasDeletableTickets ? '' : 'disabled'} title="Hapus Semua Riwayat Selesai" aria-label="Hapus Semua Riwayat Selesai" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; border-radius: 10px; background: ${hasDeletableTickets ? '#dc2626' : '#e2e8f0'}; border: 1.5px solid ${hasDeletableTickets ? '#dc2626' : '#cbd5e1'}; color: #ffffff; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; cursor: ${hasDeletableTickets ? 'pointer' : 'not-allowed'}; box-shadow: ${hasDeletableTickets ? '0 1px 3px rgba(220, 38, 38, 0.25)' : 'none'};" onclick="window.mobileClearRiwayat('approver')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${hasDeletableTickets ? '#ffffff' : '#94a3b8'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+          <!-- Tombol Filter -->
           <button type="button" class="mobile-filter-toggle-btn ${isAtasanRiwayatFilterOpen ? 'active' : ''}" onclick="window.mobileToggleAtasanRiwayatFilter()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
             <span>${isAtasanRiwayatFilterOpen ? 'Tutup Filter' : 'Filter'}</span>
@@ -2646,6 +2623,245 @@
 
 
 
+  function renderAtasanDetailSheet(ticketId) {
+    const sheet = document.getElementById('mobileActionSheet');
+    const backdrop = document.getElementById('mobileModalBackdrop');
+    if (!sheet || !backdrop) return;
+
+    const tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
+    const cleanId = (typeof window.extractTicketId === 'function')
+      ? window.extractTicketId(ticketId)
+      : String(ticketId || '').replace(/^#/, '').trim();
+    const t = tickets.find(x => x.id === cleanId || x.id.toUpperCase() === cleanId.toUpperCase()) ||
+      (ticketId ? tickets.find(x => x.id === ticketId) : null);
+    if (!t) return;
+
+    const approver = getActiveApprover();
+    const isPending = (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Otorisasi Darurat');
+    const isPulang = (t.type === 'Pulang Mendahului' || t.returnType === 'Pulang Mendahului');
+    const isReassignedAway = isTicketReassignedFromMobileApprover(t);
+    const isReassignedToMe = isTicketReassignedToMobileApprover(t);
+
+    sheet.innerHTML = `
+      <div class="mobile-sheet-handle-bar"></div>
+      <div class="mobile-sheet-header" style="padding: 10px 18px 8px 18px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: 0.675rem; color: #059669; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">RINCIAN TIKET</span>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+            <h3 style="font-family: monospace; font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">${t.id}</h3>
+            <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+          </div>
+        </div>
+        <button type="button" class="mobile-sheet-close" onclick="window.mobileCloseSheet()" title="Tutup">✕</button>
+      </div>
+
+      <div class="mobile-sheet-body" style="padding: 6px 18px 24px 18px;">
+        <!-- Segment Toggle Identik Karyawan -->
+        <div class="mobile-segment-toggle" style="margin-top: 4px; margin-bottom: 12px;">
+          <button type="button" class="mobile-seg-btn ${currentAtasanDetailTab === 'info' ? 'active' : ''}" id="mAtasanDetailBtnInfo" onclick="window.mobileToggleAtasanDetailTab('info')">Informasi Tiket</button>
+          <button type="button" class="mobile-seg-btn ${currentAtasanDetailTab === 'jejak' ? 'active' : ''}" id="mAtasanDetailBtnJejak" onclick="window.mobileToggleAtasanDetailTab('jejak')">Riwayat Aktivitas</button>
+        </div>
+
+        <!-- Tab Content 1: Informasi Tiket -->
+        <div id="mAtasanDetailSecInfo" style="display: ${currentAtasanDetailTab === 'info' ? 'block' : 'none'};">
+          <!-- Card 1: Informasi Karyawan -->
+          <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px;">
+            <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">INFORMASI KARYAWAN</div>
+            <div style="font-size: 0.75rem; color: #1e293b; line-height: 1.45;">
+              <strong>Nama:</strong> ${getTName(t)}<br>
+              <strong>NIP:</strong> ${getTNip(t)}<br>
+              <strong>Departemen:</strong> ${t.department || 'Departemen Rekayasa & Pemeliharaan'}<br>
+              <strong>Atasan:</strong> ${t.approverName || approver.name}${isReassignedAway ? ` <span style="font-size: 0.675rem; color: #b45309; font-weight: 700;">(Dialihkan dari Anda)</span>` : (isReassignedToMe ? ` <span style="font-size: 0.675rem; color: #1d4ed8; font-weight: 700;">(Dialihkan dari ${t.reassignedFrom})</span>` : '')}
+            </div>
+          </div>
+
+          <!-- Card 2: Keperluan Izin -->
+          <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px;">
+            <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">KEPERLUAN IZIN</div>
+            <div style="background: var(--bg-subtle, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
+              <div>
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Tujuan Keluar</div>
+                <div style="font-size: 0.8rem; color: #0f172a; font-weight: 700; word-break: break-word; overflow-wrap: anywhere; line-height: 1.4;">${t.destination || 'Area Cikampek'}</div>
+              </div>
+              <div style="border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Alasan Keperluan</div>
+                <div style="font-size: 0.775rem; color: #334155; word-break: break-word; overflow-wrap: anywhere; line-height: 1.45;">"${t.reason || 'Keperluan dinas kantor'}"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Waktu Keluar & Kembali -->
+          <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px;">
+            <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">${isPulang ? 'WAKTU KELUAR' : 'WAKTU KELUAR & KEMBALI'}</div>
+            <div class="mobile-ticket-grid-meta" style="margin: 4px 0 0 0;">
+              <div>
+                <div class="mobile-meta-sub">Waktu Keluar</div>
+                <div class="mobile-meta-val">${t.scanOutTime ? formatDisplayDate(t.scanOutTime) + ' (Aktual)' : (getTExitTime(t) ? formatDisplayDate(getTExitTime(t)) + ' (Rencana)' : '10.00 WIB')}</div>
+              </div>
+              <div>
+                <div class="mobile-meta-sub">${isPulang ? 'Tipe Kepulangan' : 'Batas Kembali'}</div>
+                <div class="mobile-meta-val">${isPulang ? 'Pulang Lebih Awal' : (getTReturnTime(t) ? formatDisplayDate(getTReturnTime(t)) : '13.00 WIB')}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Tim Dinas Bersama -->
+          ${(t.isGroupDinas && Array.isArray(t.members) && t.members.length > 0) ? `
+            <div style="margin-bottom: 12px; padding: 4px 2px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 0.75rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px;">
+                  Tim Dinas Bersama
+                </span>
+                <span style="font-size: 0.72rem; color: #2563eb; font-weight: 700;">
+                  ${(t.initiatorCancelled ? 0 : 1) + t.members.filter(m => m.status !== 'batal').length} Karyawan Aktif
+                </span>
+              </div>
+              <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 0.8rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                      <strong>${escapeHtml(t.applicantName || 'Inisiator')}</strong>
+                      <span style="font-size: 0.7rem; font-weight: 700; color: #d97706;">(Inisiator)</span>
+                    </div>
+                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                      NIP: ${t.applicantNip || 'PK-2024-8841'}
+                    </div>
+                  </div>
+                  <div style="flex-shrink: 0; text-align: right;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: ${t.initiatorCancelled ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
+                      ${t.initiatorCancelled ? 'Batal' : 'Aktif Ikut'}
+                    </span>
+                  </div>
+                </div>
+                ${t.members.map(m => `
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 0.8rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        <strong>${escapeHtml(m.name)}</strong>
+                      </div>
+                      <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                        NIP: ${m.nip}
+                      </div>
+                    </div>
+                    <div style="flex-shrink: 0; text-align: right;">
+                      <span style="font-size: 0.75rem; font-weight: 700; color: ${m.status === 'batal' ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
+                        ${m.status === 'batal' ? 'Batal' : 'Aktif Ikut'}
+                      </span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Card 5: Dokumen Surat Tugas -->
+          ${t.suratPerintah ? `
+            <div class="mobile-card" style="margin-bottom: 12px; padding: 12px 14px;">
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">DOKUMEN SURAT PERINTAH / TUGAS</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                  <span style="font-size: 1.1rem;">📄</span>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 0.775rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px;">${escapeHtml(t.suratPerintah.name)}</div>
+                    <div style="font-size: 0.675rem; color: #64748b;">${escapeHtml(t.suratPerintah.size || 'Dokumen Resmi')} • Terlampir</div>
+                  </div>
+                </div>
+                <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.725rem; font-weight: 700; width: auto; min-height: 30px;" onclick="window.viewMobileSuratPerintah('${escapeHtml(t.suratPerintah.dataUrl || '')}', '${escapeHtml(t.suratPerintah.name)}')">
+                  Lihat
+                </button>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Keputusan Atasan Action -->
+          ${isPending ? (isReassignedAway ? `
+            <div class="mobile-card" style="margin-bottom: 14px; padding: 14px; text-align: center; border: 1.5px solid #fde68a; background: #fffbeb;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: #92400e; margin-bottom: 6px;">
+                ⚠️ Hak keputusan persetujuan berada pada <strong>${t.approverName}</strong>
+              </div>
+              <div style="font-size: 0.725rem; color: #b45309;">
+                Tiket pengajuan ini telah dialihkan oleh pemohon ke atasan yang ditunjuk.
+              </div>
+            </div>
+          ` : `
+            <div class="mobile-card" style="margin-bottom: 14px; padding: 14px; border: 1.5px solid #cbd5e1; background: #ffffff;">
+              <div style="font-size: 0.825rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Keputusan Atasan</div>
+
+              <div class="mobile-form-group" style="margin-bottom: 10px;">
+                <label class="mobile-form-label" style="font-size: 0.725rem; font-weight: 700; color: #475569;">Catatan (Opsional)</label>
+                <textarea class="mobile-textarea" id="mAtasanDetailNote" placeholder="Tambahkan instruksi atau catatan khusus jika diperlukan" style="font-size: 0.75rem; min-height: 60px;"></textarea>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 44px; padding: 10px; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px;" onclick="window.mobileAtasanExecuteDecision('${t.id}', 'reject')">
+                  Tolak
+                </button>
+                <button type="button" class="mobile-btn-approve" style="flex: 1; min-height: 44px; padding: 10px; font-weight: 800; background: #059669; color: #ffffff; border: 1.5px solid #059669; border-radius: 8px;" onclick="window.mobileAtasanExecuteDecision('${t.id}', 'approve')">
+                  Setujui
+                </button>
+              </div>
+            </div>
+          `) : (t.status === 'Menunggu Verifikasi Atasan' ? (() => {
+            const isAssignedToMe = Boolean(t.approverName && approver.name && (t.approverName.toLowerCase().includes(approver.name.toLowerCase()) || approver.name.toLowerCase().includes(t.approverName.toLowerCase())));
+            if (!isAssignedToMe) {
+              return `
+                <div class="mobile-card" style="padding: 12px; margin-bottom: 14px; background: #ffffff; border: 1px solid #e2e8f0; text-align: center;">
+                  <div style="font-size: 0.775rem; font-weight: 700; color: #0f172a;">
+                    Staf Telah Tap In di Gerbang Masuk
+                  </div>
+                  <div style="font-size: 0.7rem; color: #475569; margin-top: 4px;">
+                    Menunggu verifikasi fisik & konfirmasi kedatangan oleh Atasan Peninjau (<strong>${t.approverName}</strong>).
+                  </div>
+                </div>
+              `;
+            }
+            return `
+            <div class="mobile-card" style="padding: 14px; margin-bottom: 14px; background: #ffffff; border: 1px solid #e2e8f0;">
+              <div style="font-size: 0.825rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+                Tim Dinas Melaporkan Tiba di Kantor
+              </div>
+              <div style="font-size: 0.725rem; color: #475569; margin-bottom: 10px;">
+                Personel telah tap in di gerbang (${t.tapInTime || t.arrivalReportedAt || 'Terkunci'}). Mohon verifikasi kehadiran fisik personel di ruangan kerja Anda.
+              </div>
+              ${t.arrivalProofPhoto ? `
+                <div class="proof-photo-review-card" style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; padding: 6px; background: #ffffff; border: 1px solid #e2e8f0;">
+                  <img src="${t.arrivalProofPhoto}" alt="Foto Bukti" class="proof-photo-thumb" style="width: 82px; height: 58px;" onclick="event.stopPropagation(); if(typeof window.viewArrivalProofPhoto==='function') window.viewArrivalProofPhoto('${t.id}')">
+                  <div style="flex: 1; min-width: 0; font-size: 0.7rem;">
+                    <div style="font-weight: 800; color: #0f172a;">Foto Bukti Real-Time</div>
+                    <div>Oleh: <strong>${t.arrivalProofBy || getTName(t)}</strong></div>
+                    <div style="color: #059669; font-weight: 700;">${t.arrivalProofAt || '-'}</div>
+                  </div>
+                </div>
+              ` : ''}
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 38px; padding: 4px 8px; font-size: 0.725rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="window.mobileAtasanRejectArrival('${t.id}')">
+                  ✕ Belum Tiba
+                </button>
+                <button type="button" class="mobile-btn-primary" style="flex: 1.3; min-height: 38px; padding: 4px 8px; font-size: 0.725rem; font-weight: 800; background: #059669; color: #ffffff; border: 1.5px solid #059669; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;" onclick="window.mobileAtasanConfirmArrival('${t.id}')">
+                  ✓ Ya, Sudah Tiba
+                </button>
+              </div>
+            </div>
+            `;
+          })() : '')}
+        </div>
+
+        <!-- Tab Content 2: Riwayat Aktivitas (Timeline) -->
+        <div id="mAtasanDetailSecJejak" style="display: ${currentAtasanDetailTab === 'jejak' ? 'block' : 'none'}; margin-bottom: 12px;">
+          <div class="mobile-card" style="padding: 14px;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Kronologi Aktivitas Tiket</div>
+            <div class="mobile-timeline">
+              ${renderAtasanTimelineHtml(t, approver)}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    backdrop.classList.add('open');
+    sheet.classList.add('open');
+  }
+
   window.mobileOpenAtasanDetailModal = function (ticketId, sourceTab) {
     viewingTicketId = ticketId;
     if (sourceTab) {
@@ -2656,7 +2872,7 @@
       atasanDetailSourceTab = window.currentMobileTab;
     }
     window.atasanDetailSourceTab = atasanDetailSourceTab;
-    renderMobileAtasan(null, 'detail');
+    renderAtasanDetailSheet(ticketId);
   };
 
   window.mobileSelectTimTicket = function (ticketId) {
@@ -3478,6 +3694,7 @@
     });
 
     finishedTickets.forEach(t => {
+      t.deletedByApprover = true;
       if (isDewi) {
         t.deletedByApprover2 = true;
       } else {
@@ -3521,7 +3738,11 @@
       actorRole: approver.role || 'Atasan Peninjau',
       desc: 'Atasan telah mengonfirmasi kedatangan fisik karyawan di kantor/ruangan. Izin selesai resmi.'
     });
-    if (typeof saveTicketsToStorage === 'function') saveTicketsToStorage(tickets);
+    if (typeof window.saveTickets === 'function') {
+      window.saveTickets(tickets);
+    } else {
+      localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
+    }
     if (typeof showMobileToast === 'function') {
       showMobileToast('Kedatangan karyawan berhasil dikonfirmasi. Status: Selesai.', 'success');
     }
@@ -3534,7 +3755,7 @@
       window.rejectArrivalByApprover(ticketId);
       return;
     }
-    const tickets = (typeof MOCK_TICKETS !== 'undefined') ? MOCK_TICKETS : [];
+    const tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
     const t = tickets.find(x => x.id === ticketId);
     if (!t) return;
     const approver = getActiveApprover();
@@ -3547,12 +3768,16 @@
       by: approver.name,
       desc: 'Atasan menandai personel belum tiba & meminta foto bukti kedatangan real-time.'
     });
-    if (typeof saveTicketsToStorage === 'function') saveTicketsToStorage(tickets);
+    if (typeof window.saveTickets === 'function') {
+      window.saveTickets(tickets);
+    } else {
+      localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
+    }
     renderMobileAtasan(null);
   };
 
   window.mobileAtasanTapIn = function (ticketId) {
-    const tickets = (typeof MOCK_TICKETS !== 'undefined') ? MOCK_TICKETS : [];
+    const tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
     const t = tickets.find(x => x.id === ticketId);
     if (!t) return;
     const approver = getActiveApprover();
@@ -3567,7 +3792,11 @@
       actorRole: approver.role || 'Atasan Peninjau',
       desc: 'Atasan melakukan Tap In / konfirmasi kepulangan langsung di kantor. Izin selesai resmi.'
     });
-    if (typeof saveTicketsToStorage === 'function') saveTicketsToStorage(tickets);
+    if (typeof window.saveTickets === 'function') {
+      window.saveTickets(tickets);
+    } else {
+      localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
+    }
     if (typeof showMobileToast === 'function') {
       showMobileToast('Tap In atasan berhasil. Tiket resmi Selesai.', 'success');
     }

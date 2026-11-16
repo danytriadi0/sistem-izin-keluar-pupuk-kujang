@@ -1,0 +1,133 @@
+- generic [active] [ref=f21e1]:
+  - text: – – – – – – –
+  - generic [ref=f21e2]:
+    - banner [ref=f21e3]:
+      - generic [ref=f21e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f21e6]
+        - generic [ref=f21e7]:
+          - generic [ref=f21e8]: PUPUK KUJANG
+          - generic [ref=f21e9]: Perizinan Keluar Area • Atasan 1
+      - generic [ref=f21e10]:
+        - button "Atasan 1 ▼" [ref=f21e11] [cursor=pointer]:
+          - generic [ref=f21e15]: Atasan 1
+          - generic [ref=f21e16]: ▼
+        - button "Notifikasi" [ref=f21e18] [cursor=pointer]:
+          - generic [ref=f21e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f21e23] [cursor=pointer]:
+          - img "HG" [ref=f21e24]
+    - main [ref=f21e25]:
+      - generic [ref=f21e26]:
+        - generic [ref=f21e27]: Pusat Persetujuan & Monitoring Bawahan
+        - generic [ref=f21e28]: Ir. Hendra Gunawan, M.T.
+        - generic [ref=f21e29]: Atasan
+      - generic [ref=f21e31]:
+        - button "Ringkasan perizinan" [ref=f21e32] [cursor=pointer]
+        - button "Volume pengajuan tim" [ref=f21e39] [cursor=pointer]
+      - generic [ref=f21e43]:
+        - generic [ref=f21e44] [cursor=pointer]:
+          - generic [ref=f21e45]: Perlu Keputusan Segera
+          - generic [ref=f21e46]: "2"
+        - generic [ref=f21e47] [cursor=pointer]:
+          - generic [ref=f21e48]: Telah Disetujui
+          - generic [ref=f21e49]: "0"
+        - generic [ref=f21e50] [cursor=pointer]:
+          - generic [ref=f21e51]: Ditolak
+          - generic [ref=f21e52]: "0"
+        - generic [ref=f21e53] [cursor=pointer]:
+          - generic [ref=f21e54]: Total Permohonan
+          - generic [ref=f21e55]: "6"
+      - generic [ref=f21e56]:
+        - generic [ref=f21e57]:
+          - generic [ref=f21e58]:
+            - heading "Pengajuan Menunggu Persetujuan" [level=3] [ref=f21e59]
+            - generic [ref=f21e60]: Daftar permohonan bawahan yang memerlukan keputusan
+          - generic [ref=f21e61]: 2 item
+        - generic [ref=f21e62]:
+          - generic [ref=f21e63]:
+            - generic [ref=f21e64]:
+              - generic [ref=f21e65]:
+                - generic [ref=f21e66]: Budi Pratama, S.T.
+                - generic [ref=f21e67]: TK-20261116-TEST1 • Urusan Pribadi
+              - generic [ref=f21e68]: Menunggu Persetujuan
+            - generic "Bank Mandiri" [ref=f21e70]:
+              - text: "Rencana Keluar:"
+              - strong [ref=f21e71]: 14.00 WIB
+              - text: "• Keperluan:"
+              - strong [ref=f21e72]: Bank Mandiri
+            - generic [ref=f21e73]:
+              - button "Tolak" [ref=f21e74] [cursor=pointer]
+              - button "Setujui" [ref=f21e75] [cursor=pointer]
+            - button "Detail Pengajuan" [ref=f21e77] [cursor=pointer]
+          - generic [ref=f21e82]:
+            - generic [ref=f21e83]:
+              - generic [ref=f21e84]:
+                - generic [ref=f21e85]: Arthur Morgan, S.Tr.T.
+                - generic [ref=f21e86]: TK-ANTREAN-PRIBADI • Urusan Pribadi
+              - generic [ref=f21e87]: Menunggu Persetujuan
+            - generic "Rumah Sakit Karawang" [ref=f21e89]:
+              - text: "Rencana Keluar:"
+              - strong [ref=f21e90]: 09.30 WIB
+              - text: "• Keperluan:"
+              - strong [ref=f21e91]: Rumah Sakit Karawang
+            - generic [ref=f21e92]:
+              - button "Tolak" [ref=f21e93] [cursor=pointer]
+              - button "Setujui" [ref=f21e94] [cursor=pointer]
+            - button "Detail Pengajuan" [ref=f21e96] [cursor=pointer]
+        - link "Lihat Semua Antrean" [ref=f21e102] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f21e106]:
+        - heading "Aktivitas terbaru" [level=3] [ref=f21e109]
+        - generic [ref=f21e110]:
+          - generic [ref=f21e111]:
+            - generic [ref=f21e112]: 11.00 WIB
+            - generic [ref=f21e113]:
+              - generic [ref=f21e114]: Pengajuan Dibuat
+              - generic [ref=f21e115]:
+                - generic [ref=f21e116]: Budi Pratama, S.T.
+                - generic [ref=f21e117]: •
+                - generic [ref=f21e118]: TK-20261116-TEST1
+          - generic [ref=f21e119]:
+            - generic [ref=f21e120]: 10.52 WIB
+            - generic [ref=f21e121]:
+              - generic [ref=f21e122]: Disetujui Atasan
+              - generic [ref=f21e123]:
+                - generic [ref=f21e124]: Ir. Hendra Gunawan, M.T.
+                - generic [ref=f21e125]: •
+                - generic [ref=f21e126]: TK-20261116-AUTOTEST
+          - generic [ref=f21e127]:
+            - generic [ref=f21e128]: 10.52 WIB
+            - generic [ref=f21e129]:
+              - generic [ref=f21e130]: Tiket Kedaluwarsa
+              - generic [ref=f21e131]:
+                - generic [ref=f21e132]: Sistem Otomatis (Scheduler)
+                - generic [ref=f21e133]: •
+                - generic [ref=f21e134]: TK-20261116-AUTOTEST
+          - generic [ref=f21e135]:
+            - generic [ref=f21e136]: 10.51 WIB
+            - generic [ref=f21e137]:
+              - generic [ref=f21e138]: Tiket Kedaluwarsa
+              - generic [ref=f21e139]:
+                - generic [ref=f21e140]: Sistem Otomatis (Scheduler)
+                - generic [ref=f21e141]: •
+                - generic [ref=f21e142]: TK-910509
+          - generic [ref=f21e143]:
+            - generic [ref=f21e144]: 09.40 WIB
+            - generic [ref=f21e145]:
+              - generic [ref=f21e146]: Tiket Kedaluwarsa
+              - generic [ref=f21e147]:
+                - generic [ref=f21e148]: Sistem Otomatis (Scheduler)
+                - generic [ref=f21e149]: •
+                - generic [ref=f21e150]: TK-ANTREAN-DINAS-TIM
+    - navigation [ref=f21e151]:
+      - generic [ref=f21e152] [cursor=pointer]: Dashboard
+      - generic [ref=f21e159] [cursor=pointer]:
+        - generic [ref=f21e163]: Antrean
+        - generic [ref=f21e164]: "2"
+      - generic [ref=f21e165] [cursor=pointer]: Pelacakan
+      - generic [ref=f21e170] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f21e174]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

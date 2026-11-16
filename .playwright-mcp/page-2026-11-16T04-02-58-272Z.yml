@@ -1,0 +1,60 @@
+- generic [active] [ref=f27e1]:
+  - text: – – – – – – –
+  - generic [ref=f27e2]:
+    - banner [ref=f27e3]:
+      - generic [ref=f27e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f27e6]
+        - generic [ref=f27e7]:
+          - generic [ref=f27e8]: PUPUK KUJANG
+          - generic [ref=f27e9]: Perizinan Keluar Area
+      - generic [ref=f27e10]:
+        - button "Karyawan ▼" [ref=f27e11] [cursor=pointer]:
+          - generic [ref=f27e15]: Karyawan
+          - generic [ref=f27e16]: ▼
+        - button "Notifikasi" [ref=f27e18] [cursor=pointer]:
+          - generic [ref=f27e22]: "6"
+        - button "Menu Akun & Keluar SAKTI" [ref=f27e23] [cursor=pointer]:
+          - img "BP" [ref=f27e24]
+    - main [ref=f27e25]:
+      - generic [ref=f27e26]:
+        - generic [ref=f27e27]:
+          - generic [ref=f27e28]:
+            - generic [ref=f27e29]: IZIN AKTIF SAYA
+            - heading "TK-910509" [level=3] [ref=f27e30]
+          - generic [ref=f27e31]: Disetujui
+        - generic [ref=f27e32]: Dinas Kantor • Kembali ke Area
+        - generic "PT Pupuk Indonesia (Jakarta)" [ref=f27e33]
+        - generic "Rapat koordinasi teknis" [ref=f27e34]: "\"Rapat koordinasi teknis\""
+        - generic [ref=f27e35]:
+          - generic [ref=f27e36]:
+            - generic [ref=f27e37]: Jadwal Keluar
+            - generic [ref=f27e38]: Senin, 16 Nov 2026, 10.41 WIB
+          - generic [ref=f27e39]:
+            - generic [ref=f27e40]: Batas Jam Kembali
+            - generic [ref=f27e41]: Senin, 16 Nov 2026, 12.41 WIB
+        - generic [ref=f27e42]:
+          - button "Buka QR Izin" [ref=f27e43] [cursor=pointer]
+          - generic [ref=f27e45]:
+            - button "Lihat Detail" [ref=f27e46] [cursor=pointer]
+            - button "Batalkan Izin" [ref=f27e48] [cursor=pointer]
+      - generic [ref=f27e50]:
+        - heading "Kronologi tercatat" [level=3] [ref=f27e51]
+        - generic [ref=f27e52]:
+          - generic [ref=f27e57]:
+            - generic [ref=f27e58]: Baru saja
+            - generic [ref=f27e59]: Pengajuan Dibuat
+            - generic [ref=f27e61]: Oleh Budi Pratama, S.T.
+          - generic [ref=f27e65]:
+            - generic [ref=f27e66]: 16 Nov 2026, 10:51 WIB
+            - generic [ref=f27e67]: Tiket Kedaluwarsa
+            - generic [ref=f27e69]: Tiket otomatis hangus/kedaluwarsa karena tidak dipindai keluar melewati batas toleransi rencana keluar (+10 menit).
+    - navigation [ref=f27e70]:
+      - generic [ref=f27e71] [cursor=pointer]: Dashboard
+      - generic [ref=f27e78] [cursor=pointer]: Pengajuan
+      - generic [ref=f27e83] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic [ref=f27e88]: Beralih ke akun Budi Pratama, S.T.
+    - generic [ref=f27e90]: Selamat datang, Budi Pratama, S.T. (undefined)
+    - generic [ref=f27e92]: Beralih ke akun Budi Pratama, S.T.

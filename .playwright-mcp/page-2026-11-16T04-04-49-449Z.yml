@@ -1,0 +1,45 @@
+- generic [active] [ref=f28e1]:
+  - text: – – – – – – –
+  - generic [ref=f28e2]:
+    - banner [ref=f28e3]:
+      - generic [ref=f28e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f28e6]
+        - generic [ref=f28e7]:
+          - generic [ref=f28e8]: PUPUK KUJANG
+          - generic [ref=f28e9]: Perizinan Keluar Area • Pos Jaga
+      - generic [ref=f28e10]:
+        - button "Pos Jaga ▼" [ref=f28e11] [cursor=pointer]:
+          - generic [ref=f28e15]: Pos Jaga
+          - generic [ref=f28e16]: ▼
+        - button "Notifikasi" [ref=f28e18] [cursor=pointer]:
+          - generic [ref=f28e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f28e23] [cursor=pointer]:
+          - img "SA" [ref=f28e24]
+    - main [ref=f28e25]:
+      - generic [ref=f28e26]:
+        - generic [ref=f28e27]:
+          - generic [ref=f28e28]: Sedang di luar
+          - generic [ref=f28e29]: "0"
+          - generic [ref=f28e30]: Karyawan
+        - generic [ref=f28e31]:
+          - generic [ref=f28e32]: Terlambat
+          - generic [ref=f28e33]: "0"
+          - generic [ref=f28e34]: Lewat batas kembali
+      - generic [ref=f28e35]:
+        - button "Sedang di Luar · 0" [ref=f28e36] [cursor=pointer]
+        - button "Izin Siap Keluar · 2" [ref=f28e37] [cursor=pointer]
+      - generic [ref=f28e38]:
+        - generic [ref=f28e39]: 0 karyawan (Di Luar Area)
+        - button "Filter" [ref=f28e41] [cursor=pointer]
+      - generic [ref=f28e45]: Tidak ada karyawan pada status ini.
+    - navigation [ref=f28e46]:
+      - generic [ref=f28e47] [cursor=pointer]: Dashboard
+      - generic [ref=f28e54] [cursor=pointer]: Pindai
+      - generic [ref=f28e58] [cursor=pointer]: Pelacakan
+      - generic [ref=f28e62] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)
+    - generic [ref=f28e67]: Selamat datang, Sertu Agus (undefined)
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)

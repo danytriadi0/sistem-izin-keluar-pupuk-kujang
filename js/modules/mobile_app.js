@@ -10,6 +10,20 @@
   let currentMobileRole = 'karyawan'; // 'karyawan' | 'approver' | 'approver2' | 'security'
   let currentMobileTab = 'dashboard';
 
+  // Global helper fallbacks for safe tickets persistence
+  window.getTickets = function () {
+    return (typeof window.loadTickets === 'function') ? window.loadTickets() : (window.ticketsList || []);
+  };
+  window.saveTicketsToStorage = function (data) {
+    if (typeof window.saveTickets === 'function') {
+      window.saveTickets(data);
+    } else {
+      try {
+        localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(data));
+      } catch (e) {}
+    }
+  };
+
   // -------------------------------------------------------------------
   // 1. INITIALIZATION & SYNC
   // -------------------------------------------------------------------
@@ -19,13 +33,44 @@
       return;
     }
 
-    // Detect if desktop switched role (Mobile only supports Karyawan, Atasan 1, Atasan 2, Pos Jaga)
-    if (window.currentActor && ['karyawan', 'karyawan2', 'approver', 'approver2', 'security'].includes(window.currentActor)) {
+    const validRoles = ['karyawan', 'karyawan2', 'approver', 'approver2', 'security'];
+    let savedRole = null;
+    let savedTab = null;
+    try {
+      savedRole = sessionStorage.getItem('KUJANG_MOBILE_ACTIVE_ROLE') || localStorage.getItem('KUJANG_MOBILE_ACTIVE_ROLE') || localStorage.getItem('KUJANG_ACTIVE_ROLE');
+      savedTab = sessionStorage.getItem('KUJANG_MOBILE_ACTIVE_TAB') || localStorage.getItem('KUJANG_MOBILE_ACTIVE_TAB');
+    } catch (e) {}
+
+    const currUser = (typeof window.getKujangCurrentUser === 'function') ? window.getKujangCurrentUser() : null;
+    const userRoleKey = currUser ? (currUser.roleKey || (currUser.role ? currUser.role.toLowerCase() : null)) : null;
+
+    if (savedRole && validRoles.includes(savedRole)) {
+      currentMobileRole = savedRole;
+    } else if (userRoleKey && validRoles.includes(userRoleKey)) {
+      currentMobileRole = userRoleKey;
+    } else if (window.currentActor && validRoles.includes(window.currentActor)) {
       currentMobileRole = window.currentActor;
     } else {
       currentMobileRole = 'karyawan';
     }
     window.currentMobileRole = currentMobileRole;
+    window.currentActor = currentMobileRole;
+
+    if (savedTab) {
+      if ((currentMobileRole === 'approver' || currentMobileRole === 'approver2') && savedTab === 'pelacakan') {
+        currentMobileTab = 'tim';
+      } else {
+        currentMobileTab = savedTab;
+      }
+    } else {
+      currentMobileTab = 'dashboard';
+    }
+    window.currentMobileTab = currentMobileTab;
+
+    try {
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_ROLE', currentMobileRole);
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', currentMobileTab);
+    } catch (e) {}
 
     renderMobileShell();
     renderActiveView();
@@ -135,7 +180,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
           <span>Dashboard</span>
         </div>
-        <div class="mobile-bottom-nav-item ${currentMobileTab === 'pengajuan' ? 'active' : ''}" onclick="window.mobileSwitchTab('pengajuan')">
+        <div class="mobile-bottom-nav-item ${(currentMobileTab === 'pengajuan' || currentMobileTab === 'form_pengajuan') ? 'active' : ''}" onclick="window.mobileSwitchTab('pengajuan')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           <span>Pengajuan</span>
         </div>
@@ -404,8 +449,15 @@
     }
 
     if (tab === 'beranda') tab = 'dashboard';
+    if ((currentMobileRole === 'approver' || currentMobileRole === 'approver2') && tab === 'pelacakan') {
+      tab = 'tim';
+    }
     currentMobileTab = tab;
     window.currentMobileTab = tab;
+    try {
+      localStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', tab);
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', tab);
+    } catch (e) {}
     renderActiveView();
 
     if (subParam) {
@@ -443,6 +495,32 @@
     currentMobileRole = role;
     window.currentMobileRole = currentMobileRole;
     currentMobileTab = 'dashboard';
+    try {
+      localStorage.setItem('KUJANG_MOBILE_ACTIVE_ROLE', role);
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_ROLE', role);
+      localStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', 'dashboard');
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', 'dashboard');
+    } catch (e) {}
+
+    // Sinkronisasikan currentUser sesuai peran baru agar konsisten di seluruh master data
+    if (typeof window.setKujangCurrentUser === 'function') {
+      const allUsers = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+      let targetUser = null;
+      if (role === 'karyawan') {
+        targetUser = allUsers.find(u => u.nip === 'PK-2024-8841') || allUsers.find(u => u.roleKey === 'karyawan' || u.role === 'Karyawan');
+      } else if (role === 'karyawan2') {
+        targetUser = allUsers.find(u => u.nip === 'PK-2024-8842') || allUsers.find(u => u.roleKey === 'karyawan2');
+      } else if (role === 'approver') {
+        targetUser = allUsers.find(u => u.nip === 'PK-2015-1002') || allUsers.find(u => u.roleKey === 'approver' || (u.role && u.role.includes('Manager')));
+      } else if (role === 'approver2') {
+        targetUser = allUsers.find(u => u.nip === 'PK-2012-0845') || allUsers.find(u => u.roleKey === 'approver2' || (u.role && u.role.includes('Supervisor')));
+      } else if (role === 'security') {
+        targetUser = allUsers.find(u => u.nip === 'SEC-2018-042') || allUsers.find(u => u.roleKey === 'security' || (u.role && u.role.includes('Pengamanan')));
+      }
+      if (targetUser) {
+        window.setKujangCurrentUser(targetUser);
+      }
+    }
 
     // Also inform desktop switchRole if exists
     if (typeof window.switchRole === 'function' && window.currentActor !== role) {
@@ -473,7 +551,22 @@
       currentMobileRole = 'karyawan';
     }
     window.currentMobileRole = currentMobileRole;
-    currentMobileTab = 'dashboard';
+    try {
+      localStorage.setItem('KUJANG_MOBILE_ACTIVE_ROLE', currentMobileRole);
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_ROLE', currentMobileRole);
+    } catch (e) {}
+
+    const savedTab = sessionStorage.getItem('KUJANG_MOBILE_ACTIVE_TAB') || localStorage.getItem('KUJANG_MOBILE_ACTIVE_TAB');
+    if (savedTab) {
+      if ((currentMobileRole === 'approver' || currentMobileRole === 'approver2')) {
+        currentMobileTab = (savedTab === 'pelacakan') ? 'tim' : savedTab;
+      } else {
+        currentMobileTab = savedTab;
+      }
+    } else {
+      currentMobileTab = 'dashboard';
+    }
+    window.currentMobileTab = currentMobileTab;
     renderMobileShell();
     renderActiveView();
   };
@@ -829,7 +922,7 @@
 
   window.mobileClearRiwayat = function (actor) {
     const role = actor || currentMobileRole;
-    let tickets = window.ticketsList || [];
+    let tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
     let finishedTickets = [];
     let roleLabel = 'Karyawan';
     let flag = 'deletedByKaryawan';
@@ -843,10 +936,12 @@
       roleLabel = 'riwayat Karyawan';
       flag = 'deletedByKaryawan';
     } else if (role === 'approver' || role === 'approver2') {
-      finishedTickets = tickets.filter(t => !t.deletedByApprover &&
-        FINISHED_STATUSES_RULE.includes(t.status)
-      );
-      roleLabel = 'pelacakan Atasan';
+      const isDewi = (role === 'approver2' || (typeof window.getActiveApprover === 'function' && (window.getActiveApprover().name || '').toLowerCase().includes('dewi')));
+      finishedTickets = tickets.filter(t => {
+        const isDel = isDewi ? (t.deletedByApprover2 || t.deletedByApprover) : (t.deletedByApprover1 || t.deletedByApprover);
+        return !isDel && FINISHED_STATUSES_RULE.includes(t.status);
+      });
+      roleLabel = 'riwayat Atasan';
       flag = 'deletedByApprover';
     } else if (role === 'security') {
       finishedTickets = tickets.filter(t => !t.deletedBySecurity &&
@@ -873,7 +968,7 @@
       window.openDeleteConfirmModal({
         title: 'Hapus Semua Riwayat',
         message: `Hapus <strong>${finishedTickets.length} tiket</strong> riwayat selesai dari daftar tampilan Anda?`,
-        confirmText: 'Hapus Riwayat',
+        confirmText: 'Hapus',
         onConfirm: handler
       });
       return;
@@ -891,13 +986,13 @@
         <button type="button" class="mobile-sheet-close" style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; border: none; border-radius: 50%; font-size: 1.1rem; color: #64748b; cursor: pointer; padding: 0;" onclick="window.mobileCloseSheet()">✕</button>
       </div>
       <div class="mobile-sheet-body" style="padding: 16px 18px 24px 18px;">
-        <p style="font-size: 0.85rem; color: #1e293b; line-height: 1.5; margin: 0 0 10px 0;">
+        <p style="font-size: 0.85rem; color: #1e293b; line-height: 1.5; margin: 0 0 14px 0;">
           Hapus <strong>${finishedTickets.length} tiket</strong> riwayat selesai dari daftar tampilan Anda?
         </p>
        
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 44px; padding: 10px 16px; font-weight: 700; border-radius: 10px; font-size: 0.85rem;" onclick="window.mobileCloseSheet()">Batal</button>
-          <button type="button" style="flex: 1; min-height: 44px; padding: 10px 16px; font-weight: 800; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 10px; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);" onclick="window.mobileConfirmBatchDelete('${flag}', ${finishedTickets.length})">Hapus Riwayat</button>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
+          <button type="button" class="mobile-btn-secondary" style="flex: 0 0 auto; min-width: 84px; min-height: 38px; padding: 0 16px; font-weight: 700; border-radius: 8px; font-size: 0.825rem;" onclick="window.mobileCloseSheet()">Batal</button>
+          <button type="button" style="flex: 0 0 auto; min-width: 84px; min-height: 38px; padding: 0 16px; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; cursor: pointer; font-size: 0.825rem; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);" onclick="window.mobileConfirmBatchDelete('${flag}', ${finishedTickets.length})">Hapus</button>
         </div>
       </div>
     `;
@@ -907,7 +1002,7 @@
   };
 
   window.mobileConfirmBatchDelete = function (flag, count) {
-    let tickets = window.ticketsList || [];
+    let tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
     let deletedCount = 0;
 
     if (flag === 'deletedByKaryawan') {
@@ -920,10 +1015,19 @@
         }
       });
     } else if (flag === 'deletedByApprover') {
+      const isDewi = (currentMobileRole === 'approver2' || (typeof window.getActiveApprover === 'function' && (window.getActiveApprover().name || '').toLowerCase().includes('dewi')));
       tickets.forEach(t => {
-        if (FINISHED_STATUSES_RULE.includes(t.status) && !t.deletedByApprover) {
-          t.deletedByApprover = true;
-          deletedCount++;
+        if (FINISHED_STATUSES_RULE.includes(t.status)) {
+          const isDel = isDewi ? (t.deletedByApprover2 || t.deletedByApprover) : (t.deletedByApprover1 || t.deletedByApprover);
+          if (!isDel) {
+            t.deletedByApprover = true;
+            if (isDewi) {
+              t.deletedByApprover2 = true;
+            } else {
+              t.deletedByApprover1 = true;
+            }
+            deletedCount++;
+          }
         }
       });
     } else if (flag === 'deletedBySecurity') {
@@ -935,6 +1039,7 @@
       });
     }
 
+    window.ticketsList = tickets;
     if (typeof window.saveTickets === 'function') {
       window.saveTickets(tickets);
     }
@@ -994,9 +1099,9 @@
             <span>Data disembunyikan dari tampilan riwayat Anda. Catatan resmi pos gerbang dan audit trail server tetap tersimpan demi integritas keamanan.</span>
           </div>
         </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 44px; padding: 10px 16px; font-weight: 700; border-radius: 10px; font-size: 0.85rem;" onclick="window.mobileCloseSheet()">Batal</button>
-          <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 44px; padding: 10px 16px; font-weight: 800; background: #dc2626; color: #fff; border: 1.5px solid #dc2626; border-radius: 10px; font-size: 0.85rem; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);" onclick="window.mobileConfirmSingleDelete('${ticketId}', '${flag}')">Hapus</button>
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
+          <button type="button" class="mobile-btn-secondary" style="flex: 0 0 auto; min-width: 84px; min-height: 38px; padding: 0 16px; font-weight: 700; border-radius: 8px; font-size: 0.825rem;" onclick="window.mobileCloseSheet()">Batal</button>
+          <button type="button" class="mobile-btn-danger" style="flex: 0 0 auto; min-width: 84px; min-height: 38px; padding: 0 16px; font-weight: 800; background: #dc2626; color: #fff; border: 1.5px solid #dc2626; border-radius: 8px; font-size: 0.825rem; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);" onclick="window.mobileConfirmSingleDelete('${ticketId}', '${flag}')">Hapus</button>
         </div>
       </div>
     `;

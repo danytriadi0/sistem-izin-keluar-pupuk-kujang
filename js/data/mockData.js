@@ -391,6 +391,92 @@ const DEFAULT_TICKETS = [
   }
 ];
 
+function parseTicketDateTime(val) {
+  if (!val) return null;
+  if (val instanceof Date) return isNaN(val.getTime()) ? null : val;
+  if (typeof val === 'number') {
+    const d = new Date(val);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (typeof val !== 'string') return null;
+
+  let raw = val.trim();
+  if (typeof normalizeReturnDateTime === 'function') {
+    raw = normalizeReturnDateTime(raw);
+  } else if (typeof window !== 'undefined' && typeof window.normalizeReturnDateTime === 'function') {
+    raw = window.normalizeReturnDateTime(raw);
+  }
+
+  // 1. Format hanya jam: "12:30", "12.30", "12:30 WIB", "12:30:00"
+  const timeOnlyMatch = raw.match(/^(\d{1,2})[:.](\d{2})(?:[:.]\d{2})?(?:\s*WIB)?$/i);
+  if (timeOnlyMatch) {
+    const now = new Date();
+    const h = parseInt(timeOnlyMatch[1], 10);
+    const m = parseInt(timeOnlyMatch[2], 10);
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+  }
+
+  // 2. Standard ISO parser (handles 2026-10-26T12:30 etc)
+  let d = new Date(raw);
+  if (!isNaN(d.getTime())) return d;
+
+  // 3. Space separated ISO format (2026-10-26 12:30)
+  const cleanIso = raw.replace(' ', 'T');
+  d = new Date(cleanIso);
+  if (!isNaN(d.getTime())) return d;
+
+  // 4. Indonesian text date format: "26 Okt 2026, 12:30 WIB" / "26 Oktober 2026 12.30"
+  const indonesianMonths = {
+    'jan': 0, 'januari': 0,
+    'feb': 1, 'februari': 1,
+    'mar': 2, 'maret': 2,
+    'apr': 3, 'april': 3,
+    'mei': 4, 'may': 4,
+    'jun': 5, 'juni': 5,
+    'jul': 6, 'juli': 6,
+    'agu': 7, 'agustus': 7, 'agt': 7,
+    'sep': 8, 'september': 8,
+    'okt': 9, 'oktober': 9, 'oct': 9,
+    'nov': 10, 'november': 10,
+    'des': 11, 'desember': 11, 'dec': 11
+  };
+
+  const idMatch = raw.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})(?:.*?(\d{1,2})[:.](\d{2}))?/);
+  if (idMatch) {
+    const day = parseInt(idMatch[1], 10);
+    const monthKey = idMatch[2].toLowerCase().slice(0, 3);
+    const year = parseInt(idMatch[3], 10);
+    const hour = idMatch[4] !== undefined ? parseInt(idMatch[4], 10) : 0;
+    const minute = idMatch[5] !== undefined ? parseInt(idMatch[5], 10) : 0;
+    if (indonesianMonths[monthKey] !== undefined) {
+      return new Date(year, indonesianMonths[monthKey], day, hour, minute, 0);
+    }
+  }
+
+  // 5. Slash format: "26/10/2026 12:30"
+  const slashMatch = raw.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}).*?(\d{1,2})[:.](\d{2})/);
+  if (slashMatch) {
+    const day = parseInt(slashMatch[1], 10);
+    const month = parseInt(slashMatch[2], 10) - 1;
+    const year = parseInt(slashMatch[3], 10);
+    const hour = parseInt(slashMatch[4], 10);
+    const minute = parseInt(slashMatch[5], 10);
+    return new Date(year, month, day, hour, minute, 0);
+  }
+
+  // 6. Format TK-YYYYMMDD-XXX or IZ-YYYYMMDD-XXX or raw YYYYMMDD
+  const ymdMatch = raw.match(/(?:TK-|IZ-)?(\d{4})(\d{2})(\d{2})/);
+  if (ymdMatch) {
+    const year = parseInt(ymdMatch[1], 10);
+    const month = parseInt(ymdMatch[2], 10) - 1;
+    const day = parseInt(ymdMatch[3], 10);
+    return new Date(year, month, day, 0, 0, 0);
+  }
+
+  return null;
+}
+window.parseTicketDateTime = parseTicketDateTime;
+
 function loadTickets() {
   // Bersihkan cache dan data sesi lama otomatis agar simulasi selalu bersih
   ['KUJANG_GATEPASS_TICKETS_V1', 'KUJANG_GATEPASS_TICKETS_V2', 'KUJANG_GATEPASS_TICKETS_V3', 'KUJANG_GATEPASS_TICKETS_V4', 'KUJANG_GATEPASS_TICKETS_V5', 'KUJANG_GATEPASS_TICKETS_V6', 'KUJANG_GATEPASS_TICKETS_V7', 'KUJANG_GATEPASS_TICKETS_V8'].forEach(k => localStorage.removeItem(k));
@@ -408,6 +494,31 @@ function loadTickets() {
       if ((t.isEmergency || (t.id && t.id.startsWith('TK-EMG'))) && t.status === 'Kedaluwarsa') {
         t.status = 'Disetujui';
         changed = true;
+      }
+      // Pulihkan tiket aktif yang tidak sengaja ter-expire saat simulasi hari ini
+      if (t.status === 'Kedaluwarsa' && !t.scanOutTime) {
+        const createTime = parseTicketDateTime(t.createdAt || t.id);
+        const exitTime = parseTicketDateTime(t.plannedExit);
+        const now = new Date();
+        const isToday = (createTime && !isNaN(createTime.getTime()) &&
+          createTime.getDate() === now.getDate() &&
+          createTime.getMonth() === now.getMonth() &&
+          createTime.getFullYear() === now.getFullYear()) ||
+          (exitTime && !isNaN(exitTime.getTime()) &&
+          exitTime.getDate() === now.getDate() &&
+          exitTime.getMonth() === now.getMonth() &&
+          exitTime.getFullYear() === now.getFullYear()) ||
+          Boolean(t.id && t.id.includes(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`));
+
+        if (isToday) {
+          const wasApproved = Boolean(t.approvedAt || (t.timeline && t.timeline.some(tl => (tl.event || tl.status || '').toLowerCase().includes('setujui'))));
+          t.status = wasApproved ? 'Disetujui' : 'Menunggu Persetujuan';
+          t.notifiedExpired = false;
+          if (Array.isArray(t.timeline)) {
+            t.timeline = t.timeline.filter(tl => !(tl.event || '').toLowerCase().includes('kedaluwarsa') && !(tl.desc || '').toLowerCase().includes('kedaluwarsa'));
+          }
+          changed = true;
+        }
       }
       // Pastikan tiket yang dibatalkan atau ditolak tidak berstatus terkunci aktif
       if (t.status === 'Dibatalkan' || t.status === 'Ditolak' || t.status === 'Selesai') {
@@ -518,9 +629,12 @@ function loadTickets() {
     if (changed) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     }
+    window.ticketsList = list;
     return list;
   } catch (e) {
-    return JSON.parse(JSON.stringify(DEFAULT_TICKETS));
+    const fallback = JSON.parse(JSON.stringify(DEFAULT_TICKETS));
+    window.ticketsList = fallback;
+    return fallback;
   }
 }
 

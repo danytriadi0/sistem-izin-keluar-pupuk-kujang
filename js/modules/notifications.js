@@ -469,21 +469,24 @@
       const activeRole = window.currentMobileRole || window.currentActor;
       if (activeRole === 'approver' || activeRole === 'approver2') {
         if (typeof window.mobileOpenAtasanDetailModal === 'function') {
-          setTimeout(() => {
+          if (window._pendingNotifTicketTimer) clearTimeout(window._pendingNotifTicketTimer);
+          window._pendingNotifTicketTimer = setTimeout(() => {
             window.mobileOpenAtasanDetailModal(cleanId);
           }, 50);
           return;
         }
       } else if (activeRole === 'security') {
         if (typeof window.mobileSecurityInspectTicket === 'function') {
-          setTimeout(() => {
+          if (window._pendingNotifTicketTimer) clearTimeout(window._pendingNotifTicketTimer);
+          window._pendingNotifTicketTimer = setTimeout(() => {
             window.mobileSecurityInspectTicket(cleanId);
           }, 50);
           return;
         }
       } else {
         if (typeof window.mobileOpenTicketDetail === 'function') {
-          setTimeout(() => {
+          if (window._pendingNotifTicketTimer) clearTimeout(window._pendingNotifTicketTimer);
+          window._pendingNotifTicketTimer = setTimeout(() => {
             window.mobileOpenTicketDetail(cleanId);
           }, 50);
           return;
@@ -705,26 +708,28 @@
           const isHigh = n.priority === 'high';
           const isUnread = !n.isRead;
           return `
-            <div class="dropdown-notif-item ${isUnread ? 'unread' : ''}" style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.15s ease;" onclick="window.openTicketFromNotification('${n.ticketId || ''}', '${n.id}', 'mobile')">
-              <div class="dropdown-notif-icon-box ${isHigh ? 'priority-high' : (isUnread ? 'unread' : 'read')} ${getNotifIconTypeClass(n.type, n.priority)}" style="width: 38px; height: 38px; min-width: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                ${getNotifIconSvg(n.type, n.priority)}
+            <div class="dropdown-notif-item ${isUnread ? 'unread' : ''}" style="padding: 14px 16px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 12px; transition: background 0.15s ease;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; cursor: pointer;" onclick="window.openTicketFromNotification('${n.ticketId || ''}', '${n.id}', 'mobile')">
+                <div class="dropdown-notif-icon-box ${isHigh ? 'priority-high' : (isUnread ? 'unread' : 'read')} ${getNotifIconTypeClass(n.type, n.priority)}" style="width: 38px; height: 38px; min-width: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  ${getNotifIconSvg(n.type, n.priority)}
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span class="dropdown-notif-title" style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.3;">
+                      ${n.title}
+                      ${isHigh ? '<span style="background: #dc2626; color: #fff; font-size: 0.6rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; margin-left: 5px; vertical-align: middle;">DARURAT</span>' : ''}
+                    </span>
+                  </div>
+                  <div class="dropdown-notif-msg" style="font-size: 0.775rem; color: #475569; line-height: 1.45; margin-bottom: 6px; word-break: break-word;">
+                    ${n.message}
+                  </div>
+                  <div class="dropdown-notif-meta" style="display: flex; align-items: center; gap: 6px; font-size: 0.685rem; color: #64748b; font-weight: 600;">
+                    ${n.ticketId ? `<span class="notif-ticket-pill" style="font-family: monospace; font-size: 0.685rem; font-weight: 700; color: #1e293b; background: #e2e8f0; padding: 1.5px 6px; border-radius: 4px;">${n.ticketId}</span><span>•</span>` : ''}
+                    <span>${formatRelativeTime(n.createdAt)}</span>
+                  </div>
+                </div>
               </div>
-              <div style="flex: 1; min-width: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span class="dropdown-notif-title" style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.3;">
-                    ${n.title}
-                    ${isHigh ? '<span style="background: #dc2626; color: #fff; font-size: 0.6rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; margin-left: 5px; vertical-align: middle;">DARURAT</span>' : ''}
-                  </span>
-                </div>
-                <div class="dropdown-notif-msg" style="font-size: 0.775rem; color: #475569; line-height: 1.45; margin-bottom: 6px; word-break: break-word;">
-                  ${n.message}
-                </div>
-                <div class="dropdown-notif-meta" style="display: flex; align-items: center; gap: 6px; font-size: 0.685rem; color: #64748b; font-weight: 600;">
-                  ${n.ticketId ? `<span class="notif-ticket-pill" style="font-family: monospace; font-size: 0.685rem; font-weight: 700; color: #1e293b; background: #e2e8f0; padding: 1.5px 6px; border-radius: 4px;">${n.ticketId}</span><span>•</span>` : ''}
-                  <span>${formatRelativeTime(n.createdAt)}</span>
-                </div>
-              </div>
-              <button type="button" aria-label="Hapus Notifikasi" class="mobile-notif-row-delete-btn" style="border: none; background: transparent; color: #94a3b8; width: 34px; height: 34px; min-width: 34px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; margin-left: 4px; padding: 0; flex-shrink: 0;" onclick="event.stopPropagation(); window.confirmDeleteMobileNotification('${n.id}', '${filterTab}', true)" title="Hapus notifikasi ini">
+              <button type="button" aria-label="Hapus Notifikasi" class="mobile-notif-row-delete-btn" style="border: none; background: transparent; color: #94a3b8; width: 34px; height: 34px; min-width: 34px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; margin-left: 4px; padding: 0; flex-shrink: 0;" onclick="event.preventDefault(); event.stopPropagation(); window.confirmDeleteMobileNotification('${n.id}', '${filterTab}', true)" title="Hapus notifikasi ini">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               </button>
             </div>
@@ -1181,6 +1186,10 @@
   };
 
   window.confirmDeleteMobileNotification = function(notifId, currentTab = 'all', isFromFullSheet = false) {
+    if (window._pendingNotifTicketTimer) {
+      clearTimeout(window._pendingNotifTicketTimer);
+      window._pendingNotifTicketTimer = null;
+    }
     const sheet = document.getElementById('mobileActionSheet');
     if (!sheet) {
       if (confirm('Hapus notifikasi ini?')) {

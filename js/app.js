@@ -138,17 +138,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.checkOverdueAndExpiredTickets === 'function') {
       window.checkOverdueAndExpiredTickets(true);
     }
-    const savedKaryawanNav = (function () { try { return sessionStorage.getItem('KUJANG_KARYAWAN_NAV'); } catch (e) { return null; } })() || 'dashboard';
-    const savedApproverNav = (function () { try { return sessionStorage.getItem('KUJANG_APPROVER_NAV'); } catch (e) { return null; } })() || 'dashboard';
-    const savedSecNav = (function () { try { return sessionStorage.getItem('KUJANG_SEC_NAV'); } catch (e) { return null; } })() || 'dashboard';
-    const savedAdminNav = (function () { try { return sessionStorage.getItem('KUJANG_ADMIN_NAV'); } catch (e) { return null; } })() || 'dashboard';
+    const savedKaryawanNav = (function () { try { return sessionStorage.getItem('KUJANG_KARYAWAN_NAV') || localStorage.getItem('KUJANG_KARYAWAN_NAV'); } catch (e) { return null; } })() || 'dashboard';
+    const savedApproverNav = (function () { try { return sessionStorage.getItem('KUJANG_APPROVER_NAV') || localStorage.getItem('KUJANG_APPROVER_NAV'); } catch (e) { return null; } })() || 'dashboard';
+    const savedSecNav = (function () { try { return sessionStorage.getItem('KUJANG_SEC_NAV') || localStorage.getItem('KUJANG_SEC_NAV'); } catch (e) { return null; } })() || 'dashboard';
+    const savedAdminNav = (function () { try { return sessionStorage.getItem('KUJANG_ADMIN_NAV') || localStorage.getItem('KUJANG_ADMIN_NAV'); } catch (e) { return null; } })() || 'dashboard';
 
-    if (typeof window.setKaryawanNav === 'function') window.setKaryawanNav(savedKaryawanNav);
-    if (typeof window.setApproverNav === 'function') window.setApproverNav(savedApproverNav);
-    if (typeof window.setSecurityNav === 'function') window.setSecurityNav(savedSecNav);
-    if (typeof window.setAdminNav === 'function') window.setAdminNav(savedAdminNav);
-    const targetRole = activeUser.roleKey || activeUser.role;
+    const savedRole = (function () { try { return sessionStorage.getItem('KUJANG_ACTIVE_ROLE') || localStorage.getItem('KUJANG_ACTIVE_ROLE') || sessionStorage.getItem('KUJANG_MOBILE_ACTIVE_ROLE') || localStorage.getItem('KUJANG_MOBILE_ACTIVE_ROLE'); } catch (e) { return null; } })();
+    const targetRole = savedRole || activeUser.roleKey || activeUser.role || 'karyawan';
     if (typeof window.switchRole === 'function') window.switchRole(targetRole, activeUser);
+
+    // Isolated navigation router: only activate the navigation matching the active role
+    if (targetRole === 'karyawan' || targetRole === 'karyawan2') {
+      if (typeof window.setKaryawanNav === 'function') window.setKaryawanNav(savedKaryawanNav);
+    } else if (targetRole === 'approver' || targetRole === 'approver2') {
+      if (typeof window.setApproverNav === 'function') window.setApproverNav(savedApproverNav);
+    } else if (targetRole === 'security') {
+      if (typeof window.setSecurityNav === 'function') window.setSecurityNav(savedSecNav);
+    } else if (targetRole === 'admin') {
+      if (typeof window.setAdminNav === 'function') window.setAdminNav(savedAdminNav);
+    }
   }
 
   // Background Scheduler: periksa status Terlambat & Kedaluwarsa hanya jika user aktif login

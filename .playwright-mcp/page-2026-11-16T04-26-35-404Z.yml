@@ -1,0 +1,875 @@
+- generic [active] [ref=f30e1]:
+  - generic [ref=f30e2]:
+    - complementary [ref=f30e3]:
+      - link "Pupuk Kujang Logo PUPUK KUJANG PT Pupuk Kujang" [ref=f30e5] [cursor=pointer]:
+        - /url: "#"
+        - img "Pupuk Kujang Logo" [ref=f30e7]
+        - generic [ref=f30e8]:
+          - generic [ref=f30e9]: PUPUK KUJANG
+          - generic [ref=f30e10]: PT Pupuk Kujang
+      - navigation [ref=f30e11]:
+        - generic "Dashboard" [ref=f30e12] [cursor=pointer]
+        - generic [ref=f30e20]: Persetujuan dan pelacakan
+        - generic "Antrian Persetujuan" [ref=f30e21] [cursor=pointer]: "2"
+        - generic "Pelacakan Izin Karyawan" [ref=f30e28] [cursor=pointer]
+        - generic "Riwayat Izin Karyawan" [ref=f30e34] [cursor=pointer]
+      - generic [ref=f30e39]:
+        - generic [ref=f30e40]: TERHUBUNG MELALUI
+        - generic [ref=f30e41]: Portal SAKTI / KUJANG ID
+        - generic [ref=f30e42]:
+          - generic [ref=f30e43]:
+            - img "Foto Ir. Hendra Gunawan, M.T." [ref=f30e45]
+            - generic [ref=f30e46]:
+              - generic [ref=f30e47]: Ir. Hendra Gunawan, M.T.
+              - generic [ref=f30e48]: "NIP: PK-2015-1002"
+          - button "Pengaturan" [ref=f30e49] [cursor=pointer]
+    - generic [ref=f30e53]:
+      - banner [ref=f30e54]:
+        - generic [ref=f30e55]:
+          - button "Toggle Sidebar" [ref=f30e56] [cursor=pointer]
+          - generic [ref=f30e58]:
+            - generic [ref=f30e59]: Admin
+            - generic [ref=f30e60]: ›
+            - generic [ref=f30e61]: Monitoring Headcount
+        - generic [ref=f30e62]:
+          - generic [ref=f30e63]: Senin, 16 Nov 2026 — 11:26:34 WIB
+          - button "Notifikasi" [ref=f30e67] [cursor=pointer]:
+            - generic [ref=f30e71]: "2"
+          - generic "Beralih peran untuk menguji alur terintegrasi" [ref=f30e72]:
+            - button "Karyawan" [ref=f30e74] [cursor=pointer]
+            - button "Atasan" [ref=f30e80] [cursor=pointer]
+            - button "Pos Jaga" [ref=f30e87] [cursor=pointer]
+            - button "Admin K3" [ref=f30e92] [cursor=pointer]
+            - button "Reset" [ref=f30e97] [cursor=pointer]
+      - main [ref=f30e102]:
+        - generic [ref=f30e103]:
+          - text: – – –
+          - generic [ref=f30e105]:
+            - heading "Pengajuan Saya" [level=1] [ref=f30e108]
+            - generic [ref=f30e109]:
+              - generic [ref=f30e110]:
+                - generic [ref=f30e111]:
+                  - generic [ref=f30e112]:
+                    - heading "Izin aktif saya" [level=3] [ref=f30e113]
+                    - link "Detail Pengajuan" [ref=f30e114] [cursor=pointer]:
+                      - /url: "#"
+                  - generic [ref=f30e115]:
+                    - generic [ref=f30e116]: TK-20261116-475
+                    - generic [ref=f30e118]:
+                      - generic [ref=f30e119]: Urusan Pribadi
+                      - generic [ref=f30e120]: Kembali ke Area
+                    - generic "Bank Mandiri KC Cikampek — Urusan perbankan mendesak" [ref=f30e121]
+                    - generic "Menunggu Persetujuan" [ref=f30e123]
+                  - generic [ref=f30e125]:
+                    - generic [ref=f30e126]:
+                      - generic [ref=f30e127]: Jadwal Keluar
+                      - generic [ref=f30e128]: Senin, 16 Nov 2026, 12.00 WIB
+                    - generic [ref=f30e129]:
+                      - generic [ref=f30e130]: Batas kembali
+                      - generic [ref=f30e131]: Senin, 16 Nov 2026, 14.00 WIB
+                  - generic [ref=f30e132]:
+                    - button "Edit Pengajuan" [ref=f30e133] [cursor=pointer]
+                    - button "Batalkan Izin" [ref=f30e135] [cursor=pointer]
+                - generic [ref=f30e137]:
+                  - heading "Atasan langsung" [level=3] [ref=f30e139]
+                  - generic [ref=f30e140]:
+                    - img "Foto Ir. Hendra Gunawan, M.T." [ref=f30e141]
+                    - generic [ref=f30e142]: Ir. Hendra Gunawan, M.T.
+                  - generic [ref=f30e143]: Manajer Rekayasa & Pemeliharaan
+              - generic [ref=f30e145]:
+                - heading "Kronologi tercatat" [level=3] [ref=f30e147]
+                - generic [ref=f30e148]:
+                  - generic [ref=f30e150]:
+                    - generic [ref=f30e152]: 16 Nov 2026, 11.25 WIB
+                    - generic [ref=f30e153]: Pengajuan diajukan
+                    - generic [ref=f30e155]: Urusan Pribadi — Kembali ke Area
+                  - generic [ref=f30e156]:
+                    - generic [ref=f30e158]: Sedang berlangsung
+                    - generic [ref=f30e159]: Menunggu persetujuan atasan
+                    - generic [ref=f30e161]: Menunggu tinjauan & keputusan dari Ir. Hendra Gunawan, M.T.
+                  - generic [ref=f30e162]:
+                    - generic [ref=f30e164]: Rencana 12:00 WIB
+                    - generic [ref=f30e165]: Scan Out tercatat di Pos 1
+                    - generic [ref=f30e167]: Menunggu persetujuan atasan sebelum scan gerbang
+                  - generic [ref=f30e168]:
+                    - generic [ref=f30e170]: Tap In Kartu di Pos 1
+                    - generic [ref=f30e171]: Batas kembali 14:00 WIB
+                    - generic [ref=f30e173]: Belum kembali ke area
+        - generic [ref=f30e175]:
+          - heading "Pelacakan Izin Karyawan" [level=1] [ref=f30e178]
+          - generic [ref=f30e179]:
+            - generic [ref=f30e180]:
+              - generic [ref=f30e181]: Cari pengajuan
+              - textbox "Cari tiket, alasan, atau tujuan" [ref=f30e186]
+            - generic [ref=f30e187]:
+              - generic [ref=f30e188]: Tanggal pengajuan
+              - combobox [ref=f30e189] [cursor=pointer]:
+                - option "Semua Waktu" [selected]
+                - option "Hari Ini"
+                - option "Minggu Ini"
+                - option "Bulan Ini"
+                - option "Tahun Ini"
+            - generic [ref=f30e190]:
+              - generic [ref=f30e191]: Urutkan
+              - combobox [ref=f30e192] [cursor=pointer]:
+                - option "Terbaru" [selected]
+                - option "Terlama"
+            - generic [ref=f30e193]:
+              - generic [ref=f30e194]: Kategori
+              - combobox [ref=f30e195] [cursor=pointer]:
+                - option "Semua Kategori" [selected]
+                - option "Dinas Kantor"
+                - option "Urusan Pribadi"
+            - generic [ref=f30e196]:
+              - generic [ref=f30e197]: Tipe Izin
+              - combobox [ref=f30e198] [cursor=pointer]:
+                - option "Semua Tipe Izin" [selected]
+                - option "Kembali ke Area"
+                - option "Pulang Lebih Awal (Tidak Kembali)"
+            - generic [ref=f30e199]:
+              - generic [ref=f30e200]: Status
+              - combobox [ref=f30e201] [cursor=pointer]:
+                - option "Semua Izin Berjalan" [selected]
+                - option "Sedang di Luar"
+                - option "Terlambat"
+                - option "Siap Keluar (Disetujui)"
+                - option "Khusus Izin Darurat"
+          - generic [ref=f30e203]:
+            - button "Card" [ref=f30e204] [cursor=pointer]
+            - button "List" [ref=f30e211] [cursor=pointer]
+          - generic [ref=f30e215]:
+            - heading "Tidak Ada Izin Berjalan" [level=3] [ref=f30e219]
+            - paragraph [ref=f30e220]: Saat ini tidak ada karyawan naungan Anda yang sedang berada di luar area atau terlambat.
+        - generic [ref=f30e222]:
+          - generic [ref=f30e223]:
+            - generic [ref=f30e226]:
+              - heading [level=2] [ref=f30e227]:
+                - text: Selamat siang,
+                - img "Foto Sertu Agus" [ref=f30e228]
+                - text: Sertu Agus
+              - paragraph [ref=f30e229]: Petugas Pengamanan (Pos 1) | Pos 1 Gerbang Utama | Departemen Pengamanan & K3
+            - generic [ref=f30e230]:
+              - generic [ref=f30e231]:
+                - generic [ref=f30e232]: "Status Gerbang: Pos 1 Gerbang Utama Operasional"
+                - generic [ref=f30e233]: 0 personel sedang di luar pabrik. Siap memverifikasi tiket perizinan.
+              - button "Terminal Scan QR →" [ref=f30e234] [cursor=pointer]
+          - heading "Ringkasan Pemantauan Gerbang" [level=1] [ref=f30e237]
+          - generic [ref=f30e238]:
+            - generic [ref=f30e239]:
+              - generic [ref=f30e240]: Sedang di Luar (Headcount)
+              - generic [ref=f30e241]: "0"
+            - generic [ref=f30e242]:
+              - generic [ref=f30e243]: Izin Siap Keluar (Scan Out)
+              - generic [ref=f30e244]: "0"
+            - generic [ref=f30e245]:
+              - generic [ref=f30e246]: Scan Out Hari Ini
+              - generic [ref=f30e247]: "11"
+            - generic [ref=f30e248]:
+              - generic [ref=f30e249]: Tap In (Kembali)
+              - generic [ref=f30e250]: "7"
+          - generic [ref=f30e251]:
+            - generic [ref=f30e253]:
+              - generic [ref=f30e254]:
+                - 'heading "Headcount: Karyawan Sedang di Luar Area" [level=3] [ref=f30e256]'
+                - link "Semua Headcount" [ref=f30e257] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - generic [ref=f30e258]: Tidak ada karyawan yang sedang di luar pabrik.
+            - generic [ref=f30e260]:
+              - generic [ref=f30e261]:
+                - generic [ref=f30e262]:
+                  - heading "Aktivitas Gerbang Terkini" [level=3] [ref=f30e263]
+                  - link "Log Lengkap" [ref=f30e264] [cursor=pointer]:
+                    - /url: javascript:void(0)
+                - generic [ref=f30e265]:
+                  - generic [ref=f30e266]:
+                    - generic [ref=f30e267]:
+                      - generic [ref=f30e268]: OUT
+                      - generic [ref=f30e269]:
+                        - generic [ref=f30e270]: Budi Pratama, S.T. (TK-DINAS-PULANG-01)
+                        - generic [ref=f30e271]: "Scan Out: Jumat, 13 Nov 2026, 10.23 WIB (Pos 1 Gerbang Utama (Utara))"
+                    - generic [ref=f30e272]: Scan Out Sukses
+                  - generic [ref=f30e273]:
+                    - generic [ref=f30e274]:
+                      - generic [ref=f30e275]: OUT
+                      - generic [ref=f30e276]:
+                        - generic [ref=f30e277]: Budi Pratama, S.T. (TK-20261111-723)
+                        - generic [ref=f30e278]: "Scan Out: 11 Nov 2026, 10.40 WIB"
+                    - generic [ref=f30e279]: Scan Out Sukses
+                  - generic [ref=f30e280]:
+                    - generic [ref=f30e281]:
+                      - generic [ref=f30e282]: OUT
+                      - generic [ref=f30e283]:
+                        - generic [ref=f30e284]: Budi Pratama, S.T. (TK-20261106-901)
+                        - generic [ref=f30e285]: "Scan Out: 06 Nov 2026, 09.05 WIB (Pos 1 Gerbang Utama)"
+                    - generic [ref=f30e286]: Scan Out Sukses
+                  - generic [ref=f30e287]:
+                    - generic [ref=f30e288]:
+                      - generic [ref=f30e289]: IN
+                      - generic [ref=f30e290]:
+                        - generic [ref=f30e291]: Budi Pratama, S.T. (IZ-20261019-013)
+                        - generic [ref=f30e292]: "Tap In: 19 Okt 2026, 12.50 WIB (Pos 1 Gerbang Utama)"
+                    - generic [ref=f30e293]: Tap In Sukses
+                  - generic [ref=f30e294]:
+                    - generic [ref=f30e295]:
+                      - generic [ref=f30e296]: IN
+                      - generic [ref=f30e297]:
+                        - generic [ref=f30e298]: Budi Pratama, S.T. (IZ-20261016-006)
+                        - generic [ref=f30e299]: "Tap In: 16 Okt 2026, 10.55 WIB (Pos 1)"
+                    - generic [ref=f30e300]: Tap In Sukses
+              - generic [ref=f30e301]:
+                - heading "Ketentuan Pemeriksaan Pos Jaga" [level=3] [ref=f30e303]
+                - list [ref=f30e304]:
+                  - listitem [ref=f30e305]: – Verifikasi kecocokan foto identitas digital dan nomor plat kendaraan dinas/pribadi.
+                  - listitem [ref=f30e306]: – Tiket Izin Darurat (Emergency Pass) dapat langsung diproses setelah otorisasi terkonfirmasi.
+                  - listitem [ref=f30e307]:
+                    - text: – Konfirmasi kepulangan karyawan dilakukan dengan tombol
+                    - strong [ref=f30e308]: Tap In / Tap In
+                    - text: .
+                  - listitem [ref=f30e309]: – Hubungi petugas pengawas K3 (Ext. 110) jika terdapat ketidaksesuaian data di gerbang.
+        - generic [ref=f30e311]:
+          - heading "Monitoring Headcount & Perizinan Pabrik" [level=1] [ref=f30e314]
+          - generic [ref=f30e315]:
+            - generic [ref=f30e316]:
+              - generic [ref=f30e317]:
+                - generic [ref=f30e318]: 📍
+                - generic [ref=f30e319]: Muster Roll Tracker (K3 & Darurat)
+              - generic [ref=f30e320]: Semua personel berada di dalam kawasan industri pabrik (Kondisi Normal).
+            - generic [ref=f30e321]:
+              - generic [ref=f30e322]: "0"
+              - generic [ref=f30e323]: Personel di Luar
+          - generic [ref=f30e324]:
+            - generic [ref=f30e325]:
+              - generic [ref=f30e326]: Total Izin Hari Ini
+              - generic [ref=f30e327]: "17"
+              - generic [ref=f30e328]: Seluruh pengajuan hari ini
+            - generic [ref=f30e329]:
+              - generic [ref=f30e330]: Menunggu Review
+              - generic [ref=f30e331]: "2"
+              - generic [ref=f30e332]: Dalam antrean Atasan
+            - generic [ref=f30e333]:
+              - generic [ref=f30e334]: Terlambat Kembali
+              - generic [ref=f30e335]: "0"
+              - generic [ref=f30e336]: Melewati jam estimasi
+            - generic [ref=f30e337]:
+              - generic [ref=f30e338]: Hangus / Kedaluwarsa
+              - generic [ref=f30e339]: "1"
+              - generic [ref=f30e340]: Tidak digunakan keluar
+          - generic [ref=f30e341]:
+            - generic [ref=f30e342]:
+              - generic [ref=f30e343]:
+                - generic [ref=f30e344]:
+                  - generic [ref=f30e345]: 🌊
+                  - generic [ref=f30e346]:
+                    - generic [ref=f30e347]: Jam Sibuk Gerbang
+                    - generic [ref=f30e348]: "Senin - kamis : 07:00 – 16:00 WIB"
+                    - generic [ref=f30e349]: "Jumat : 07:00 – 16:30 WIB"
+                - generic [ref=f30e350]: Realtime — Live
+              - generic [ref=f30e353]:
+                - generic [ref=f30e354]:
+                  - generic [ref=f30e355]:
+                    - generic [ref=f30e356]: Scan Out (Keluar)
+                    - generic [ref=f30e359]: Tap In (Masuk)
+                  - generic [ref=f30e364]:
+                    - text: "Jam Sekarang:"
+                    - strong [ref=f30e365]: 11:26:34 WIB
+                - img [ref=f30e367]:
+                  - generic: 🔴 11:26
+                  - generic [ref=f30e372] [cursor=pointer]: 07:00
+                  - generic [ref=f30e377] [cursor=pointer]
+                  - generic [ref=f30e381] [cursor=pointer]: 09:00
+                  - generic [ref=f30e386] [cursor=pointer]
+                  - generic [ref=f30e390] [cursor=pointer]: 11:00
+                  - generic [ref=f30e395] [cursor=pointer]
+                  - generic [ref=f30e399] [cursor=pointer]: 13:00
+                  - generic [ref=f30e404] [cursor=pointer]
+                  - generic [ref=f30e408] [cursor=pointer]: 15:00
+                  - generic [ref=f30e413] [cursor=pointer]: 16:00
+                - generic [ref=f30e418]:
+                  - generic [ref=f30e419]:
+                    - text: "🕒 Gerbang Realtime (Pukul 11:26):"
+                    - strong [ref=f30e420]: 12 Scan Out
+                    - text: •
+                    - strong [ref=f30e421]: 9 Tap In
+                    - text: "(Puncak: 11:00 WIB)"
+                  - generic [ref=f30e422]:
+                    - generic [ref=f30e423]: "↗️ Total Out: 35"
+                    - generic [ref=f30e424]: "↘️ Total In: 20"
+            - generic [ref=f30e425]:
+              - generic [ref=f30e426]:
+                - generic [ref=f30e427]:
+                  - generic [ref=f30e428]: 🏢
+                  - generic [ref=f30e429]: Sebaran Departemen
+                - combobox "Filter Periode Departemen" [ref=f30e430] [cursor=pointer]:
+                  - option "📅 Bulan Ini" [selected]
+                  - option "📅 Tahun Ini"
+              - generic [ref=f30e431]:
+                - generic [ref=f30e432]:
+                  - generic [ref=f30e434] [cursor=pointer]:
+                    - generic [ref=f30e435]:
+                      - generic [ref=f30e436]: "#1"
+                      - generic [ref=f30e437]: Departemen Rekayasa & Pemeliharaan
+                    - generic [ref=f30e438]: 25 Izin
+                  - generic [ref=f30e442] [cursor=pointer]:
+                    - generic [ref=f30e443]:
+                      - generic [ref=f30e444]: "#2"
+                      - generic [ref=f30e445]: Departemen Operasi Pabrik 1 & 2
+                    - generic [ref=f30e446]: 8 Izin
+                  - generic [ref=f30e450] [cursor=pointer]:
+                    - generic [ref=f30e451]:
+                      - generic [ref=f30e452]: "#3"
+                      - generic [ref=f30e453]: Departemen Pengamanan & K3
+                    - generic [ref=f30e454]: 5 Izin
+                  - generic [ref=f30e458] [cursor=pointer]:
+                    - generic [ref=f30e459]:
+                      - generic [ref=f30e460]: "#4"
+                      - generic [ref=f30e461]: Departemen Logistik & Pergudangan
+                    - generic [ref=f30e462]: 4 Izin
+                  - generic [ref=f30e466] [cursor=pointer]:
+                    - generic [ref=f30e467]:
+                      - generic [ref=f30e468]: "#5"
+                      - generic [ref=f30e469]: Departemen SDM & Organisasi
+                    - generic [ref=f30e470]: 3 Izin
+                - generic [ref=f30e473]:
+                  - generic [ref=f30e474]: 🏢 Frekuensi per Departemen
+                  - generic [ref=f30e475]: "Total: 45 Izin (Bulan Ini)"
+          - generic [ref=f30e476]:
+            - generic [ref=f30e477]:
+              - generic [ref=f30e478]:
+                - generic [ref=f30e479]:
+                  - heading "Personel Sedang di Luar Pabrik" [level=3] [ref=f30e480]
+                  - paragraph [ref=f30e481]: Karyawan yang telah Scan Out gerbang dan belum memindai masuk kembali.
+                - generic [ref=f30e482]:
+                  - generic [ref=f30e483]: Geser Tabel
+                  - button "◀" [ref=f30e487] [cursor=pointer]
+                  - button "▶" [ref=f30e488] [cursor=pointer]
+              - generic [ref=f30e489]:
+                - heading "Kawasan Pabrik Terpantau Kondusif" [level=3] [ref=f30e494]
+                - paragraph [ref=f30e495]: Seluruh personel berada di dalam kawasan pabrik. Tidak ada perizinan aktif yang sedang berada di luar.
+            - generic [ref=f30e496]:
+              - generic [ref=f30e497]:
+                - heading "Aktivitas Terkini" [level=4] [ref=f30e498]
+                - button "Lihat Log" [ref=f30e499] [cursor=pointer]
+              - generic [ref=f30e500]:
+                - generic [ref=f30e501]:
+                  - generic [ref=f30e502]:
+                    - generic [ref=f30e503]: Tap In
+                    - generic [ref=f30e504]: 02 Okt 2026, 11.40 WIB
+                  - generic [ref=f30e505]: Budi Pratama, S.T. (IZ-20261002-001)
+                  - generic [ref=f30e506]: "Pos 1: Kembali ke area."
+                - generic [ref=f30e507]:
+                  - generic [ref=f30e508]:
+                    - generic [ref=f30e509]: Scan Out
+                    - generic [ref=f30e510]: 02 Okt 2026, 09.55 WIB
+                  - generic [ref=f30e511]: Budi Pratama, S.T. (IZ-20261002-001)
+                  - generic [ref=f30e512]: "Pos 1: Keluar area."
+                - generic [ref=f30e513]:
+                  - generic [ref=f30e514]:
+                    - generic [ref=f30e515]: Otorisasi Atasan
+                    - generic [ref=f30e516]: 02 Okt 2026, 09.52 WIB
+                  - generic [ref=f30e517]: Budi Pratama, S.T. (IZ-20261002-001)
+                  - generic [ref=f30e518]: "Ir. Hendra Gunawan, M.T.: Otorisasi darurat."
+                - generic [ref=f30e519]:
+                  - generic [ref=f30e520]:
+                    - generic [ref=f30e521]: Pengajuan Darurat
+                    - generic [ref=f30e522]: 02 Okt 2026, 09.50 WIB
+                  - generic [ref=f30e523]: Budi Pratama, S.T. (IZ-20261002-001)
+                  - generic [ref=f30e524]: "Budi Pratama: Pengajuan darurat poliklinik."
+                - generic [ref=f30e525]:
+                  - generic [ref=f30e526]:
+                    - generic [ref=f30e527]: Tap In
+                    - generic [ref=f30e528]: 05 Okt 2026, 15.45 WIB
+                  - generic [ref=f30e529]: Budi Pratama, S.T. (IZ-20261005-001)
+                  - generic [ref=f30e530]: "Pos 1: Kembali tepat waktu."
+          - generic [ref=f30e531]:
+            - generic [ref=f30e532]:
+              - generic [ref=f30e533]:
+                - heading "🧭 Pelacakan Status & Aktivitas Karyawan Terpadu" [level=3] [ref=f30e534]:
+                  - generic [ref=f30e535]: 🧭
+                  - generic [ref=f30e536]: Pelacakan Status & Aktivitas Karyawan Terpadu
+                - paragraph [ref=f30e537]: Admin dapat melacak pengajuan dan aktivitas perizinan karyawan melalui 7 status secara otomatis tanpa pengecekan manual.
+              - textbox "Cari nama, NIP, tujuan, tiket..." [ref=f30e539]
+            - generic [ref=f30e540]:
+              - button "📋 Semua Status 17" [ref=f30e541] [cursor=pointer]:
+                - generic [ref=f30e542]: 📋
+                - generic [ref=f30e543]: Semua Status
+                - generic [ref=f30e544]: "17"
+              - button "⏳ Menunggu Persetujuan 2" [ref=f30e545] [cursor=pointer]:
+                - generic [ref=f30e546]: ⏳
+                - generic [ref=f30e547]: Menunggu Persetujuan
+                - generic [ref=f30e548]: "2"
+              - button "✅ Setuju 0" [ref=f30e549] [cursor=pointer]:
+                - generic [ref=f30e550]: ✅
+                - generic [ref=f30e551]: Setuju
+                - generic [ref=f30e552]: "0"
+              - button "🚶 Sedang di Luar 0" [ref=f30e553] [cursor=pointer]:
+                - generic [ref=f30e554]: 🚶
+                - generic [ref=f30e555]: Sedang di Luar
+                - generic [ref=f30e556]: "0"
+              - button "⚠️ Terlambat 0" [ref=f30e557] [cursor=pointer]:
+                - generic [ref=f30e558]: ⚠️
+                - generic [ref=f30e559]: Terlambat
+                - generic [ref=f30e560]: "0"
+              - button "🏁 Selesai 14" [ref=f30e561] [cursor=pointer]:
+                - generic [ref=f30e562]: 🏁
+                - generic [ref=f30e563]: Selesai
+                - generic [ref=f30e564]: "14"
+              - button "⌛ Kadaluwarsa 1" [ref=f30e565] [cursor=pointer]:
+                - generic [ref=f30e566]: ⌛
+                - generic [ref=f30e567]: Kadaluwarsa
+                - generic [ref=f30e568]: "1"
+              - button "❌ Ditolak 0" [ref=f30e569] [cursor=pointer]:
+                - generic [ref=f30e570]: ❌
+                - generic [ref=f30e571]: Ditolak
+                - generic [ref=f30e572]: "0"
+            - table [ref=f30e574]:
+              - rowgroup [ref=f30e575]:
+                - row [ref=f30e576]:
+                  - columnheader "No Tiket" [ref=f30e577]
+                  - columnheader "Karyawan" [ref=f30e578]
+                  - columnheader "Departemen" [ref=f30e579]
+                  - columnheader "Keperluan & Tujuan" [ref=f30e580]
+                  - columnheader "Waktu & Jadwal" [ref=f30e581]
+                  - columnheader "Status & Perkembangan" [ref=f30e582]
+                  - columnheader "Aksi" [ref=f30e583]
+              - rowgroup [ref=f30e584]:
+                - row [ref=f30e585]:
+                  - cell "TK-20261116-475 Urusan Pribadi" [ref=f30e586]:
+                    - link "TK-20261116-475" [ref=f30e588] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e589]: Urusan Pribadi
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e590]':
+                    - generic [ref=f30e591]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e592]
+                      - generic [ref=f30e593]:
+                        - generic [ref=f30e594]: Budi Pratama, S.T.
+                        - generic [ref=f30e595]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e596]
+                  - cell "Bank Mandiri KC Cikampek Urusan perbankan mendesak" [ref=f30e598]:
+                    - generic "Bank Mandiri KC Cikampek" [ref=f30e599]
+                    - generic "Urusan perbankan mendesak" [ref=f30e600]
+                  - 'cell "Keluar: - Estimasi: 14:00:00 WIB" [ref=f30e601]':
+                    - generic [ref=f30e602]: "Keluar: -"
+                    - generic [ref=f30e603]: "Estimasi: 14:00:00 WIB"
+                  - cell "Menunggu Persetujuan Diajukan, menunggu telaah dan persetujuan atasan" [ref=f30e604]:
+                    - generic [ref=f30e605]: Menunggu Persetujuan
+                    - generic [ref=f30e606]: Diajukan, menunggu telaah dan persetujuan atasan
+                  - cell [ref=f30e607]:
+                    - button "Detail Pengajuan" [ref=f30e608] [cursor=pointer]
+                - row [ref=f30e613]:
+                  - cell "TK-910509 Dinas Kantor" [ref=f30e614]:
+                    - link "TK-910509" [ref=f30e616] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e617]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e618]':
+                    - generic [ref=f30e619]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e620]
+                      - generic [ref=f30e621]:
+                        - generic [ref=f30e622]: Budi Pratama, S.T.
+                        - generic [ref=f30e623]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e624]
+                  - cell "PT Pupuk Indonesia (Jakarta) Rapat koordinasi teknis" [ref=f30e626]:
+                    - generic "PT Pupuk Indonesia (Jakarta)" [ref=f30e627]
+                    - generic "Rapat koordinasi teknis" [ref=f30e628]
+                  - 'cell "Keluar: - Estimasi: 12:41:00 WIB" [ref=f30e629]':
+                    - generic [ref=f30e630]: "Keluar: -"
+                    - generic [ref=f30e631]: "Estimasi: 12:41:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e632]:
+                    - generic [ref=f30e633]: Selesai
+                    - generic [ref=f30e634]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e635]:
+                    - button "Detail Pengajuan" [ref=f30e636] [cursor=pointer]
+                - row [ref=f30e641]:
+                  - cell "TK-ANTREAN-PRIBADI Urusan Pribadi" [ref=f30e642]:
+                    - link "TK-ANTREAN-PRIBADI" [ref=f30e644] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e645]: Urusan Pribadi
+                  - 'cell "Foto Arthur Morgan, S.Tr.T. Arthur Morgan, S.Tr.T. NIP: PK-2024-8843" [ref=f30e646]':
+                    - generic [ref=f30e647]:
+                      - img "Foto Arthur Morgan, S.Tr.T." [ref=f30e648]
+                      - generic [ref=f30e649]:
+                        - generic [ref=f30e650]: Arthur Morgan, S.Tr.T.
+                        - generic [ref=f30e651]: "NIP: PK-2024-8843"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e652]
+                  - cell "Rumah Sakit Karawang Kontrol kesehatan" [ref=f30e654]:
+                    - generic "Rumah Sakit Karawang" [ref=f30e655]
+                    - generic "Kontrol kesehatan" [ref=f30e656]
+                  - 'cell "Keluar: - Estimasi: 11:30:00 WIB" [ref=f30e657]':
+                    - generic [ref=f30e658]: "Keluar: -"
+                    - generic [ref=f30e659]: "Estimasi: 11:30:00 WIB"
+                  - cell "Menunggu Persetujuan Diajukan, menunggu telaah dan persetujuan atasan" [ref=f30e660]:
+                    - generic [ref=f30e661]: Menunggu Persetujuan
+                    - generic [ref=f30e662]: Diajukan, menunggu telaah dan persetujuan atasan
+                  - cell [ref=f30e663]:
+                    - button "Detail Pengajuan" [ref=f30e664] [cursor=pointer]
+                - row [ref=f30e669]:
+                  - cell "TK-ANTREAN-DINAS-TIM Tim (2) Dinas Kantor" [ref=f30e670]:
+                    - generic [ref=f30e671]:
+                      - link "TK-ANTREAN-DINAS-TIM" [ref=f30e672] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic "Tim Dinas (2 Orang)" [ref=f30e673]: Tim (2)
+                    - generic [ref=f30e674]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e675]':
+                    - generic [ref=f30e676]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e677]
+                      - generic [ref=f30e678]:
+                        - generic [ref=f30e679]: Budi Pratama, S.T.
+                        - generic [ref=f30e680]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e681]
+                  - cell "PT Pupuk Iskandar Muda Inspeksi turbin" [ref=f30e683]:
+                    - generic "PT Pupuk Iskandar Muda" [ref=f30e684]
+                    - generic "Inspeksi turbin" [ref=f30e685]
+                  - 'cell "Keluar: - Estimasi: 14:00:00 WIB" [ref=f30e686]':
+                    - generic [ref=f30e687]: "Keluar: -"
+                    - generic [ref=f30e688]: "Estimasi: 14:00:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e689]:
+                    - generic [ref=f30e690]: Selesai
+                    - generic [ref=f30e691]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e692]:
+                    - button "Detail Pengajuan" [ref=f30e693] [cursor=pointer]
+                - row [ref=f30e698]:
+                  - cell "TK-20261116-642 Urusan Pribadi" [ref=f30e699]:
+                    - link "TK-20261116-642" [ref=f30e701] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e702]: Urusan Pribadi
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e703]':
+                    - generic [ref=f30e704]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e705]
+                      - generic [ref=f30e706]:
+                        - generic [ref=f30e707]: Budi Pratama, S.T.
+                        - generic [ref=f30e708]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e709]
+                  - cell "Bank Mandiri KC Cikampek Urusan perbankan" [ref=f30e711]:
+                    - generic "Bank Mandiri KC Cikampek" [ref=f30e712]
+                    - generic "Urusan perbankan" [ref=f30e713]
+                  - 'cell "Keluar: - Estimasi: 11:30:00 WIB" [ref=f30e714]':
+                    - generic [ref=f30e715]: "Keluar: -"
+                    - generic [ref=f30e716]: "Estimasi: 11:30:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e717]:
+                    - generic [ref=f30e718]: Selesai
+                    - generic [ref=f30e719]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e720]:
+                    - button "Detail Pengajuan" [ref=f30e721] [cursor=pointer]
+                - row [ref=f30e726]:
+                  - cell "TK-DINAS-PULANG-01 Tim (2) Dinas Kantor" [ref=f30e727]:
+                    - generic [ref=f30e728]:
+                      - link "TK-DINAS-PULANG-01" [ref=f30e729] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic "Tim Dinas (2 Orang)" [ref=f30e730]: Tim (2)
+                    - generic [ref=f30e731]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e732]':
+                    - generic [ref=f30e733]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e734]
+                      - generic [ref=f30e735]:
+                        - generic [ref=f30e736]: Budi Pratama, S.T.
+                        - generic [ref=f30e737]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e738]
+                  - cell "- -" [ref=f30e740]:
+                    - generic [ref=f30e741]: "-"
+                    - generic [ref=f30e742]: "-"
+                  - 'cell "Keluar: Jumat, 13 Nov 2026, 10.23 WIB ) Pos 1 Gerbang Utama (Utara Estimasi: -" [ref=f30e743]':
+                    - generic [ref=f30e744]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e745]: Jumat, 13 Nov 2026, 10.23 WIB )
+                      - generic [ref=f30e746]: Pos 1 Gerbang Utama (Utara
+                    - generic [ref=f30e747]: "Estimasi: -"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e748]:
+                    - generic [ref=f30e749]: Selesai
+                    - generic [ref=f30e750]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e751]:
+                    - button "Detail Pengajuan" [ref=f30e752] [cursor=pointer]
+                - row [ref=f30e757]:
+                  - cell "TK-20261111-723 Tim (3) Dinas Kantor" [ref=f30e758]:
+                    - generic [ref=f30e759]:
+                      - link "TK-20261111-723" [ref=f30e760] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic "Tim Dinas (3 Orang)" [ref=f30e761]: Tim (3)
+                    - generic [ref=f30e762]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e763]':
+                    - generic [ref=f30e764]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e765]
+                      - generic [ref=f30e766]:
+                        - generic [ref=f30e767]: Budi Pratama, S.T.
+                        - generic [ref=f30e768]: "NIP: PK-2024-8841"
+                  - cell "undefined" [ref=f30e769]
+                  - cell "Pelabuhan Cirebon Koordinasi teknis pemeriksaan komponen pompa P-204 bersama vendor." [ref=f30e771]:
+                    - generic "Pelabuhan Cirebon" [ref=f30e772]
+                    - generic "Koordinasi teknis pemeriksaan komponen pompa P-204 bersama vendor." [ref=f30e773]
+                  - 'cell "Keluar: 11 Nov 2026, 10.40 WIB Estimasi: 12:38:00 WIB" [ref=f30e774]':
+                    - generic [ref=f30e775]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e776]: 11 Nov 2026, 10.40 WIB
+                    - generic [ref=f30e777]: "Estimasi: 12:38:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e778]:
+                    - generic [ref=f30e779]: Selesai
+                    - generic [ref=f30e780]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e781]:
+                    - button "Detail Pengajuan" [ref=f30e782] [cursor=pointer]
+                - row [ref=f30e787]:
+                  - cell "TK-20261106-901 Dinas Kantor" [ref=f30e788]:
+                    - link "TK-20261106-901" [ref=f30e790] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e791]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e792]':
+                    - generic [ref=f30e793]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e794]
+                      - generic [ref=f30e795]:
+                        - generic [ref=f30e796]: Budi Pratama, S.T.
+                        - generic [ref=f30e797]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e798]
+                  - cell "PT Rekayasa Industri, Cikampek Koordinasi perbaikan instalasi pipa amonia unit 2" [ref=f30e800]:
+                    - generic "PT Rekayasa Industri, Cikampek" [ref=f30e801]
+                    - generic "Koordinasi perbaikan instalasi pipa amonia unit 2" [ref=f30e802]
+                  - 'cell "Keluar: 06 Nov 2026, 09.05 WIB Pos 1 Gerbang Utama Estimasi: 14:30:00 WIB" [ref=f30e803]':
+                    - generic [ref=f30e804]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e805]: 06 Nov 2026, 09.05 WIB
+                      - generic [ref=f30e806]: Pos 1 Gerbang Utama
+                    - generic [ref=f30e807]: "Estimasi: 14:30:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e808]:
+                    - generic [ref=f30e809]: Selesai
+                    - generic [ref=f30e810]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e811]:
+                    - button "Detail Pengajuan" [ref=f30e812] [cursor=pointer]
+                - row [ref=f30e817]:
+                  - cell "TK-20261106-902 Dinas Kantor" [ref=f30e818]:
+                    - link "TK-20261106-902" [ref=f30e820] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e821]: Dinas Kantor
+                  - 'cell "Foto Arthur Morgan, S.Tr.T. Arthur Morgan, S.Tr.T. NIP: PK-2024-8842" [ref=f30e822]':
+                    - generic [ref=f30e823]:
+                      - img "Foto Arthur Morgan, S.Tr.T." [ref=f30e824]
+                      - generic [ref=f30e825]:
+                        - generic [ref=f30e826]: Arthur Morgan, S.Tr.T.
+                        - generic [ref=f30e827]: "NIP: PK-2024-8842"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e828]
+                  - cell "Balai Standardisasi Industri Karawang Pengambilan sertifikat kalibrasi sensor instrumentasi" [ref=f30e830]:
+                    - generic "Balai Standardisasi Industri Karawang" [ref=f30e831]
+                    - generic "Pengambilan sertifikat kalibrasi sensor instrumentasi" [ref=f30e832]
+                  - 'cell "Keluar: - Estimasi: 15:00:00 WIB" [ref=f30e833]':
+                    - generic [ref=f30e834]: "Keluar: -"
+                    - generic [ref=f30e835]: "Estimasi: 15:00:00 WIB"
+                  - cell "Kadaluwarsa Tiket kedaluwarsa karena tidak digunakan keluar area" [ref=f30e836]:
+                    - generic [ref=f30e837]: Kadaluwarsa
+                    - generic [ref=f30e838]: Tiket kedaluwarsa karena tidak digunakan keluar area
+                  - cell [ref=f30e839]:
+                    - button "Detail Pengajuan" [ref=f30e840] [cursor=pointer]
+                - row [ref=f30e845]:
+                  - cell "IZ-20261019-013 Dinas Kantor" [ref=f30e846]:
+                    - link "IZ-20261019-013" [ref=f30e848] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e849]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e850]':
+                    - generic [ref=f30e851]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e852]
+                      - generic [ref=f30e853]:
+                        - generic [ref=f30e854]: Budi Pratama, S.T.
+                        - generic [ref=f30e855]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e856]
+                  - cell "PT Rekayasa Industri, Cikampek Koordinasi perbaikan pompa P-204" [ref=f30e858]:
+                    - generic "PT Rekayasa Industri, Cikampek" [ref=f30e859]
+                    - generic "Koordinasi perbaikan pompa P-204" [ref=f30e860]
+                  - 'cell "Keluar: 19 Okt 2026, 10.05 WIB Pos 1 Gerbang Utama Estimasi: 13:00:00 WIB" [ref=f30e861]':
+                    - generic [ref=f30e862]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e863]: 19 Okt 2026, 10.05 WIB
+                      - generic [ref=f30e864]: Pos 1 Gerbang Utama
+                    - generic [ref=f30e865]: "Estimasi: 13:00:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (19 Okt 2026, 12.50 WIB (Pos 1 Gerbang Utama))" [ref=f30e866]:
+                    - generic [ref=f30e867]: Selesai
+                    - generic [ref=f30e868]: Kembali lengkap via Pos Gerbang (19 Okt 2026, 12.50 WIB (Pos 1 Gerbang Utama))
+                  - cell [ref=f30e869]:
+                    - button "Detail Pengajuan" [ref=f30e870] [cursor=pointer]
+                - row [ref=f30e875]:
+                  - cell "IZ-20261016-006 Darurat Dinas Kantor" [ref=f30e876]:
+                    - generic [ref=f30e877]:
+                      - link "IZ-20261016-006" [ref=f30e878] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic [ref=f30e879]: Darurat
+                    - generic [ref=f30e880]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e881]':
+                    - generic [ref=f30e882]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e883]
+                      - generic [ref=f30e884]:
+                        - generic [ref=f30e885]: Budi Pratama, S.T.
+                        - generic [ref=f30e886]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e887]
+                  - cell "Pelabuhan Cirebon Pemeriksaan pengapalan kargo suku cadang pompa industri" [ref=f30e889]:
+                    - generic "Pelabuhan Cirebon" [ref=f30e890]
+                    - generic "Pemeriksaan pengapalan kargo suku cadang pompa industri" [ref=f30e891]
+                  - 'cell "Keluar: 16 Okt 2026, 09.05 WIB Pos 1 Estimasi: 10:45:00 WIB" [ref=f30e892]':
+                    - generic [ref=f30e893]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e894]: 16 Okt 2026, 09.05 WIB
+                      - generic [ref=f30e895]: Pos 1
+                    - generic [ref=f30e896]: "Estimasi: 10:45:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (16 Okt 2026, 10.55 WIB (Pos 1))" [ref=f30e897]:
+                    - generic [ref=f30e898]: Selesai
+                    - generic [ref=f30e899]: Kembali lengkap via Pos Gerbang (16 Okt 2026, 10.55 WIB (Pos 1))
+                  - cell [ref=f30e900]:
+                    - button "Detail Pengajuan" [ref=f30e901] [cursor=pointer]
+                - row [ref=f30e906]:
+                  - cell "IZ-20261014-003 Urusan Pribadi" [ref=f30e907]:
+                    - link "IZ-20261014-003" [ref=f30e909] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e910]: Urusan Pribadi
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e911]':
+                    - generic [ref=f30e912]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e913]
+                      - generic [ref=f30e914]:
+                        - generic [ref=f30e915]: Budi Pratama, S.T.
+                        - generic [ref=f30e916]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e917]
+                  - cell "RSUD Karawang Pemeriksaan laboratorium lanjutan" [ref=f30e919]:
+                    - generic "RSUD Karawang" [ref=f30e920]
+                    - generic "Pemeriksaan laboratorium lanjutan" [ref=f30e921]
+                  - 'cell "Keluar: 14 Okt 2026, 13.02 WIB Pos 2 Gerbang Barat Estimasi: 11:00:00 WIB" [ref=f30e922]':
+                    - generic [ref=f30e923]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e924]: 14 Okt 2026, 13.02 WIB
+                      - generic [ref=f30e925]: Pos 2 Gerbang Barat
+                    - generic [ref=f30e926]: "Estimasi: 11:00:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (14 Okt 2026, 14.25 WIB (Pos 2 Gerbang Barat))" [ref=f30e927]:
+                    - generic [ref=f30e928]: Selesai
+                    - generic [ref=f30e929]: Kembali lengkap via Pos Gerbang (14 Okt 2026, 14.25 WIB (Pos 2 Gerbang Barat))
+                  - cell [ref=f30e930]:
+                    - button "Detail Pengajuan" [ref=f30e931] [cursor=pointer]
+                - row [ref=f30e936]:
+                  - cell "IZ-20261012-005 Tim (2) Dinas Kantor" [ref=f30e937]:
+                    - generic [ref=f30e938]:
+                      - link "IZ-20261012-005" [ref=f30e939] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic "Tim Dinas (2 Orang)" [ref=f30e940]: Tim (2)
+                    - generic [ref=f30e941]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e942]':
+                    - generic [ref=f30e943]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e944]
+                      - generic [ref=f30e945]:
+                        - generic [ref=f30e946]: Budi Pratama, S.T.
+                        - generic [ref=f30e947]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e948]
+                  - cell "Kantor Distributor Bekasi Serah terima invoice dan dokumen garansi komponen teknis" [ref=f30e950]:
+                    - generic "Kantor Distributor Bekasi" [ref=f30e951]
+                    - generic "Serah terima invoice dan dokumen garansi komponen teknis" [ref=f30e952]
+                  - 'cell "Keluar: 12 Okt 2026, 10.04 WIB Pos 1 Estimasi: 15:30:00 WIB" [ref=f30e953]':
+                    - generic [ref=f30e954]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e955]: 12 Okt 2026, 10.04 WIB
+                      - generic [ref=f30e956]: Pos 1
+                    - generic [ref=f30e957]: "Estimasi: 15:30:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (12 Okt 2026, 12.10 WIB (Pos 1))" [ref=f30e958]:
+                    - generic [ref=f30e959]: Selesai
+                    - generic [ref=f30e960]: Kembali lengkap via Pos Gerbang (12 Okt 2026, 12.10 WIB (Pos 1))
+                  - cell [ref=f30e961]:
+                    - button "Detail Pengajuan" [ref=f30e962] [cursor=pointer]
+                - row [ref=f30e967]:
+                  - cell "IZ-20261009-002 Urusan Pribadi" [ref=f30e968]:
+                    - link "IZ-20261009-002" [ref=f30e970] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e971]: Urusan Pribadi
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e972]':
+                    - generic [ref=f30e973]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e974]
+                      - generic [ref=f30e975]:
+                        - generic [ref=f30e976]: Budi Pratama, S.T.
+                        - generic [ref=f30e977]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e978]
+                  - cell "Rumah (keperluan keluarga) Urusan keluarga mendesak di rumah" [ref=f30e980]:
+                    - generic "Rumah (keperluan keluarga)" [ref=f30e981]
+                    - generic "Urusan keluarga mendesak di rumah" [ref=f30e982]
+                  - 'cell "Keluar: 06 Nov 2026, 10.05 WIB Pos 1 Gerbang Utama Estimasi: 12:00:00 WIB" [ref=f30e983]':
+                    - generic [ref=f30e984]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e985]: 06 Nov 2026, 10.05 WIB
+                      - generic [ref=f30e986]: Pos 1 Gerbang Utama
+                    - generic [ref=f30e987]: "Estimasi: 12:00:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (-)" [ref=f30e988]:
+                    - generic [ref=f30e989]: Selesai
+                    - generic [ref=f30e990]: Kembali lengkap via Pos Gerbang (-)
+                  - cell [ref=f30e991]:
+                    - button "Detail Pengajuan" [ref=f30e992] [cursor=pointer]
+                - row [ref=f30e997]:
+                  - cell "IZ-20261007-004 Dinas Kantor" [ref=f30e998]:
+                    - link "IZ-20261007-004" [ref=f30e1000] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e1001]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e1002]':
+                    - generic [ref=f30e1003]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e1004]
+                      - generic [ref=f30e1005]:
+                        - generic [ref=f30e1006]: Budi Pratama, S.T.
+                        - generic [ref=f30e1007]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e1008]
+                  - cell "Gudang Logistik Ciampei Pengecekan spesifikasi valve dan seal cadangan" [ref=f30e1010]:
+                    - generic "Gudang Logistik Ciampei" [ref=f30e1011]
+                    - generic "Pengecekan spesifikasi valve dan seal cadangan" [ref=f30e1012]
+                  - 'cell "Keluar: 07 Okt 2026, 09.00 WIB Pos 3 Gerbang Timur Estimasi: 11:30:00 WIB" [ref=f30e1013]':
+                    - generic [ref=f30e1014]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e1015]: 07 Okt 2026, 09.00 WIB
+                      - generic [ref=f30e1016]: Pos 3 Gerbang Timur
+                    - generic [ref=f30e1017]: "Estimasi: 11:30:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (07 Okt 2026, 11.50 WIB (Pos 3 Gerbang Timur))" [ref=f30e1018]:
+                    - generic [ref=f30e1019]: Selesai
+                    - generic [ref=f30e1020]: Kembali lengkap via Pos Gerbang (07 Okt 2026, 11.50 WIB (Pos 3 Gerbang Timur))
+                  - cell [ref=f30e1021]:
+                    - button "Detail Pengajuan" [ref=f30e1022] [cursor=pointer]
+                - row [ref=f30e1027]:
+                  - cell "IZ-20261005-001 Dinas Kantor" [ref=f30e1028]:
+                    - link "IZ-20261005-001" [ref=f30e1030] [cursor=pointer]:
+                      - /url: javascript:void(0)
+                    - generic [ref=f30e1031]: Dinas Kantor
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e1032]':
+                    - generic [ref=f30e1033]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e1034]
+                      - generic [ref=f30e1035]:
+                        - generic [ref=f30e1036]: Budi Pratama, S.T.
+                        - generic [ref=f30e1037]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e1038]
+                  - cell "Balai Besar Uji Bahan Bandung Pengujian sampel metalurgi pipa retak" [ref=f30e1040]:
+                    - generic "Balai Besar Uji Bahan Bandung" [ref=f30e1041]
+                    - generic "Pengujian sampel metalurgi pipa retak" [ref=f30e1042]
+                  - 'cell "Keluar: 05 Okt 2026, 08.10 WIB Pos 1 Estimasi: 10:30:00 WIB" [ref=f30e1043]':
+                    - generic [ref=f30e1044]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e1045]: 05 Okt 2026, 08.10 WIB
+                      - generic [ref=f30e1046]: Pos 1
+                    - generic [ref=f30e1047]: "Estimasi: 10:30:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (05 Okt 2026, 15.45 WIB (Pos 1))" [ref=f30e1048]:
+                    - generic [ref=f30e1049]: Selesai
+                    - generic [ref=f30e1050]: Kembali lengkap via Pos Gerbang (05 Okt 2026, 15.45 WIB (Pos 1))
+                  - cell [ref=f30e1051]:
+                    - button "Detail Pengajuan" [ref=f30e1052] [cursor=pointer]
+                - row [ref=f30e1057]:
+                  - cell "IZ-20261002-001 Darurat Urusan Pribadi" [ref=f30e1058]:
+                    - generic [ref=f30e1059]:
+                      - link "IZ-20261002-001" [ref=f30e1060] [cursor=pointer]:
+                        - /url: javascript:void(0)
+                      - generic [ref=f30e1061]: Darurat
+                    - generic [ref=f30e1062]: Urusan Pribadi
+                  - 'cell "Foto Budi Pratama, S.T. Budi Pratama, S.T. NIP: PK-2024-8841" [ref=f30e1063]':
+                    - generic [ref=f30e1064]:
+                      - img "Foto Budi Pratama, S.T." [ref=f30e1065]
+                      - generic [ref=f30e1066]:
+                        - generic [ref=f30e1067]: Budi Pratama, S.T.
+                        - generic [ref=f30e1068]: "NIP: PK-2024-8841"
+                  - cell "Departemen Rekayasa & Pemeliharaan" [ref=f30e1069]
+                  - cell "Poliklinik Darurat Medika Penanganan alergi mendadak saat jam kerja" [ref=f30e1071]:
+                    - generic "Poliklinik Darurat Medika" [ref=f30e1072]
+                    - generic "Penanganan alergi mendadak saat jam kerja" [ref=f30e1073]
+                  - 'cell "Keluar: 02 Okt 2026, 09.55 WIB Pos 1 Estimasi: 11:40:00 WIB" [ref=f30e1074]':
+                    - generic [ref=f30e1075]:
+                      - text: "Keluar:"
+                      - generic [ref=f30e1076]: 02 Okt 2026, 09.55 WIB
+                      - generic [ref=f30e1077]: Pos 1
+                    - generic [ref=f30e1078]: "Estimasi: 11:40:00 WIB"
+                  - cell "Selesai Kembali lengkap via Pos Gerbang (02 Okt 2026, 11.40 WIB (Pos 1))" [ref=f30e1079]:
+                    - generic [ref=f30e1080]: Selesai
+                    - generic [ref=f30e1081]: Kembali lengkap via Pos Gerbang (02 Okt 2026, 11.40 WIB (Pos 1))
+                  - cell [ref=f30e1082]:
+                    - button "Detail Pengajuan" [ref=f30e1083] [cursor=pointer]
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f30e1088]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

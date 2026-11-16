@@ -1,0 +1,71 @@
+- generic [active] [ref=f9e1]:
+  - text: – – – – – – –
+  - generic [ref=f9e2]:
+    - banner [ref=f9e3]:
+      - generic [ref=f9e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f9e6]
+        - generic [ref=f9e7]:
+          - generic [ref=f9e8]: PUPUK KUJANG
+          - generic [ref=f9e9]: Perizinan Keluar Area • Atasan 1
+      - generic [ref=f9e10]:
+        - button "Atasan 1 ▼" [ref=f9e11] [cursor=pointer]:
+          - generic [ref=f9e15]: Atasan 1
+          - generic [ref=f9e16]: ▼
+        - button "Notifikasi" [ref=f9e18] [cursor=pointer]:
+          - generic [ref=f9e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f9e23] [cursor=pointer]:
+          - img "HG" [ref=f9e24]
+    - main [ref=f9e25]:
+      - textbox "Cari nama bawahan, NIP, nomor tiket..." [ref=f9e30]
+      - generic [ref=f9e31]:
+        - generic [ref=f9e32]: 1 tiket pelacakan (1 aktif • 0 selesai)
+        - button "Filter Pelacakan" [ref=f9e34] [cursor=pointer]
+      - generic [ref=f9e37]:
+        - generic [ref=f9e38]:
+          - generic [ref=f9e39]:
+            - heading "Pelacakan Karyawan Aktif" [level=3] [ref=f9e40]
+            - generic [ref=f9e41]: "1"
+          - generic [ref=f9e42]: Prioritas Pantau
+        - generic [ref=f9e43]:
+          - generic [ref=f9e44]:
+            - generic [ref=f9e45]:
+              - generic [ref=f9e46]: Budi Pratama, S.T.
+              - generic [ref=f9e47]: PK-2024-8841 • Departemen Rekayasa & Pemeliharaan
+            - generic [ref=f9e48]: Disetujui
+          - generic [ref=f9e49]: TK-910509
+          - generic [ref=f9e50]: Izin disetujui • Siap scan out di pos jaga
+          - generic [ref=f9e51]:
+            - generic [ref=f9e52]:
+              - generic [ref=f9e53]: Rencana keluar
+              - generic [ref=f9e54]: 10.41 WIB
+            - generic [ref=f9e55]:
+              - generic [ref=f9e56]: Scan Out aktual
+              - generic [ref=f9e57]: —
+            - generic [ref=f9e58]:
+              - generic [ref=f9e59]: Estimasi kembali
+              - generic [ref=f9e60]: 12.41 WIB
+            - generic [ref=f9e61]:
+              - generic [ref=f9e62]: Tap In aktual
+              - generic [ref=f9e63]: —
+          - button "Detail Pengajuan" [ref=f9e65] [cursor=pointer]
+      - generic [ref=f9e69]: Penyelesaian
+      - generic [ref=f9e71]:
+        - generic [ref=f9e72]:
+          - generic [ref=f9e73]:
+            - heading "Riwayat Penyelesaian Karyawan" [level=3] [ref=f9e74]
+            - generic [ref=f9e75]: "0"
+          - generic [ref=f9e76]: Selesai / Final
+        - generic [ref=f9e77]: Belum ada catatan riwayat perizinan selesai pada periode ini.
+    - navigation [ref=f9e78]:
+      - generic [ref=f9e79] [cursor=pointer]: Dashboard
+      - generic [ref=f9e86] [cursor=pointer]:
+        - generic [ref=f9e90]: Antrean
+        - generic [ref=f9e91]: "1"
+      - generic [ref=f9e92] [cursor=pointer]: Pelacakan
+      - generic [ref=f9e97] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f9e101]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

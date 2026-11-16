@@ -20,8 +20,8 @@
    */
   window.getKujangCurrentUser = function () {
     try {
-      // Ambil user login aktif dari sessionStorage tab ini (bertahan saat refresh F5, tapi tab baru menampilkan login)
-      const stored = sessionStorage.getItem('kujang_current_user');
+      // Ambil user login aktif dari sessionStorage tab ini atau fallback ke localStorage agar bertahan saat refresh
+      const stored = sessionStorage.getItem('kujang_current_user') || localStorage.getItem('kujang_current_user');
       return stored ? JSON.parse(stored) : null;
     } catch (e) {
       return null;
@@ -37,7 +37,9 @@
         sessionStorage.removeItem('kujang_current_user');
         try { localStorage.removeItem('kujang_current_user'); } catch (e) {}
       } else {
-        sessionStorage.setItem('kujang_current_user', JSON.stringify(user));
+        const str = JSON.stringify(user);
+        sessionStorage.setItem('kujang_current_user', str);
+        try { localStorage.setItem('kujang_current_user', str); } catch (e) {}
       }
     } catch (e) {}
   };

@@ -1,0 +1,87 @@
+- generic [active] [ref=f10e1]:
+  - text: – – – – – – –
+  - generic [ref=f10e2]:
+    - banner [ref=f10e3]:
+      - generic [ref=f10e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f10e6]
+        - generic [ref=f10e7]:
+          - generic [ref=f10e8]: PUPUK KUJANG
+          - generic [ref=f10e9]: Perizinan Keluar Area
+      - generic [ref=f10e10]:
+        - button "Karyawan ▼" [ref=f10e11] [cursor=pointer]:
+          - generic [ref=f10e15]: Karyawan
+          - generic [ref=f10e16]: ▼
+        - button "Notifikasi" [ref=f10e18] [cursor=pointer]:
+          - generic [ref=f10e22]: "4"
+        - button "Menu Akun & Keluar SAKTI" [ref=f10e23] [cursor=pointer]:
+          - img "BP" [ref=f10e24]
+    - main [ref=f10e25]:
+      - generic [ref=f10e26]:
+        - generic [ref=f10e27]: Selamat pagi,
+        - heading "Budi Pratama, S.T." [level=2] [ref=f10e28]
+        - generic [ref=f10e29]: Karyawan
+        - generic [ref=f10e30]: Departemen Rekayasa & Pemeliharaan
+        - generic [ref=f10e31]: "Atasan: Ir. Hendra Gunawan, M.T."
+        - button "Pengajuan Saya" [ref=f10e32] [cursor=pointer]
+      - generic [ref=f10e34]:
+        - button "Ringkasan Perizinan" [ref=f10e35] [cursor=pointer]
+        - button "Total Pengajuan Izin" [ref=f10e36] [cursor=pointer]
+      - generic [ref=f10e37]:
+        - generic [ref=f10e38]:
+          - generic [ref=f10e39]: Total pengajuan
+          - generic [ref=f10e40]: "14"
+        - generic [ref=f10e41]:
+          - generic [ref=f10e42]: Izin selesai
+          - generic [ref=f10e43]: "11"
+        - generic [ref=f10e44]:
+          - generic [ref=f10e45]: Izin aktif
+          - generic [ref=f10e46]: "1"
+      - generic [ref=f10e47]:
+        - generic [ref=f10e48]:
+          - generic [ref=f10e49]:
+            - generic [ref=f10e50]: IZIN AKTIF SAYA
+            - heading "TK-910509" [level=3] [ref=f10e51]
+          - generic [ref=f10e52]: Disetujui
+        - generic [ref=f10e53]: Dinas Kantor • Kembali ke Area
+        - generic "PT Pupuk Indonesia (Jakarta)" [ref=f10e54]
+        - generic "Rapat koordinasi teknis" [ref=f10e55]: "\"Rapat koordinasi teknis\""
+        - generic [ref=f10e56]:
+          - generic [ref=f10e57]:
+            - generic [ref=f10e58]: Jadwal Keluar
+            - generic [ref=f10e59]: Senin, 16 Nov 2026, 10.41 WIB
+          - generic [ref=f10e60]:
+            - generic [ref=f10e61]: Batas Jam Kembali
+            - generic [ref=f10e62]: Senin, 16 Nov 2026, 12.41 WIB
+        - generic [ref=f10e63]:
+          - button "Buka QR Izin" [ref=f10e64] [cursor=pointer]
+          - generic [ref=f10e66]:
+            - button "Lihat Detail" [ref=f10e67] [cursor=pointer]
+            - button "Batalkan Izin" [ref=f10e69] [cursor=pointer]
+      - generic [ref=f10e71]:
+        - heading "Pengajuan Terbaru" [level=3] [ref=f10e73]
+        - generic [ref=f10e74]:
+          - generic [ref=f10e75]:
+            - generic [ref=f10e76]:
+              - text: TK-ANTREAN-DINAS-TIM
+              - generic [ref=f10e77]: Kedaluwarsa
+            - generic [ref=f10e78]: Dinas Kantor • PT Pupuk Iskandar Muda
+          - button "Detail Pengajuan" [ref=f10e79] [cursor=pointer]
+        - generic [ref=f10e83]:
+          - generic [ref=f10e84]:
+            - generic [ref=f10e85]:
+              - text: TK-20261116-642
+              - generic [ref=f10e86]: Kedaluwarsa
+            - generic [ref=f10e87]: Urusan Pribadi • Bank Mandiri KC Cikampek
+          - button "Detail Pengajuan" [ref=f10e88] [cursor=pointer]
+        - link "Semua riwayat" [ref=f10e93] [cursor=pointer]:
+          - /url: "#"
+    - navigation [ref=f10e94]:
+      - generic [ref=f10e95] [cursor=pointer]: Dashboard
+      - generic [ref=f10e102] [cursor=pointer]: Pengajuan
+      - generic [ref=f10e107] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic [ref=f10e112]: Beralih ke akun Budi Pratama, S.T.
+    - generic [ref=f10e114]: Selamat datang, Budi Pratama, S.T. (undefined)
+    - generic [ref=f10e116]: Beralih ke akun Budi Pratama, S.T.

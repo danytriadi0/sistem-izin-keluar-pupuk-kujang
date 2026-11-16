@@ -3818,6 +3818,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       window.pendingFormData = null;
 
+      // Pindahkan tampilan langsung ke subhalaman 'Pengajuan Saya' agar kartu aktif langsung terlihat
+      if (typeof window.setKaryawanNav === 'function') {
+        window.setKaryawanNav('pengajuan');
+      }
+      if (typeof window.mobileSwitchTab === 'function') {
+        window.mobileSwitchTab('pengajuan');
+      }
+
       if (typeof window.showToast === 'function') {
         window.showToast(`Tiket #${ticketId} berhasil diajukan! Sistem kini mengunci pengajuan baru hingga tiket ini diproses.`, 'success');
       }

@@ -1,0 +1,117 @@
+- generic [active] [ref=f12e1]:
+  - text: – – – – – – –
+  - generic [ref=f12e2]:
+    - banner [ref=f12e3]:
+      - generic [ref=f12e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f12e6]
+        - generic [ref=f12e7]:
+          - generic [ref=f12e8]: PUPUK KUJANG
+          - generic [ref=f12e9]: Perizinan Keluar Area • Atasan 1
+      - generic [ref=f12e10]:
+        - button "Atasan 1 ▼" [ref=f12e11] [cursor=pointer]:
+          - generic [ref=f12e15]: Atasan 1
+          - generic [ref=f12e16]: ▼
+        - button "Notifikasi" [ref=f12e18] [cursor=pointer]:
+          - generic [ref=f12e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f12e23] [cursor=pointer]:
+          - img "HG" [ref=f12e24]
+    - main [ref=f12e25]:
+      - generic [ref=f12e26]:
+        - generic [ref=f12e27]: Pusat Persetujuan & Monitoring Bawahan
+        - generic [ref=f12e28]: Ir. Hendra Gunawan, M.T.
+        - generic [ref=f12e29]: Atasan
+      - generic [ref=f12e31]:
+        - button "Ringkasan perizinan" [ref=f12e32] [cursor=pointer]
+        - button "Volume pengajuan tim" [ref=f12e39] [cursor=pointer]
+      - generic [ref=f12e43]:
+        - generic [ref=f12e44] [cursor=pointer]:
+          - generic [ref=f12e45]: Perlu Keputusan Segera
+          - generic [ref=f12e46]: "1"
+        - generic [ref=f12e47] [cursor=pointer]:
+          - generic [ref=f12e48]: Telah Disetujui
+          - generic [ref=f12e49]: "1"
+        - generic [ref=f12e50] [cursor=pointer]:
+          - generic [ref=f12e51]: Ditolak
+          - generic [ref=f12e52]: "0"
+        - generic [ref=f12e53] [cursor=pointer]:
+          - generic [ref=f12e54]: Total Permohonan
+          - generic [ref=f12e55]: "4"
+      - generic [ref=f12e56]:
+        - generic [ref=f12e57]:
+          - generic [ref=f12e58]:
+            - heading "Pengajuan Menunggu Persetujuan" [level=3] [ref=f12e59]
+            - generic [ref=f12e60]: Daftar permohonan bawahan yang memerlukan keputusan
+          - generic [ref=f12e61]: 1 item
+        - generic [ref=f12e63]:
+          - generic [ref=f12e64]:
+            - generic [ref=f12e65]:
+              - generic [ref=f12e66]: Arthur Morgan, S.Tr.T.
+              - generic [ref=f12e67]: TK-ANTREAN-PRIBADI • Urusan Pribadi
+            - generic [ref=f12e68]: Menunggu Persetujuan
+          - generic "Rumah Sakit Karawang" [ref=f12e70]:
+            - text: "Rencana Keluar:"
+            - strong [ref=f12e71]: 09.30 WIB
+            - text: "• Keperluan:"
+            - strong [ref=f12e72]: Rumah Sakit Karawang
+          - generic [ref=f12e73]:
+            - button "Tolak" [ref=f12e74] [cursor=pointer]
+            - button "Setujui" [ref=f12e75] [cursor=pointer]
+          - button "Detail Pengajuan" [ref=f12e77] [cursor=pointer]
+        - link "Lihat Semua Antrean" [ref=f12e83] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f12e87]:
+        - heading "Aktivitas terbaru" [level=3] [ref=f12e90]
+        - generic [ref=f12e91]:
+          - generic [ref=f12e92]:
+            - generic [ref=f12e93]: 09.40 WIB
+            - generic [ref=f12e94]:
+              - generic [ref=f12e95]: Tiket Kedaluwarsa
+              - generic [ref=f12e96]:
+                - generic [ref=f12e97]: Sistem Otomatis (Scheduler)
+                - generic [ref=f12e98]: •
+                - generic [ref=f12e99]: TK-ANTREAN-DINAS-TIM
+          - generic [ref=f12e100]:
+            - generic [ref=f12e101]: 08.15 WIB
+            - generic [ref=f12e102]:
+              - generic [ref=f12e103]: Aktivitas TK-ANTREAN-PRIBADI
+              - generic [ref=f12e104]:
+                - generic [ref=f12e105]: Arthur Morgan, S.Tr.T.
+                - generic [ref=f12e106]: •
+                - generic [ref=f12e107]: TK-ANTREAN-PRIBADI
+          - generic [ref=f12e108]:
+            - generic [ref=f12e109]: 08.00 WIB
+            - generic [ref=f12e110]:
+              - generic [ref=f12e111]: Aktivitas TK-ANTREAN-DINAS-TIM
+              - generic [ref=f12e112]:
+                - generic [ref=f12e113]: Budi Pratama, S.T.
+                - generic [ref=f12e114]: •
+                - generic [ref=f12e115]: TK-ANTREAN-DINAS-TIM
+          - generic [ref=f12e116]:
+            - generic [ref=f12e117]: 07.43 WIB
+            - generic [ref=f12e118]:
+              - generic [ref=f12e119]: Aktivitas TK-20261116-642
+              - generic [ref=f12e120]:
+                - generic [ref=f12e121]: Budi Pratama, S.T.
+                - generic [ref=f12e122]: •
+                - generic [ref=f12e123]: TK-20261116-642
+          - generic [ref=f12e124]:
+            - generic [ref=f12e125]: Baru saja
+            - generic [ref=f12e126]:
+              - generic [ref=f12e127]: Pengajuan Dibuat
+              - generic [ref=f12e128]:
+                - generic [ref=f12e129]: Budi Pratama, S.T.
+                - generic [ref=f12e130]: •
+                - generic [ref=f12e131]: TK-910509
+    - navigation [ref=f12e132]:
+      - generic [ref=f12e133] [cursor=pointer]: Dashboard
+      - generic [ref=f12e140] [cursor=pointer]:
+        - generic [ref=f12e144]: Antrean
+        - generic [ref=f12e145]: "1"
+      - generic [ref=f12e146] [cursor=pointer]: Pelacakan
+      - generic [ref=f12e151] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f12e155]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

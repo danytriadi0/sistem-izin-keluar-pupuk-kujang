@@ -1,0 +1,139 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - complementary [ref=f1e3]:
+      - link "Pupuk Kujang Logo PUPUK KUJANG PT Pupuk Kujang" [ref=f1e5] [cursor=pointer]:
+        - /url: "#"
+        - img "Pupuk Kujang Logo" [ref=f1e7]
+        - generic [ref=f1e8]:
+          - generic [ref=f1e9]: PUPUK KUJANG
+          - generic [ref=f1e10]: PT Pupuk Kujang
+      - navigation [ref=f1e11]:
+        - generic "Dashboard" [ref=f1e12] [cursor=pointer]
+        - generic [ref=f1e20]: Pos jaga
+        - generic "Pemindai QR & Input Manual" [ref=f1e21] [cursor=pointer]: Pemindai QR & input manual
+        - generic "Pelacakan Karyawan di Luar" [ref=f1e27] [cursor=pointer]:
+          - generic [ref=f1e28]: Pelacakan Karyawan di luar
+          - generic [ref=f1e35]: "0"
+        - generic "Riwayat Scan" [ref=f1e36] [cursor=pointer]: Riwayat
+      - generic [ref=f1e42]:
+        - generic [ref=f1e43]: TERHUBUNG MELALUI
+        - generic [ref=f1e44]: Portal SAKTI / KUJANG ID
+        - generic [ref=f1e45]:
+          - generic [ref=f1e46]:
+            - img "Foto Sertu Agus" [ref=f1e48]
+            - generic [ref=f1e49]:
+              - generic [ref=f1e50]: Sertu Agus
+              - generic [ref=f1e51]: "NIP: SEC-2018-042 — Pos 1 Gerbang Utama"
+          - button "Pengaturan" [ref=f1e52] [cursor=pointer]
+    - generic [ref=f1e56]:
+      - banner [ref=f1e57]:
+        - generic [ref=f1e58]:
+          - button "Toggle Sidebar" [ref=f1e59] [cursor=pointer]
+          - generic [ref=f1e61]:
+            - generic [ref=f1e62]: Pos Jaga
+            - generic [ref=f1e63]: ›
+            - generic [ref=f1e64]: Dashboard
+        - generic [ref=f1e65]:
+          - generic [ref=f1e66]: Senin, 16 Nov 2026 — 09:11:50 WIB
+          - button "Notifikasi" [ref=f1e70] [cursor=pointer]:
+            - generic [ref=f1e74]: "1"
+          - generic "Beralih peran untuk menguji alur terintegrasi" [ref=f1e75]:
+            - button "Karyawan" [ref=f1e77] [cursor=pointer]
+            - button "Atasan" [ref=f1e83] [cursor=pointer]
+            - button "Pos Jaga" [ref=f1e90] [cursor=pointer]
+            - button "Admin K3" [ref=f1e95] [cursor=pointer]
+            - button "Reset" [ref=f1e100] [cursor=pointer]
+      - main [ref=f1e105]:
+        - text: – – –
+        - generic [ref=f1e107]:
+          - generic [ref=f1e108]:
+            - generic [ref=f1e111]:
+              - heading [level=2] [ref=f1e112]:
+                - text: Selamat pagi,
+                - img "Foto Sertu Agus" [ref=f1e113]
+                - text: Sertu Agus
+              - paragraph [ref=f1e114]: Petugas Pengamanan (Pos 1) | Pos 1 Gerbang Utama | Departemen Pengamanan & K3
+            - generic [ref=f1e115]:
+              - generic [ref=f1e116]:
+                - generic [ref=f1e117]: "Status Gerbang: Pos 1 Gerbang Utama Operasional"
+                - generic [ref=f1e118]: 0 personel sedang di luar pabrik. Siap memverifikasi tiket perizinan.
+              - button "Terminal Scan QR →" [ref=f1e119] [cursor=pointer]
+          - heading "Ringkasan Pemantauan Gerbang" [level=1] [ref=f1e122]
+          - generic [ref=f1e123]:
+            - generic [ref=f1e124]:
+              - generic [ref=f1e125]: Sedang di Luar (Headcount)
+              - generic [ref=f1e126]: "0"
+            - generic [ref=f1e127]:
+              - generic [ref=f1e128]: Izin Siap Keluar (Scan Out)
+              - generic [ref=f1e129]: "0"
+            - generic [ref=f1e130]:
+              - generic [ref=f1e131]: Scan Out Hari Ini
+              - generic [ref=f1e132]: "11"
+            - generic [ref=f1e133]:
+              - generic [ref=f1e134]: Tap In (Kembali)
+              - generic [ref=f1e135]: "7"
+          - generic [ref=f1e136]:
+            - generic [ref=f1e138]:
+              - generic [ref=f1e139]:
+                - 'heading "Headcount: Karyawan Sedang di Luar Area" [level=3] [ref=f1e141]'
+                - link "Semua Headcount" [ref=f1e142] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - generic [ref=f1e143]: Tidak ada karyawan yang sedang di luar pabrik.
+            - generic [ref=f1e145]:
+              - generic [ref=f1e146]:
+                - generic [ref=f1e147]:
+                  - heading "Aktivitas Gerbang Terkini" [level=3] [ref=f1e148]
+                  - link "Log Lengkap" [ref=f1e149] [cursor=pointer]:
+                    - /url: javascript:void(0)
+                - generic [ref=f1e150]:
+                  - generic [ref=f1e151]:
+                    - generic [ref=f1e152]:
+                      - generic [ref=f1e153]: OUT
+                      - generic [ref=f1e154]:
+                        - generic [ref=f1e155]: Budi Pratama, S.T. (TK-DINAS-PULANG-01)
+                        - generic [ref=f1e156]: "Scan Out: Jumat, 13 Nov 2026, 10.23 WIB (Pos 1 Gerbang Utama (Utara))"
+                    - generic [ref=f1e157]: Scan Out Sukses
+                  - generic [ref=f1e158]:
+                    - generic [ref=f1e159]:
+                      - generic [ref=f1e160]: OUT
+                      - generic [ref=f1e161]:
+                        - generic [ref=f1e162]: Budi Pratama, S.T. (TK-20261111-723)
+                        - generic [ref=f1e163]: "Scan Out: 11 Nov 2026, 10.40 WIB"
+                    - generic [ref=f1e164]: Scan Out Sukses
+                  - generic [ref=f1e165]:
+                    - generic [ref=f1e166]:
+                      - generic [ref=f1e167]: OUT
+                      - generic [ref=f1e168]:
+                        - generic [ref=f1e169]: Budi Pratama, S.T. (TK-20261106-901)
+                        - generic [ref=f1e170]: "Scan Out: 06 Nov 2026, 09.05 WIB (Pos 1 Gerbang Utama)"
+                    - generic [ref=f1e171]: Scan Out Sukses
+                  - generic [ref=f1e172]:
+                    - generic [ref=f1e173]:
+                      - generic [ref=f1e174]: IN
+                      - generic [ref=f1e175]:
+                        - generic [ref=f1e176]: Budi Pratama, S.T. (IZ-20261019-013)
+                        - generic [ref=f1e177]: "Tap In: 19 Okt 2026, 12.50 WIB (Pos 1 Gerbang Utama)"
+                    - generic [ref=f1e178]: Tap In Sukses
+                  - generic [ref=f1e179]:
+                    - generic [ref=f1e180]:
+                      - generic [ref=f1e181]: IN
+                      - generic [ref=f1e182]:
+                        - generic [ref=f1e183]: Budi Pratama, S.T. (IZ-20261016-006)
+                        - generic [ref=f1e184]: "Tap In: 16 Okt 2026, 10.55 WIB (Pos 1)"
+                    - generic [ref=f1e185]: Tap In Sukses
+              - generic [ref=f1e186]:
+                - heading "Ketentuan Pemeriksaan Pos Jaga" [level=3] [ref=f1e188]
+                - list [ref=f1e189]:
+                  - listitem [ref=f1e190]: – Verifikasi kecocokan foto identitas digital dan nomor plat kendaraan dinas/pribadi.
+                  - listitem [ref=f1e191]: – Tiket Izin Darurat (Emergency Pass) dapat langsung diproses setelah otorisasi terkonfirmasi.
+                  - listitem [ref=f1e192]:
+                    - text: – Konfirmasi kepulangan karyawan dilakukan dengan tombol
+                    - strong [ref=f1e193]: Tap In / Tap In
+                    - text: .
+                  - listitem [ref=f1e194]: – Hubungi petugas pengawas K3 (Ext. 110) jika terdapat ketidaksesuaian data di gerbang.
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)
+    - generic [ref=f1e195]: Selamat datang, Sertu Agus (undefined)
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)

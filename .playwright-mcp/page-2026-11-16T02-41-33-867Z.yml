@@ -1,0 +1,38 @@
+- generic [active] [ref=f6e1]:
+  - text: – – – – – – –
+  - generic [ref=f6e2]:
+    - banner [ref=f6e3]:
+      - generic [ref=f6e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f6e6]
+        - generic [ref=f6e7]:
+          - generic [ref=f6e8]: PUPUK KUJANG
+          - generic [ref=f6e9]: Perizinan Keluar Area • Atasan 1
+      - generic [ref=f6e10]:
+        - button "Atasan 1 ▼" [ref=f6e11] [cursor=pointer]:
+          - generic [ref=f6e15]: Atasan 1
+          - generic [ref=f6e16]: ▼
+        - button "Notifikasi" [ref=f6e18] [cursor=pointer]:
+          - generic [ref=f6e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f6e23] [cursor=pointer]:
+          - img "HG" [ref=f6e24]
+    - main [ref=f6e25]:
+      - textbox "Cari nama bawahan, NIP, nomor tiket..." [ref=f6e30]
+      - generic [ref=f6e31]:
+        - generic [ref=f6e32]: 0 tiket pelacakan (0 aktif • 0 selesai)
+        - button "Filter Pelacakan" [ref=f6e34] [cursor=pointer]
+      - generic [ref=f6e37]:
+        - generic [ref=f6e42]: Tidak Ada Tiket Tim Ditemukan
+        - generic [ref=f6e43]: Tidak ada pergerakan bawahan pada kriteria filter ini.
+    - navigation [ref=f6e44]:
+      - generic [ref=f6e45] [cursor=pointer]: Dashboard
+      - generic [ref=f6e52] [cursor=pointer]:
+        - generic [ref=f6e56]: Antrean
+        - generic [ref=f6e57]: "2"
+      - generic [ref=f6e58] [cursor=pointer]: Pelacakan
+      - generic [ref=f6e63] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f6e67]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

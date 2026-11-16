@@ -1,0 +1,103 @@
+- generic [active] [ref=f35e1]:
+  - generic [ref=f35e2]:
+    - complementary [ref=f35e3]:
+      - link "Pupuk Kujang Logo PUPUK KUJANG PT Pupuk Kujang" [ref=f35e5] [cursor=pointer]:
+        - /url: "#"
+        - img "Pupuk Kujang Logo" [ref=f35e7]
+        - generic [ref=f35e8]:
+          - generic [ref=f35e9]: PUPUK KUJANG
+          - generic [ref=f35e10]: PT Pupuk Kujang
+      - navigation [ref=f35e11]:
+        - generic [ref=f35e12]: MENU UTAMA
+        - generic "Dashboard" [ref=f35e13] [cursor=pointer]
+        - generic "Pengajuan Saya" [ref=f35e21] [cursor=pointer]: "1"
+        - generic "Riwayat Pengajuan" [ref=f35e28] [cursor=pointer]
+      - generic [ref=f35e34]:
+        - generic [ref=f35e35]: TERHUBUNG MELALUI
+        - generic [ref=f35e36]: Portal SAKTI / KUJANG ID
+        - generic [ref=f35e37]:
+          - generic [ref=f35e38]:
+            - img "Foto Budi Pratama, S.T." [ref=f35e40]
+            - generic [ref=f35e41]:
+              - generic [ref=f35e42]: Budi Pratama, S.T.
+              - generic [ref=f35e43]: "NIP: PK-2024-8841"
+          - button "Pengaturan" [ref=f35e44] [cursor=pointer]
+    - generic [ref=f35e48]:
+      - banner [ref=f35e49]:
+        - generic [ref=f35e50]:
+          - button "Toggle Sidebar" [ref=f35e51] [cursor=pointer]
+          - generic [ref=f35e53]:
+            - generic [ref=f35e54]: Karyawan
+            - generic [ref=f35e55]: ›
+            - generic [ref=f35e56]: Pengajuan Saya
+        - generic [ref=f35e57]:
+          - generic [ref=f35e58]: Senin, 16 Nov 2026 — 11:42:41 WIB
+          - button "Notifikasi" [ref=f35e62] [cursor=pointer]:
+            - generic [ref=f35e66]: "6"
+          - generic "Beralih peran untuk menguji alur terintegrasi" [ref=f35e67]:
+            - button "Karyawan" [ref=f35e69] [cursor=pointer]
+            - button "Atasan" [ref=f35e75] [cursor=pointer]
+            - button "Pos Jaga" [ref=f35e82] [cursor=pointer]
+            - button "Admin K3" [ref=f35e87] [cursor=pointer]
+            - button "Reset" [ref=f35e92] [cursor=pointer]
+      - main [ref=f35e97]:
+        - generic [ref=f35e98]:
+          - text: – – –
+          - generic [ref=f35e100]:
+            - heading "Pengajuan Saya" [level=1] [ref=f35e103]
+            - generic [ref=f35e104]:
+              - generic [ref=f35e105]:
+                - generic [ref=f35e106]:
+                  - generic [ref=f35e107]:
+                    - heading "Izin aktif saya" [level=3] [ref=f35e108]
+                    - link "Detail Pengajuan" [ref=f35e109] [cursor=pointer]:
+                      - /url: "#"
+                  - generic [ref=f35e110]:
+                    - generic [ref=f35e111]: TK-20261116-544
+                    - generic [ref=f35e113]:
+                      - generic [ref=f35e114]: Urusan Pribadi
+                      - generic [ref=f35e115]: Kembali ke Area
+                    - generic "Bank Mandiri Cikampek — Urusan administrasi perbankan" [ref=f35e116]
+                    - generic "Menunggu Persetujuan" [ref=f35e118]
+                  - generic [ref=f35e120]:
+                    - generic [ref=f35e121]:
+                      - generic [ref=f35e122]: Jadwal Keluar
+                      - generic [ref=f35e123]: Senin, 16 Nov 2026, 12.00 WIB
+                    - generic [ref=f35e124]:
+                      - generic [ref=f35e125]: Batas kembali
+                      - generic [ref=f35e126]: Senin, 16 Nov 2026, 14.00 WIB
+                  - generic [ref=f35e127]:
+                    - button "Edit Pengajuan" [ref=f35e128] [cursor=pointer]
+                    - button "Batalkan Izin" [ref=f35e130] [cursor=pointer]
+                - generic [ref=f35e132]:
+                  - heading "Atasan langsung" [level=3] [ref=f35e134]
+                  - generic [ref=f35e135]:
+                    - img "Foto Ir. Hendra Gunawan, M.T." [ref=f35e136]
+                    - generic [ref=f35e137]: Ir. Hendra Gunawan, M.T.
+                  - generic [ref=f35e138]: Manajer Rekayasa & Pemeliharaan
+              - generic [ref=f35e140]:
+                - heading "Kronologi tercatat" [level=3] [ref=f35e142]
+                - generic [ref=f35e143]:
+                  - generic [ref=f35e145]:
+                    - generic [ref=f35e147]: 16 Nov 2026, 11.42 WIB
+                    - generic [ref=f35e148]: Pengajuan diajukan
+                    - generic [ref=f35e150]: Urusan Pribadi — Kembali ke Area
+                  - generic [ref=f35e151]:
+                    - generic [ref=f35e153]: Sedang berlangsung
+                    - generic [ref=f35e154]: Menunggu persetujuan atasan
+                    - generic [ref=f35e156]: Menunggu tinjauan & keputusan dari Ir. Hendra Gunawan, M.T.
+                  - generic [ref=f35e157]:
+                    - generic [ref=f35e159]: Rencana 12:00 WIB
+                    - generic [ref=f35e160]: Scan Out tercatat di Pos 1
+                    - generic [ref=f35e162]: Menunggu persetujuan atasan sebelum scan gerbang
+                  - generic [ref=f35e163]:
+                    - generic [ref=f35e165]: Tap In Kartu di Pos 1
+                    - generic [ref=f35e166]: Batas kembali 14:00 WIB
+                    - generic [ref=f35e168]: Belum kembali ke area
+        - text: – – – –
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic [ref=f35e169]: Beralih ke akun Budi Pratama, S.T.
+    - generic [ref=f35e171]: Selamat datang, Budi Pratama, S.T. (undefined)
+    - generic [ref=f35e173]: Beralih ke akun Budi Pratama, S.T.

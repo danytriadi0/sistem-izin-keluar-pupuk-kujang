@@ -646,7 +646,7 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
             stroke-width="${val === 0 ? '1.5' : '1'}" 
             ${val > 0 ? 'stroke-dasharray="3,3"' : ''} />
       <text x="${padLeft - 10}" y="${y + 4}" text-anchor="end" 
-            fill="#64748b" font-size="11" font-weight="600" 
+            fill="${isMobile ? '#0f172a' : '#64748b'}" font-size="${isMobile ? '9' : '11'}" font-weight="600" 
             font-family="'Plus Jakarta Sans', sans-serif">${val}</text>
     `;
   });
@@ -686,7 +686,7 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
         ` : ''}
 
         <!-- Number on top of bar (Animated on hover) -->
-        <text id="${prefix}approverBarVal_${idx}" class="approver-bar-val" x="${x + barW / 2}" y="${isPeak ? y - 32 : y - 8}" text-anchor="middle" fill="${isPeak ? '#059669' : (isToday ? '#0284c7' : '#334155')}" font-size="${isMobile ? '10' : '12'}" font-weight="800" font-family="'Plus Jakarta Sans', sans-serif" style="transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), font-size 0.2s ease, fill 0.2s ease;">${b.total}</text>
+        <text id="${prefix}approverBarVal_${idx}" class="approver-bar-val" x="${x + barW / 2}" y="${isPeak ? y - 32 : y - 8}" text-anchor="middle" fill="${isMobile ? '#0f172a' : (isPeak ? '#059669' : (isToday ? '#0284c7' : '#334155'))}" font-size="${isMobile ? '9' : '12'}" font-weight="800" font-family="'Plus Jakarta Sans', sans-serif" style="transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), font-size 0.2s ease, fill 0.2s ease;">${b.total}</text>
 
         <!-- Rounded Bar (With explicit solid fallback fill to guarantee rendering) -->
         <rect id="${prefix}approverBarRect_${idx}" class="approver-svg-bar" x="${x}" y="${y}" width="${barW}" height="${barH}" rx="6" ry="6"
@@ -695,8 +695,8 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
         </rect>
 
         <!-- X-Axis Labels: Clean Day Name & Date -->
-        <text id="${prefix}approverDayLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 18}" text-anchor="middle" fill="${isToday ? '#0284c7' : (dark ? '#cbd5e1' : '#0f172a')}" font-size="${isMobile ? '10' : '12'}" font-weight="${isToday ? '800' : '700'}" font-family="'Plus Jakarta Sans', sans-serif" style="transition: fill 0.2s ease, font-weight 0.2s ease;">${b.label}</text>
-        <text id="${prefix}approverDateLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 34}" text-anchor="middle" fill="${isToday ? '#0284c7' : '#64748b'}" font-size="${isMobile ? '8.5' : '10'}" font-weight="${isToday ? '700' : '500'}" font-family="'Plus Jakarta Sans', sans-serif">${b.dateStr}</text>
+        <text id="${prefix}approverDayLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 18}" text-anchor="middle" fill="${isMobile ? '#0f172a' : (isToday ? '#0284c7' : (dark ? '#cbd5e1' : '#0f172a'))}" font-size="${isMobile ? '9' : '12'}" font-weight="${isToday ? '800' : '700'}" font-family="'Plus Jakarta Sans', sans-serif" style="transition: fill 0.2s ease, font-weight 0.2s ease;">${b.label}</text>
+        <text id="${prefix}approverDateLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 34}" text-anchor="middle" fill="${isMobile ? '#0f172a' : (isToday ? '#0284c7' : '#64748b')}" font-size="${isMobile ? '7.5' : '10'}" font-weight="${isToday ? '700' : '500'}" font-family="'Plus Jakarta Sans', sans-serif">${b.dateStr}</text>
         ${isToday ? `<circle cx="${x + barW / 2}" cy="${bottomY + 44}" r="2.5" fill="#0284c7" />` : ''}
       </g>
     `;
@@ -711,31 +711,29 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
   return `
     <div style="position: relative; width: 100%; max-width: 100%; border-radius: 12px; ${containerPadding}">
       <!-- Bento Summary Header Bar -->
-      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color, #f1f5f9); margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color, #f1f5f9); margin-bottom: 10px; flex-wrap: wrap; gap: ${isMobile ? '8px' : '10px'};">
+        <div style="display: flex; align-items: center; gap: ${isMobile ? '10px' : '14px'}; flex-wrap: wrap;">
           <div>
-            <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Total Volume 7 Hari</span>
-            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary, #0f172a); line-height: 1.2;">
-              <strong style="color: #0369a1;">${chartData.totalWeekVolume}</strong> <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Pengajuan</span>
+            <span style="font-size: ${isMobile ? '0.625rem' : '0.7rem'}; color: ${isMobile ? '#0f172a' : '#64748b'}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Total Volume 7 Hari</span>
+            <div style="font-size: ${isMobile ? '0.95rem' : '1.15rem'}; font-weight: 800; color: #0f172a; line-height: 1.2;">
+              <strong style="color: #0f172a;">${chartData.totalWeekVolume}</strong> <span style="font-size: ${isMobile ? '0.675rem' : '0.75rem'}; font-weight: 600; color: #0f172a;">Pengajuan</span>
             </div>
           </div>
           <div style="width: 1px; height: 26px; background: var(--border-color, #e2e8f0);"></div>
           <div>
-            <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Hari Puncak</span>
-            <div style="font-size: 0.9rem; font-weight: 700; color: #059669; line-height: 1.2;">
+            <span style="font-size: ${isMobile ? '0.625rem' : '0.7rem'}; color: ${isMobile ? '#0f172a' : '#64748b'}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Hari Puncak</span>
+            <div style="font-size: ${isMobile ? '0.8rem' : '0.9rem'}; font-weight: 700; color: #0f172a; line-height: 1.2;">
               ${peakDayObj ? `${peakDayObj.dayName.replace(' (Hari Ini)', '')} (${peakDayObj.total})` : 'Belum Ada'}
             </div>
           </div>
           <div style="width: 1px; height: 26px; background: #e2e8f0;"></div>
           <div>
-            <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Rata-rata Harian</span>
-            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; line-height: 1.2;">
+            <span style="font-size: ${isMobile ? '0.625rem' : '0.7rem'}; color: ${isMobile ? '#0f172a' : '#64748b'}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Rata-rata Harian</span>
+            <div style="font-size: ${isMobile ? '0.8rem' : '0.9rem'}; font-weight: 700; color: #0f172a; line-height: 1.2;">
               ~${avgDaily} / hari
             </div>
           </div>
         </div>
-
-        
       </div>
 
       <!-- SVG Chart -->

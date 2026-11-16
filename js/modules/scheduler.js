@@ -158,17 +158,67 @@ function _executeCheckOverdueAndExpiredTickets(silent = true) {
     const isEmergencyTicket = Boolean(ticket.isEmergency || (ticket.id && (ticket.id.includes('-EMG-') || ticket.id.startsWith('TK-EMG'))));
 
     // -------------------------------------------------------------------------
-    // 1. KEDALUWARSA (BRULE-11 & User Request):
+    // 1. KEDALUWARSA (BRULE-11 & Simulation Protection):
     // Tiket biasa (Disetujui) atau Tiket Darurat (Disetujui / Menunggu Otorisasi Darurat)
-    // yang tidak kunjung dipindai keluar melewati toleransi rencana jam keluar (+10 menit) otomatis menjadi Kedaluwarsa
+    // yang tidak kunjung dipindai keluar melewati batas toleransi rencana keluar.
+    // PENTING: Tiket Menunggu Persetujuan reguler TIDAK BOLEH kedaluwarsa sebelum direspon.
+    // Untuk sesi simulasi hari ini, batas toleransi dihitung dari waktu persetujuan
+    // dan diberikan durasi yang aman agar proses pengujian tidak ter-reset saat refresh.
     // -------------------------------------------------------------------------
-    const isPendingEmergency = isEmergencyTicket && (statusNormalized === 'Menunggu Otorisasi Darurat' || statusNormalized === 'Menunggu Persetujuan');
+    const isPendingEmergency = isEmergencyTicket && (statusNormalized === 'Menunggu Otorisasi Darurat');
     const isApprovedOrEmergencyPending = (statusNormalized === 'Disetujui' || isPendingEmergency);
 
     if (isApprovedOrEmergencyPending && ticket.plannedExit && !ticket.scanOutTime) {
       const exitTime = parseTicketDateTime(ticket.plannedExit);
-      const toleranceMs = 10 * 60 * 1000; // toleransi 10 menit
-      if (exitTime && !isNaN(exitTime.getTime()) && (now.getTime() > exitTime.getTime() + toleranceMs)) {
+      const approveTime = ticket.approvedAt ? parseTicketDateTime(ticket.approvedAt) : null;
+      const createTime = (ticket.createdAt ? parseTicketDateTime(ticket.createdAt) : null) || parseTicketDateTime(ticket.id);
+
+      // Gunakan waktu paling mutakhir antara rencana keluar dan persetujuan
+      let baseReferenceTime = exitTime;
+      if (approveTime && !isNaN(approveTime.getTime())) {
+        if (!baseReferenceTime || approveTime.getTime() > baseReferenceTime.getTime()) {
+          baseReferenceTime = approveTime;
+        }
+      }
+
+      // Deteksi apakah tiket terkait dengan hari ini (sesi pengujian/simulasi aktif)
+      const isExitToday = exitTime && !isNaN(exitTime.getTime()) &&
+        exitTime.getFullYear() === now.getFullYear() &&
+        exitTime.getMonth() === now.getMonth() &&
+        exitTime.getDate() === now.getDate();
+
+      const isCreatedToday = (createTime && !isNaN(createTime.getTime()) &&
+        createTime.getFullYear() === now.getFullYear() &&
+        createTime.getMonth() === now.getMonth() &&
+        createTime.getDate() === now.getDate()) ||
+        Boolean(ticket.id && ticket.id.includes(`${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`));
+
+      const isApprovedToday = approveTime && !isNaN(approveTime.getTime()) &&
+        approveTime.getFullYear() === now.getFullYear() &&
+        approveTime.getMonth() === now.getMonth() &&
+        approveTime.getDate() === now.getDate();
+
+      const isTodaySession = isExitToday || isCreatedToday || isApprovedToday;
+
+      // Deteksi apakah tanggal rencana keluar sudah lampau (kemarin ke belakang)
+      const isPastDay = exitTime && !isNaN(exitTime.getTime()) && (
+        exitTime.getFullYear() < now.getFullYear() ||
+        (exitTime.getFullYear() === now.getFullYear() && (
+          exitTime.getMonth() < now.getMonth() ||
+          (exitTime.getMonth() === now.getMonth() && exitTime.getDate() < now.getDate())
+        ))
+      );
+
+      // Toleransi waktu:
+      // Hari lampau -> hangus
+      // Tiket pengujian hari ini -> toleransi aman 24 jam penuh agar alur pengujian & refresh tidak hangus
+      // Default operasional di luar hari ini -> 30 menit
+      const toleranceMs = isPastDay ? 0 : (isTodaySession ? (24 * 60 * 60 * 1000) : (30 * 60 * 1000));
+      const effectiveDeadlineMs = (baseReferenceTime && !isNaN(baseReferenceTime.getTime()))
+        ? (baseReferenceTime.getTime() + toleranceMs)
+        : 0;
+
+      if (effectiveDeadlineMs > 0 && now.getTime() > effectiveDeadlineMs) {
         ticket.status = 'Kedaluwarsa';
         if (!ticket.notifiedExpired) {
           ticket.notifiedExpired = true;
@@ -192,7 +242,7 @@ function _executeCheckOverdueAndExpiredTickets(silent = true) {
           event: isEmergencyTicket ? 'Izin Darurat Kedaluwarsa' : 'Tiket Kedaluwarsa',
           time: nowFormatted,
           by: 'Sistem Otomatis (Scheduler)',
-          desc: `Tiket ${isEmergencyTicket ? 'darurat ' : ''}otomatis hangus/kedaluwarsa karena tidak dipindai keluar melewati batas toleransi rencana keluar (+10 menit).`
+          desc: `Tiket ${isEmergencyTicket ? 'darurat ' : ''}otomatis hangus/kedaluwarsa karena tidak dipindai keluar melewati batas toleransi rencana keluar.`
         });
         hasChanges = true;
         newlyExpired++;

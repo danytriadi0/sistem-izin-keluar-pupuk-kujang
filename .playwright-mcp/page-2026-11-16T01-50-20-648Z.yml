@@ -1,0 +1,58 @@
+- generic [active] [ref=f3e1]:
+  - text: – – – – – – –
+  - generic [ref=f3e2]:
+    - banner [ref=f3e3]:
+      - generic [ref=f3e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f3e6]
+        - generic [ref=f3e7]:
+          - generic [ref=f3e8]: PUPUK KUJANG
+          - generic [ref=f3e9]: Perizinan Keluar Area • Pos Jaga
+      - generic [ref=f3e10]:
+        - button "Pos Jaga ▼" [ref=f3e11] [cursor=pointer]:
+          - generic [ref=f3e15]: Pos Jaga
+          - generic [ref=f3e16]: ▼
+        - button "Notifikasi" [ref=f3e18] [cursor=pointer]:
+          - generic [ref=f3e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f3e23] [cursor=pointer]:
+          - img "SA" [ref=f3e24]
+    - main [ref=f3e25]:
+      - generic [ref=f3e26]:
+        - generic [ref=f3e27]: Terminal verifikasi tiket
+        - generic [ref=f3e28]:
+          - generic [ref=f3e29]: Pos bertugas
+          - combobox [ref=f3e30]:
+            - option "Pos 1 Gerbang Utama (Utara)" [selected]
+            - option "Pos 2 Gerbang Darurat"
+            - option "Pos 3 Logistik"
+        - generic [ref=f3e31]:
+          - button "Kamera" [ref=f3e32] [cursor=pointer]
+          - button "Manual / Barcode" [ref=f3e33] [cursor=pointer]
+      - generic [ref=f3e34]:
+        - generic [ref=f3e35]:
+          - heading "Kamera pemindai siap digunakan" [level=4] [ref=f3e40]
+          - paragraph [ref=f3e41]: Aktifkan kamera untuk memindai QR Code tiket karyawan saat Scan Out gerbang.
+          - generic [ref=f3e42]:
+            - button "Aktifkan Kamera Pemindai" [ref=f3e43] [cursor=pointer]
+            - button "Unggah Gambar QR Tiket" [ref=f3e48] [cursor=pointer]
+        - generic [ref=f3e54]:
+          - generic [ref=f3e55]: Kamera & unggah QR
+          - list [ref=f3e56]:
+            - listitem [ref=f3e57]: Aktifkan Kamera dan izinkan akses di browser.
+            - listitem [ref=f3e58]: Posisikan QR dengan jelas dan cahaya cukup.
+            - listitem [ref=f3e59]: Atau pilih Unggah Gambar QR dari tiket.
+          - generic [ref=f3e60]:
+            - text: Kamera tidak tersedia? Gunakan
+            - link "Input Manual / Barcode" [ref=f3e61] [cursor=pointer]:
+              - /url: "#"
+            - text: .
+    - navigation [ref=f3e62]:
+      - generic [ref=f3e63] [cursor=pointer]: Dashboard
+      - generic [ref=f3e70] [cursor=pointer]: Pindai
+      - generic [ref=f3e74] [cursor=pointer]: Pelacakan
+      - generic [ref=f3e78] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)
+    - generic [ref=f3e83]: Selamat datang, Sertu Agus (undefined)
+    - generic: Beralih ke mode Pos Jaga Pengamanan (Sertu Agus)

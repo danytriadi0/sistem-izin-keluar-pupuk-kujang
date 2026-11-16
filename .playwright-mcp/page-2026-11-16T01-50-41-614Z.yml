@@ -1,0 +1,88 @@
+- generic [active] [ref=f4e1]:
+  - text: – – – – – – –
+  - generic [ref=f4e2]:
+    - banner [ref=f4e3]:
+      - generic [ref=f4e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f4e6]
+        - generic [ref=f4e7]:
+          - generic [ref=f4e8]: PUPUK KUJANG
+          - generic [ref=f4e9]: Perizinan Keluar Area • Atasan 1
+      - generic [ref=f4e10]:
+        - button "Atasan 1 ▼" [ref=f4e11] [cursor=pointer]:
+          - generic [ref=f4e15]: Atasan 1
+          - generic [ref=f4e16]: ▼
+        - button "Notifikasi" [ref=f4e18] [cursor=pointer]:
+          - generic [ref=f4e22]: "1"
+        - button "Menu Akun & Keluar SAKTI" [ref=f4e23] [cursor=pointer]:
+          - img "HG" [ref=f4e24]
+    - main [ref=f4e25]:
+      - generic [ref=f4e26]:
+        - button "Izin Baru (3)" [ref=f4e27] [cursor=pointer]
+        - button "Perpanjangan (0)" [ref=f4e28] [cursor=pointer]
+      - generic [ref=f4e29]:
+        - generic [ref=f4e30]: 3 izin baru menunggu persetujuan
+        - button "Filter" [ref=f4e31] [cursor=pointer]
+      - generic [ref=f4e35]:
+        - generic [ref=f4e36]:
+          - generic [ref=f4e37]:
+            - generic [ref=f4e38]: Arthur Morgan, S.Tr.T.
+            - generic [ref=f4e39]: PK-2024-8843 • Departemen Rekayasa & Pemeliharaan
+          - generic [ref=f4e40]: Menunggu Persetujuan
+        - generic [ref=f4e42]: TK-ANTREAN-PRIBADI
+        - generic [ref=f4e43]: Urusan Pribadi • Kembali ke Area
+        - generic [ref=f4e44]: Diajukan • Hari ini, 09.30 WIB
+        - generic [ref=f4e45]:
+          - generic [ref=f4e46]:
+            - generic [ref=f4e47]: Rencana keluar
+            - generic [ref=f4e48]: 09.30 WIB
+          - generic [ref=f4e49]:
+            - generic [ref=f4e50]: Estimasi kembali
+            - generic [ref=f4e51]: 11.30 WIB
+        - button "Tinjau" [ref=f4e52] [cursor=pointer]
+      - generic [ref=f4e53]:
+        - generic [ref=f4e54]:
+          - generic [ref=f4e55]:
+            - generic [ref=f4e56]: Budi Pratama, S.T.
+            - generic [ref=f4e57]: PK-2024-8841 • Departemen Rekayasa & Pemeliharaan
+          - generic [ref=f4e58]: Menunggu Persetujuan
+        - generic [ref=f4e60]: TK-ANTREAN-DINAS-TIM
+        - generic [ref=f4e61]: Dinas Kantor • Kembali ke Area
+        - generic [ref=f4e62]: Diajukan • Hari ini, 09.00 WIB
+        - generic [ref=f4e63]:
+          - generic [ref=f4e64]:
+            - generic [ref=f4e65]: Rencana keluar
+            - generic [ref=f4e66]: 09.00 WIB
+          - generic [ref=f4e67]:
+            - generic [ref=f4e68]: Estimasi kembali
+            - generic [ref=f4e69]: 14.00 WIB
+        - button "Tinjau" [ref=f4e70] [cursor=pointer]
+      - generic [ref=f4e71]:
+        - generic [ref=f4e72]:
+          - generic [ref=f4e73]:
+            - generic [ref=f4e74]: Budi Pratama, S.T.
+            - generic [ref=f4e75]: PK-2024-8841 • Departemen Rekayasa & Pemeliharaan
+          - generic [ref=f4e76]: Menunggu Persetujuan
+        - generic [ref=f4e78]: TK-20261116-642
+        - generic [ref=f4e79]: Urusan Pribadi • Kembali ke Area
+        - generic [ref=f4e80]: Diajukan • Hari ini, 07.48 WIB
+        - generic [ref=f4e81]:
+          - generic [ref=f4e82]:
+            - generic [ref=f4e83]: Rencana keluar
+            - generic [ref=f4e84]: 07.48 WIB
+          - generic [ref=f4e85]:
+            - generic [ref=f4e86]: Estimasi kembali
+            - generic [ref=f4e87]: 11.30 WIB
+        - button "Tinjau" [ref=f4e88] [cursor=pointer]
+    - navigation [ref=f4e89]:
+      - generic [ref=f4e90] [cursor=pointer]: Dashboard
+      - generic [ref=f4e97] [cursor=pointer]:
+        - generic [ref=f4e101]: Antrean
+        - generic [ref=f4e102]: "3"
+      - generic [ref=f4e103] [cursor=pointer]: Pelacakan
+      - generic [ref=f4e108] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f4e112]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
