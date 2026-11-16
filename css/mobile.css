@@ -1423,6 +1423,19 @@ body.theme-dark .mobile-bottom-sheet {
   border-color: #1e293b !important;
 }
 
+body.theme-dark .mobile-form-stepper {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark .m-step-text {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .m-step-line {
+  background: #334155 !important;
+}
+
 body.theme-dark .mobile-ticket-grid-meta {
   background: #1e293b !important;
 }

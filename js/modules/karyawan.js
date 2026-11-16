@@ -595,6 +595,12 @@ window.viewSuratPerintahDetail = function(ticketIdParam) {
     if (typeof window.showToast === 'function') window.showToast('Dokumen surat perintah tugas dinas belum dilampirkan.', 'warning');
     return;
   }
+  if (!doc.dataUrl && ticketId) {
+    try {
+      const cachedDoc = sessionStorage.getItem('KUJANG_DOC_' + ticketId);
+      if (cachedDoc) doc.dataUrl = cachedDoc;
+    } catch (e) {}
+  }
 
   window._activeViewingDoc = doc;
   window._docViewerZoomed = false;

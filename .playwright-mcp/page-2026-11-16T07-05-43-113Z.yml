@@ -1,0 +1,28 @@
+- generic [active] [ref=f39e1]:
+  - text: – – – – – – –
+  - generic [ref=f39e2]:
+    - banner [ref=f39e3]:
+      - generic [ref=f39e4]:
+        - img "Logo PT Pupuk Kujang" [ref=f39e6]
+        - generic [ref=f39e7]:
+          - generic [ref=f39e8]: PUPUK KUJANG
+          - generic [ref=f39e9]: Perizinan Keluar Area
+      - generic [ref=f39e10]:
+        - button "Karyawan ▼" [ref=f39e11] [cursor=pointer]:
+          - generic [ref=f39e15]: Karyawan
+          - generic [ref=f39e16]: ▼
+        - button "Notifikasi" [ref=f39e18] [cursor=pointer]:
+          - generic [ref=f39e22]: "6"
+        - button "Menu Akun & Keluar SAKTI" [ref=f39e23] [cursor=pointer]:
+          - img "BP" [ref=f39e24]
+    - main [ref=f39e25]
+    - navigation [ref=f39e26]:
+      - generic [ref=f39e27] [cursor=pointer]: Dashboard
+      - generic [ref=f39e34] [cursor=pointer]: Pengajuan
+      - generic [ref=f39e39] [cursor=pointer]: Riwayat
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic [ref=f39e44]: Beralih ke akun Budi Pratama, S.T.
+    - generic [ref=f39e46]: Selamat datang, Budi Pratama, S.T. (undefined)
+    - generic [ref=f39e48]: Beralih ke akun Budi Pratama, S.T.

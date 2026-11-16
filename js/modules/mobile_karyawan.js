@@ -26,6 +26,7 @@
   let pendingMobileFormData = null;
   let isSubmittingMobilePermit = false;
   let isSubmittingPerpanjangan = false;
+  window.currentMobileFormStep = 1;
 
   function escapeHtml(str) {
     if (str === null || str === undefined) return '';
@@ -1645,8 +1646,27 @@
   };
 
   window.mobileCloseFormPengajuan = function () {
+    if (window.currentMobileFormStep === 2) {
+      window.mobileFormGoToStep(1);
+      return;
+    }
     window.editingTicketId = null;
     currentFormPrefill = null;
+    window.currentMobileFormStep = 1;
+    currentKaryawanTab = formPreviousTab || 'pengajuan';
+    try {
+      sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', currentKaryawanTab);
+      localStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', currentKaryawanTab);
+      sessionStorage.removeItem('KUJANG_FORM_IS_EMERGENCY');
+    } catch (e) {}
+    renderMobileKaryawan(null, currentKaryawanTab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.mobileCancelFormPengajuan = function () {
+    window.editingTicketId = null;
+    currentFormPrefill = null;
+    window.currentMobileFormStep = 1;
     currentKaryawanTab = formPreviousTab || 'pengajuan';
     try {
       sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', currentKaryawanTab);
@@ -1678,6 +1698,7 @@
       if (typeof window.resetAllDinasUploadState === 'function') {
         window.resetAllDinasUploadState();
       }
+      window.currentMobileFormStep = 1;
     }
 
     if (typeof window.mobileCloseSheet === 'function') {
@@ -1733,13 +1754,15 @@
     const initialDest = prefillData?.destination || '';
     const initialReason = prefillData?.reason || '';
 
+    const activeStep = window.currentMobileFormStep || 1;
+
     container.innerHTML = `
       <!-- Header Navigasi Halaman Baru Formulir Pengajuan -->
-      <div class="mobile-page-header" style="margin-bottom: 14px;">
+      <div class="mobile-page-header" style="margin-bottom: 12px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
           <button type="button" class="mobile-btn-back" style="display: inline-flex; align-items: center; gap: 6px; background: none; border: none; color: #059669; font-size: 0.825rem; font-weight: 700; padding: 4px 0; cursor: pointer;" onclick="window.mobileCloseFormPengajuan()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            <span>Kembali</span>
+            <span id="mBtnHeaderBackText">${activeStep === 2 ? 'Langkah Sebelumnya' : 'Kembali'}</span>
           </button>
           <span class="mobile-badge ${isEmergency ? 'darurat' : 'disetujui'}" style="font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">
             ${isEmergency ? 'Izin Darurat' : 'Izin Keluar'}
@@ -1749,8 +1772,47 @@
           ${isEditing ? `Edit Pengajuan Izin — ${window.editingTicketId}` : (isEmergency ? 'Formulir Izin Darurat (Emergency Pass)' : 'Formulir Pengajuan Izin Keluar')}
         </h1>
         <p class="mobile-page-subtitle" style="font-size: 0.775rem; color: #64748b; margin: 0;">
-          ${isEditing ? 'Perbarui data formulir izin keluar Anda sebelum disetujui Atasan' : (isEmergency ? 'Penerbitan izin darurat untuk evakuasi/keadaan mendesak' : 'Lengkapi detail perizinan Anda di bawah ini')}
+          ${isEditing ? 'Perbarui data formulir izin keluar Anda sebelum disetujui Atasan' : (isEmergency ? 'Penerbitan izin darurat untuk evakuasi/keadaan mendesak' : 'Lengkapi detail perizinan Anda secara bertahap')}
         </p>
+      </div>
+
+      <!-- Multi-Step Progress Bar (Editorial Modern) -->
+      <div class="mobile-form-stepper" id="mFormStepper" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <!-- Step 1 Node -->
+        <div class="m-step-item" id="mStepNode1" style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; cursor: pointer;" onclick="window.mobileFormGoToStep(1)">
+          <div class="m-step-circle" id="mStepCircle1" style="width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; background: ${activeStep >= 1 ? (isEmergency ? '#dc2626' : '#059669') : '#cbd5e1'}; color: #ffffff; transition: all 0.25s ease;">
+            ${activeStep > 1 ? '✓' : '1'}
+          </div>
+          <span class="m-step-text" id="mStepText1" style="font-size: 0.675rem; font-weight: ${activeStep === 1 ? '800' : '600'}; color: ${activeStep === 1 ? (isEmergency ? '#dc2626' : '#059669') : '#64748b'}; text-align: center; white-space: nowrap;">
+            Kategori & Berkas
+          </span>
+        </div>
+
+        <!-- Connector Line 1-2 -->
+        <div class="m-step-line" id="mStepLine1" style="flex: 1; height: 2px; background: ${activeStep >= 2 ? (isEmergency ? '#dc2626' : '#059669') : '#e2e8f0'}; margin: 0 4px; margin-top: -16px; transition: all 0.25s ease;"></div>
+
+        <!-- Step 2 Node -->
+        <div class="m-step-item" id="mStepNode2" style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; cursor: pointer;" onclick="window.mobileFormGoToStep(2)">
+          <div class="m-step-circle" id="mStepCircle2" style="width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; background: ${activeStep >= 2 ? (isEmergency ? '#dc2626' : '#059669') : '#cbd5e1'}; color: #ffffff; transition: all 0.25s ease;">
+            ${activeStep > 2 ? '✓' : '2'}
+          </div>
+          <span class="m-step-text" id="mStepText2" style="font-size: 0.675rem; font-weight: ${activeStep === 2 ? '800' : '600'}; color: ${activeStep === 2 ? (isEmergency ? '#dc2626' : '#059669') : '#64748b'}; text-align: center; white-space: nowrap;">
+            Tujuan & Waktu
+          </span>
+        </div>
+
+        <!-- Connector Line 2-3 -->
+        <div class="m-step-line" id="mStepLine2" style="flex: 1; height: 2px; background: ${activeStep >= 3 ? (isEmergency ? '#dc2626' : '#059669') : '#e2e8f0'}; margin: 0 4px; margin-top: -16px; transition: all 0.25s ease;"></div>
+
+        <!-- Step 3 Node -->
+        <div class="m-step-item" id="mStepNode3" style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;">
+          <div class="m-step-circle" id="mStepCircle3" style="width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; background: ${activeStep >= 3 ? (isEmergency ? '#dc2626' : '#059669') : '#cbd5e1'}; color: #ffffff; transition: all 0.25s ease;">
+            3
+          </div>
+          <span class="m-step-text" id="mStepText3" style="font-size: 0.675rem; font-weight: ${activeStep === 3 ? '800' : '600'}; color: ${activeStep === 3 ? (isEmergency ? '#dc2626' : '#059669') : '#64748b'}; text-align: center; white-space: nowrap;">
+            Konfirmasi
+          </span>
+        </div>
       </div>
 
       <div class="mobile-card" style="padding: 16px 14px; margin-bottom: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
@@ -1762,177 +1824,209 @@
           </div>
         ` : ''}
 
-        <form id="mobileCreatePermitForm" onsubmit="window.mobileSubmitPermitForm(event, ${!!isEmergency})">
-          <!-- 1. Pilih Atasan Langsung (Searchable Combobox) -->
-          <div class="mobile-form-group" style="margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label class="mobile-form-label" style="margin: 0;">Pilih Atasan Peninjau <span class="req">*</span></label>
-              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.675rem; font-weight: 700; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 999px; padding: 2px 8px;">
-                Ketik nama langsung terpilih
+        <form id="mobileCreatePermitForm" novalidate onsubmit="window.mobileSubmitPermitForm(event, ${!!isEmergency})">
+          <!-- TAHAP 1: KATEGORI & BERKAS -->
+          <div id="mFormStep1" style="display: ${activeStep === 1 ? 'block' : 'none'};">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">
+                <span style="color: ${isEmergency ? '#dc2626' : '#059669'};">Langkah 1:</span> Kategori & Berkas Persyaratan
               </span>
+              <span style="font-size: 0.675rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">Tahap 1 dari 2</span>
             </div>
 
-            <div class="mobile-approver-combobox-wrapper" id="mApproverComboboxWrapper">
-              <div class="mobile-approver-selected-card" id="mApproverSelectedCard" style="display: ${selectedApproverData ? 'flex' : 'none'};">
-                <div class="mobile-approver-selected-left">
-                  <div class="mobile-approver-item-avatar" id="mSelectedAvatar">
-                    ${selectedApproverData ? (selectedApproverData.initials || 'HG') : 'HG'}
-                  </div>
-                  <div class="mobile-approver-selected-meta">
-                    <div class="mobile-approver-selected-name" id="mSelectedName">
-                      ${selectedApproverData ? selectedApproverData.name : ''}
+            <!-- 1. Pilih Atasan Langsung (Searchable Combobox) -->
+            <div class="mobile-form-group" style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="mobile-form-label" style="margin: 0;">Pilih Atasan Peninjau <span class="req">*</span></label>
+                <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.675rem; font-weight: 700; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 999px; padding: 2px 8px;">
+                  Ketik nama langsung terpilih
+                </span>
+              </div>
+
+              <div class="mobile-approver-combobox-wrapper" id="mApproverComboboxWrapper">
+                <div class="mobile-approver-selected-card" id="mApproverSelectedCard" style="display: ${selectedApproverData ? 'flex' : 'none'};">
+                  <div class="mobile-approver-selected-left">
+                    <div class="mobile-approver-item-avatar" id="mSelectedAvatar">
+                      ${selectedApproverData ? (selectedApproverData.initials || 'HG') : 'HG'}
                     </div>
-                    <div class="mobile-approver-selected-title" id="mSelectedTitle">
-                      ${selectedApproverData ? (selectedApproverData.title || 'Manager') : ''}
+                    <div class="mobile-approver-selected-meta">
+                      <div class="mobile-approver-selected-name" id="mSelectedName">
+                        ${selectedApproverData ? selectedApproverData.name : ''}
+                      </div>
+                      <div class="mobile-approver-selected-title" id="mSelectedTitle">
+                        ${selectedApproverData ? (selectedApproverData.title || 'Manager') : ''}
+                      </div>
                     </div>
                   </div>
+                  <button type="button" class="mobile-btn-change-approver" onclick="window.mobileChangeApprover()">
+                    Ubah Atasan
+                  </button>
                 </div>
-                <button type="button" class="mobile-btn-change-approver" onclick="window.mobileChangeApprover()">
-                  Ubah Atasan
-                </button>
-              </div>
 
-              <div class="mobile-approver-input-box" id="mApproverInputBox" style="display: ${selectedApproverData ? 'none' : 'flex'};">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="mSearchApproverInput" class="mobile-approver-search-input" placeholder="Masukkan nama atau NIP atasan..." autocomplete="off" oninput="window.mobileFilterApprovers(this.value)" onclick="window.mobileShowApproverDropdown()" onkeydown="if(event.key==='Enter'){event.preventDefault();window.mobileSelectFirstApprover();}">
-                <button type="button" id="mBtnClearApprover" style="display:none; background:none; border:none; color:#64748b; font-size:12px; cursor:pointer;" onclick="window.mobileClearApproverSearch()">✕</button>
-                <button type="button" style="background:none; border:none; color:#64748b; font-size:11px; cursor:pointer;" onclick="window.mobileToggleApproverDropdown()">▼</button>
-              </div>
+                <div class="mobile-approver-input-box" id="mApproverInputBox" style="display: ${selectedApproverData ? 'none' : 'flex'};">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="mSearchApproverInput" class="mobile-approver-search-input" placeholder="Masukkan nama atau NIP atasan..." autocomplete="off" oninput="window.mobileFilterApprovers(this.value)" onclick="window.mobileShowApproverDropdown()" onkeydown="if(event.key==='Enter'){event.preventDefault();window.mobileSelectFirstApprover();}">
+                  <button type="button" id="mBtnClearApprover" style="display:none; background:none; border:none; color:#64748b; font-size:12px; cursor:pointer;" onclick="window.mobileClearApproverSearch()">✕</button>
+                  <button type="button" style="background:none; border:none; color:#64748b; font-size:11px; cursor:pointer;" onclick="window.mobileToggleApproverDropdown()">▼</button>
+                </div>
 
-              <div class="mobile-approver-dropdown" id="mApproverDropdown" style="display: none;"></div>
-              <input type="hidden" id="mFormApproverValue" value="${selectedApproverData ? selectedApproverData.name : ''}" required>
-            </div>
-          </div>
-
-          <!-- 2. Kategori Keperluan & Tipe Kepulangan (Side-by-side Dropdowns) -->
-          <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-            <div class="mobile-form-group" style="margin: 0;">
-              <label class="mobile-form-label">Kategori Keperluan <span class="req">*</span></label>
-              <select class="mobile-select" id="mFormCategory" required onchange="window.mobileHandleCategoryChange(this.value)">
-                <option value="">-- Pilih Kategori --</option>
-                <option value="Dinas Kantor" ${initialCat === 'Dinas Kantor' || !initialCat ? 'selected' : ''}>Dinas Kantor</option>
-                <option value="Urusan Pribadi" ${initialCat === 'Urusan Pribadi' ? 'selected' : ''}>Urusan Pribadi</option>
-              </select>
-            </div>
-
-            <div class="mobile-form-group" style="margin: 0;">
-              <label class="mobile-form-label">Tipe Kepulangan <span class="req">*</span></label>
-              <select class="mobile-select" id="mFormReturnType" required onchange="window.mobileToggleReturnType(this.value)">
-                <option value="">-- Pilih Tipe Kepulangan --</option>
-                <option value="Kembali ke Area" ${initialType === 'Kembali ke Area' || !initialType ? 'selected' : ''}>Kembali ke Area</option>
-                <option value="Pulang Mendahului" ${initialType === 'Pulang Mendahului' ? 'selected' : ''}>Pulang Lebih Awal</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- 2B. Anggota Rombongan Tim (Khusus Dinas Kantor) -->
-          <div class="mobile-form-group" id="mGroupDinasWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label class="mobile-form-label" style="margin: 0; color: #0f172a; font-weight: 700;">Tambahkan Anggota Tim (Dinas Bersama)</label>
-              <span style="font-size: 0.675rem; color: #64748b;">Opsional (Maks. 5 Orang)</span>
-            </div>
-            <p style="font-size: 0.7rem; color: #64748b; margin: 0 0 8px 0; line-height: 1.35;">
-              Dapat menambahkan rekan kerja lintas departemen maupun lintas atasan.
-            </p>
-            <div style="position: relative;">
-              <div style="display: flex; align-items: center; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 10px; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="mInputSearchGroupMember" style="flex: 1; border: none; outline: none; font-size: 0.775rem; padding: 4px 0; background: transparent;" placeholder="Cari nama karyawan, NIP, jabatan..." autocomplete="off" oninput="window.mobileFilterGroupMembers(this.value)">
-              </div>
-              <div id="mMemberFloatingDropdown" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.15); max-height: 200px; overflow-y: auto; z-index: 1000; padding: 4px;">
-                <div id="mMemberItemsList" style="display: flex; flex-direction: column; gap: 2px;"></div>
+                <div class="mobile-approver-dropdown" id="mApproverDropdown" style="display: none;"></div>
+                <input type="hidden" id="mFormApproverValue" value="${selectedApproverData ? selectedApproverData.name : ''}" required>
               </div>
             </div>
-            <div id="mListSelectedGroupMembers" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;"></div>
-          </div>
 
-          <!-- 2C. Unggah Surat Perintah / Surat Tugas (Khusus Dinas Kantor) -->
-          <div class="mobile-form-group" id="mSuratPerintahWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
-            <label class="mobile-form-label" style="margin: 0 0 4px 0; color: #0f172a; font-weight: 700;">
-              Unggah Surat Perintah / Surat Tugas Dinas
-            </label>
-            <p style="font-size: 0.7rem; color: #64748b; margin: 0 0 8px 0; line-height: 1.35;">
-              Lampirkan surat tugas resmi (PDF, JPG, PNG, maks 5 MB).
-            </p>
-            <div id="mDropzoneSuratPerintah" onclick="document.getElementById('mFileSuratPerintah').click()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; border: 1.5px dashed #94a3b8; border-radius: 8px; background: #ffffff; cursor: pointer; text-align: center;">
-              <span style="font-size: 1.3rem; margin-bottom: 4px;">📎</span>
-              <span style="font-size: 0.75rem; font-weight: 700; color: #0f172a;">Klik untuk Pilih Dokumen / Foto</span>
-              <span style="font-size: 0.675rem; color: #64748b;">PDF, JPG, PNG hingga 5 MB</span>
-              <input type="file" id="mFileSuratPerintah" accept=".pdf,image/png,image/jpeg" style="display: none;" onchange="window.mobileHandleSuratPerintahUpload(event)">
+            <!-- 2. Kategori Keperluan & Tipe Kepulangan (Side-by-side Dropdowns) -->
+            <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div class="mobile-form-group" style="margin: 0;">
+                <label class="mobile-form-label">Kategori Keperluan <span class="req">*</span></label>
+                <select class="mobile-select" id="mFormCategory" required onchange="window.mobileHandleCategoryChange(this.value)">
+                  <option value="">-- Pilih Kategori --</option>
+                  <option value="Dinas Kantor" ${initialCat === 'Dinas Kantor' || !initialCat ? 'selected' : ''}>Dinas Kantor</option>
+                  <option value="Urusan Pribadi" ${initialCat === 'Urusan Pribadi' ? 'selected' : ''}>Urusan Pribadi</option>
+                </select>
+              </div>
+
+              <div class="mobile-form-group" style="margin: 0;">
+                <label class="mobile-form-label">Tipe Kepulangan <span class="req">*</span></label>
+                <select class="mobile-select" id="mFormReturnType" required onchange="window.mobileToggleReturnType(this.value)">
+                  <option value="">-- Pilih Tipe Kepulangan --</option>
+                  <option value="Kembali ke Area" ${initialType === 'Kembali ke Area' || !initialType ? 'selected' : ''}>Kembali ke Area</option>
+                  <option value="Pulang Mendahului" ${initialType === 'Pulang Mendahului' ? 'selected' : ''}>Pulang Lebih Awal</option>
+                </select>
+              </div>
             </div>
-            <div id="mPreviewSuratPerintahCard" style="display: none; align-items: center; justify-content: space-between; padding: 10px 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; margin-top: 6px;">
-              <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
-                <span style="font-size: 1.1rem;">📄</span>
-                <div style="min-width: 0;">
-                  <div id="mPreviewSuratPerintahName" style="font-size: 0.775rem; font-weight: 700; color: #065f46; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Surat_Tugas.pdf</div>
-                  <div id="mPreviewSuratPerintahMeta" style="font-size: 0.675rem; color: #047857;">142 KB • Siap dikirim</div>
+
+            <!-- 2B. Anggota Rombongan Tim (Khusus Dinas Kantor) -->
+            <div class="mobile-form-group" id="mGroupDinasWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="mobile-form-label" style="margin: 0; color: #0f172a; font-weight: 700;">Tambahkan Anggota Tim (Dinas Bersama)</label>
+                <span style="font-size: 0.675rem; color: #64748b;">Opsional (Maks. 5 Orang)</span>
+              </div>
+              <p style="font-size: 0.7rem; color: #64748b; margin: 0 0 8px 0; line-height: 1.35;">
+                Dapat menambahkan rekan kerja lintas departemen maupun lintas atasan.
+              </p>
+              <div style="position: relative;">
+                <div style="display: flex; align-items: center; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 10px; gap: 8px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="mInputSearchGroupMember" style="flex: 1; border: none; outline: none; font-size: 0.775rem; padding: 4px 0; background: transparent;" placeholder="Cari nama karyawan, NIP, jabatan..." autocomplete="off" oninput="window.mobileFilterGroupMembers(this.value)">
+                </div>
+                <div id="mMemberFloatingDropdown" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.15); max-height: 200px; overflow-y: auto; z-index: 1000; padding: 4px;">
+                  <div id="mMemberItemsList" style="display: flex; flex-direction: column; gap: 2px;"></div>
                 </div>
               </div>
-              <button type="button" onclick="window.mobileRemoveSuratPerintahFile()" style="background: none; border: none; color: #dc2626; font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 4px 6px;">Hapus</button>
+              <div id="mListSelectedGroupMembers" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;"></div>
             </div>
-          </div>
 
-          <!-- 3. Lokasi / Tujuan Keluar -->
-          <div class="mobile-form-group" style="margin-bottom: 12px;">
-            <label class="mobile-form-label">Lokasi / Tujuan Keluar <span class="req">*</span></label>
-            <input type="text" class="mobile-input" id="mFormDestination" placeholder="Masukkan lokasi / tujuan keluar..." value="${initialDest}" required>
-          </div>
-
-          <!-- 4. Alasan Keperluan Izin -->
-          <div class="mobile-form-group" style="margin-bottom: 12px;">
-            <label class="mobile-form-label" id="mFormReasonLabel" data-is-emergency="${isEmergency ? '1' : '0'}">${initialType === 'Pulang Mendahului' ? 'Alasan Keperluan Izin dan memilih pulang lebih awal' : (isEmergency ? 'Alasan Kondisi Kedaruratan' : 'Alasan Keperluan Izin')} <span class="req">*</span></label>
-            <textarea class="mobile-textarea" id="mFormReason" placeholder="${initialType === 'Pulang Mendahului' ? 'Masukkan alasan keperluan izin dan memilih pulang lebih awal...' : (isEmergency ? 'Masukkan alasan kondisi kedaruratan...' : 'Masukkan alasan keperluan izin...')}" required style="min-height: 65px;">${initialReason}</textarea>
-          </div>
-
-          <!-- 5. Rencana Waktu Keluar & Perkiraan Waktu Kembali (Anti Waktu Lampau) -->
-          <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;">
-            <div class="mobile-form-group" style="margin: 0;">
-              <label class="mobile-form-label">Rencana Waktu Keluar <span class="req">*</span></label>
-              <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)">
-            </div>
-            <div class="mobile-form-group" id="mFormWrapReturn" style="margin: 0; display: ${initialType === 'Pulang Mendahului' ? 'none' : 'block'};">
-              <label class="mobile-form-label">Perkiraan Waktu Kembali <span class="req">*</span></label>
-              <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)">
-            </div>
-          </div>
-
-          <div style="font-size: 0.725rem; color: #64748b; margin-bottom: 12px; line-height: 1.4;">
-            * Wajib diisi. Dilarang memilih waktu yang sudah dilalui. Seluruh waktu dalam WIB.
-          </div>
-
-          ${isEmergency ? `
-            <!-- 6. Metode Otorisasi Darurat (Pilihan 3 Opsi) -->
-            <div class="mobile-form-group" style="margin-bottom: 14px; background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px;">
-              <label class="mobile-form-label" style="color: #991b1b; font-weight: 800; margin-bottom: 6px;">Pilih Cara Otorisasi Buka Kunci QR <span class="req">*</span></label>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 0.775rem; color: #1e293b; cursor: pointer;">
-                  <input type="radio" name="mEmgMethod" value="app" checked>
-                  <div>
-                    <strong>Persetujuan Langsung Atasan di App (1-Click)</strong>
-                    <div style="color: #64748b; font-size: 0.675rem;">Notifikasi prioritas dikirim ke perangkat Atasan</div>
+            <!-- 2C. Unggah Surat Perintah / Surat Tugas (Khusus Dinas Kantor) -->
+            <div class="mobile-form-group" id="mSuratPerintahWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
+              <label class="mobile-form-label" style="margin: 0 0 4px 0; color: #0f172a; font-weight: 700;">
+                Unggah Surat Perintah / Surat Tugas Dinas
+              </label>
+              <p style="font-size: 0.7rem; color: #64748b; margin: 0 0 8px 0; line-height: 1.35;">
+                Lampirkan surat tugas resmi (PDF, JPG, PNG, maks 5 MB).
+              </p>
+              <div id="mDropzoneSuratPerintah" onclick="document.getElementById('mFileSuratPerintah').click()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; border: 1.5px dashed #94a3b8; border-radius: 8px; background: #ffffff; cursor: pointer; text-align: center;">
+                <span style="font-size: 1.3rem; margin-bottom: 4px;">📎</span>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #0f172a;">Klik untuk Pilih Dokumen / Foto</span>
+                <span style="font-size: 0.675rem; color: #64748b;">PDF, JPG, PNG hingga 5 MB</span>
+                <input type="file" id="mFileSuratPerintah" accept=".pdf,image/png,image/jpeg" style="display: none;" onchange="window.mobileHandleSuratPerintahUpload(event)">
+              </div>
+              <div id="mPreviewSuratPerintahCard" style="display: none; align-items: center; justify-content: space-between; padding: 10px 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; margin-top: 6px;">
+                <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                  <span style="font-size: 1.1rem;">📄</span>
+                  <div style="min-width: 0;">
+                    <div id="mPreviewSuratPerintahName" style="font-size: 0.775rem; font-weight: 700; color: #065f46; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Surat_Tugas.pdf</div>
+                    <div id="mPreviewSuratPerintahMeta" style="font-size: 0.675rem; color: #047857;">142 KB • Siap dikirim</div>
                   </div>
-                </label>
-                
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 0.775rem; color: #1e293b; cursor: pointer;">
-                  <input type="radio" name="mEmgMethod" value="facescan">
-                  <div>
-                    <strong>Scan Wajah Atasan (Face Scan Biometrik)</strong>
-                    <div style="color: #64748b; font-size: 0.675rem;">Pindai wajah Atasan langsung di tempat</div>
-                  </div>
-                </label>
+                </div>
+                <button type="button" onclick="window.mobileRemoveSuratPerintahFile()" style="background: none; border: none; color: #dc2626; font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 4px 6px;">Hapus</button>
               </div>
             </div>
-          ` : ''}
 
-          <!-- Footer Actions (Batal & Lanjutkan Konfirmasi) -->
-          <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; margin-top: 14px; border-top: 1px solid #f1f5f9;">
-            <button type="button" class="mobile-btn-secondary" style="width: auto; min-height: 44px; padding: 10px 20px; font-weight: 600;" onclick="window.mobileCloseFormPengajuan()">
-              Batal
-            </button>
-            <button type="submit" class="mobile-btn-primary" style="width: auto; min-height: 44px; padding: 10px 24px; font-weight: 700; background: ${isEmergency ? '#dc2626' : '#059669'}; border-color: ${isEmergency ? '#dc2626' : '#059669'}; display: inline-flex; align-items: center; gap: 6px;">
-              <span>${isEditing ? 'Lanjutkan & Simpan' : (isEmergency ? 'Lanjutkan Konfirmasi Darurat' : 'Lanjutkan Konfirmasi')}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
+            <!-- Footer Step 1: Batal & Lanjut ke Tahap 2 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 14px; margin-top: 14px; border-top: 1px solid #f1f5f9;">
+              <button type="button" class="mobile-btn-secondary" style="width: auto; min-height: 42px; padding: 10px 18px; font-weight: 600;" onclick="window.mobileCancelFormPengajuan()">
+                Batal
+              </button>
+              <button type="button" class="mobile-btn-primary" style="width: auto; min-height: 42px; padding: 10px 22px; font-weight: 700; background: ${isEmergency ? '#dc2626' : '#059669'}; border-color: ${isEmergency ? '#dc2626' : '#059669'}; display: inline-flex; align-items: center; gap: 6px;" onclick="window.mobileFormGoToStep(2)">
+                <span>Lanjut: Tujuan & Waktu</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- TAHAP 2: TUJUAN & WAKTU -->
+          <div id="mFormStep2" style="display: ${activeStep === 2 ? 'block' : 'none'};">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed #e2e8f0;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">
+                <span style="color: ${isEmergency ? '#dc2626' : '#059669'};">Langkah 2:</span> Detail Tujuan & Waktu Perizinan
+              </span>
+              <span style="font-size: 0.675rem; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">Tahap 2 dari 2</span>
+            </div>
+
+            <!-- 3. Lokasi / Tujuan Keluar -->
+            <div class="mobile-form-group" style="margin-bottom: 12px;">
+              <label class="mobile-form-label">Lokasi / Tujuan Keluar <span class="req">*</span></label>
+              <input type="text" class="mobile-input" id="mFormDestination" placeholder="Masukkan lokasi / tujuan keluar..." value="${initialDest}" required>
+            </div>
+
+            <!-- 4. Alasan Keperluan Izin -->
+            <div class="mobile-form-group" style="margin-bottom: 12px;">
+              <label class="mobile-form-label" id="mFormReasonLabel" data-is-emergency="${isEmergency ? '1' : '0'}">${initialType === 'Pulang Mendahului' ? 'Alasan Keperluan Izin dan memilih pulang lebih awal' : (isEmergency ? 'Alasan Kondisi Kedaruratan' : 'Alasan Keperluan Izin')} <span class="req">*</span></label>
+              <textarea class="mobile-textarea" id="mFormReason" placeholder="${initialType === 'Pulang Mendahului' ? 'Masukkan alasan keperluan izin dan memilih pulang lebih awal...' : (isEmergency ? 'Masukkan alasan kondisi kedaruratan...' : 'Masukkan alasan keperluan izin...')}" required style="min-height: 65px;">${initialReason}</textarea>
+            </div>
+
+            <!-- 5. Rencana Waktu Keluar & Perkiraan Waktu Kembali (Anti Waktu Lampau) -->
+            <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;">
+              <div class="mobile-form-group" style="margin: 0;">
+                <label class="mobile-form-label">Rencana Waktu Keluar <span class="req">*</span></label>
+                <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)">
+              </div>
+              <div class="mobile-form-group" id="mFormWrapReturn" style="margin: 0; display: ${initialType === 'Pulang Mendahului' ? 'none' : 'block'};">
+                <label class="mobile-form-label">Perkiraan Waktu Kembali <span class="req">*</span></label>
+                <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${isEditing ? '' : formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T23:59"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)">
+              </div>
+            </div>
+
+            <div style="font-size: 0.725rem; color: #64748b; margin-bottom: 12px; line-height: 1.4;">
+              * Wajib diisi. Dilarang memilih waktu yang sudah dilalui. Seluruh waktu dalam WIB.
+            </div>
+
+            ${isEmergency ? `
+              <!-- 6. Metode Otorisasi Darurat (Pilihan 3 Opsi) -->
+              <div class="mobile-form-group" style="margin-bottom: 14px; background: #fafafa; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px;">
+                <label class="mobile-form-label" style="color: #991b1b; font-weight: 800; margin-bottom: 6px;">Pilih Cara Otorisasi Buka Kunci QR <span class="req">*</span></label>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 0.775rem; color: #1e293b; cursor: pointer;">
+                    <input type="radio" name="mEmgMethod" value="app" checked>
+                    <div>
+                      <strong>Persetujuan Langsung Atasan di App (1-Click)</strong>
+                      <div style="color: #64748b; font-size: 0.675rem;">Notifikasi prioritas dikirim ke perangkat Atasan</div>
+                    </div>
+                  </label>
+                  
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 0.775rem; color: #1e293b; cursor: pointer;">
+                    <input type="radio" name="mEmgMethod" value="facescan">
+                    <div>
+                      <strong>Scan Wajah Atasan (Face Scan Biometrik)</strong>
+                      <div style="color: #64748b; font-size: 0.675rem;">Pindai wajah Atasan langsung di tempat</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Footer Step 2: Kembali ke Tahap 1 & Review Pengajuan -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 14px; margin-top: 14px; border-top: 1px solid #f1f5f9;">
+              <button type="button" class="mobile-btn-secondary" style="width: auto; min-height: 42px; padding: 10px 18px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" onclick="window.mobileFormGoToStep(1)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>Kembali</span>
+              </button>
+              <button type="submit" class="mobile-btn-primary" style="width: auto; min-height: 42px; padding: 10px 22px; font-weight: 700; background: ${isEmergency ? '#dc2626' : '#059669'}; border-color: ${isEmergency ? '#dc2626' : '#059669'}; display: inline-flex; align-items: center; gap: 6px;">
+                <span>${isEditing ? 'Lanjutkan & Simpan' : (isEmergency ? 'Lanjutkan Konfirmasi Darurat' : 'Review Pengajuan')}</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -2627,6 +2721,155 @@
     }
   };
 
+  // -------------------------------------------------------------------
+  // MULTI-STEP NAVIGATION & STEPPER CONTROLLER (MOBILE ONLY)
+  // -------------------------------------------------------------------
+  window.mobileUpdateStepperUI = function(step) {
+    const isEmg = Boolean(currentFormIsEmergency);
+    const activeColor = isEmg ? '#dc2626' : '#059669';
+    const inactiveBg = '#cbd5e1';
+    const inactiveText = '#64748b';
+
+    const c1 = document.getElementById('mStepCircle1');
+    const c2 = document.getElementById('mStepCircle2');
+    const c3 = document.getElementById('mStepCircle3');
+    const t1 = document.getElementById('mStepText1');
+    const t2 = document.getElementById('mStepText2');
+    const t3 = document.getElementById('mStepText3');
+    const l1 = document.getElementById('mStepLine1');
+    const l2 = document.getElementById('mStepLine2');
+    const backBtnText = document.getElementById('mBtnHeaderBackText');
+
+    if (backBtnText) {
+      backBtnText.textContent = step === 2 ? 'Langkah Sebelumnya' : 'Kembali';
+    }
+
+    if (c1 && t1) {
+      if (step === 1) {
+        c1.style.background = activeColor;
+        c1.textContent = '1';
+        t1.style.color = activeColor;
+        t1.style.fontWeight = '800';
+      } else if (step > 1) {
+        c1.style.background = activeColor;
+        c1.textContent = '✓';
+        t1.style.color = activeColor;
+        t1.style.fontWeight = '700';
+      }
+    }
+
+    if (l1) {
+      l1.style.background = (step >= 2) ? activeColor : '#e2e8f0';
+    }
+
+    if (c2 && t2) {
+      if (step < 2) {
+        c2.style.background = inactiveBg;
+        c2.textContent = '2';
+        t2.style.color = inactiveText;
+        t2.style.fontWeight = '600';
+      } else if (step === 2) {
+        c2.style.background = activeColor;
+        c2.textContent = '2';
+        t2.style.color = activeColor;
+        t2.style.fontWeight = '800';
+      } else if (step > 2) {
+        c2.style.background = activeColor;
+        c2.textContent = '✓';
+        t2.style.color = activeColor;
+        t2.style.fontWeight = '700';
+      }
+    }
+
+    if (l2) {
+      l2.style.background = (step >= 3) ? activeColor : '#e2e8f0';
+    }
+
+    if (c3 && t3) {
+      if (step < 3) {
+        c3.style.background = inactiveBg;
+        t3.style.color = inactiveText;
+        t3.style.fontWeight = '600';
+      } else {
+        c3.style.background = activeColor;
+        t3.style.color = activeColor;
+        t3.style.fontWeight = '800';
+      }
+    }
+  };
+
+  window.mobileFormGoToStep = function (targetStep) {
+    if (targetStep === 2) {
+      // Validasi Tahap 1 sebelum berpindah ke Tahap 2
+      const approverName = document.getElementById('mFormApproverValue')?.value || '';
+      const category = document.getElementById('mFormCategory')?.value || '';
+      const returnType = document.getElementById('mFormReturnType')?.value || '';
+
+      if (!approverName) {
+        if (typeof window.showToast === 'function') window.showToast('Harap cari dan pilih nama Atasan Peninjau terlebih dahulu!', 'warning');
+        if (typeof window.mobileChangeApprover === 'function') window.mobileChangeApprover();
+        return;
+      }
+
+      if (!category) {
+        if (typeof window.showToast === 'function') window.showToast('Harap pilih Kategori Keperluan!', 'warning');
+        document.getElementById('mFormCategory')?.focus();
+        return;
+      }
+
+      if (!returnType) {
+        if (typeof window.showToast === 'function') window.showToast('Harap pilih Tipe Kepulangan!', 'warning');
+        document.getElementById('mFormReturnType')?.focus();
+        return;
+      }
+
+      if (category === 'Dinas Kantor' && !window._currentSuratPerintahMobile) {
+        if (typeof window.showToast === 'function') {
+          window.showToast('Surat Perintah / Tugas Dinas wajib diunggah untuk kategori Dinas Kantor!', 'danger');
+        }
+        const dropzone = document.getElementById('mDropzoneSuratPerintah');
+        if (dropzone) {
+          dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          dropzone.style.borderColor = '#e11d48';
+          setTimeout(() => {
+            if (dropzone) dropzone.style.borderColor = '';
+          }, 3500);
+        }
+        return;
+      }
+
+      const mobileMembers = (category === 'Dinas Kantor' && Array.isArray(window._selectedGroupMembersMobile)) ? [...window._selectedGroupMembersMobile] : [];
+      if (category === 'Dinas Kantor' && mobileMembers.length > 0) {
+        for (const m of mobileMembers) {
+          const actTik = typeof window.getActiveTicket === 'function' ? window.getActiveTicket(m.nip) : null;
+          if (actTik && (!window.editingTicketId || actTik.id !== window.editingTicketId)) {
+            if (typeof window.showToast === 'function') {
+              window.showToast(`Anggota (${m.name}) masih memiliki izin aktif (#${actTik.id}). Harap hapus anggota ini dari tim terlebih dahulu.`, 'warning');
+            }
+            return;
+          }
+        }
+      }
+    }
+
+    window.currentMobileFormStep = targetStep;
+
+    const s1 = document.getElementById('mFormStep1');
+    const s2 = document.getElementById('mFormStep2');
+    if (s1 && s2) {
+      if (targetStep === 1) {
+        s1.style.display = 'block';
+        s2.style.display = 'none';
+      } else {
+        s1.style.display = 'none';
+        s2.style.display = 'block';
+      }
+    }
+
+    window.mobileUpdateStepperUI(targetStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Form Submit Handler -> Validates & Opens Step 2 Confirmation Summary
   window.mobileSubmitPermitForm = function (e, isEmergency) {
     e.preventDefault();
@@ -2801,13 +3044,17 @@
         ? { ...window._currentSuratPerintahMobile }
         : null
     };
+    window.pendingMobileFormData = pendingMobileFormData;
 
-    // Open Step 2: Konfirmasi Ringkasan Pengajuan
+    // Open Step 3: Konfirmasi Ringkasan Pengajuan
+    if (typeof window.mobileUpdateStepperUI === 'function') {
+      window.mobileUpdateStepperUI(3);
+    }
     window.mobileOpenConfirmSummarySheet();
   };
 
   // -------------------------------------------------------------------
-  // 7. STEP 2: KONFIRMASI RINGKASAN PENGAJUAN (EXACT PC MODAL 2)
+  // 7. STEP 3: KONFIRMASI RINGKASAN PENGAJUAN (EXACT PC MODAL 2)
   // -------------------------------------------------------------------
   window.mobileOpenConfirmSummarySheet = function () {
     const sheet = document.getElementById('mobileActionSheet');
@@ -2918,6 +3165,7 @@
   };
 
   window.mobileBackToCreateModal = function () {
+    window.currentMobileFormStep = 2;
     if (!pendingMobileFormData) {
       window.mobileOpenCreateModal(false);
       return;
@@ -2930,7 +3178,9 @@
       destination: data.destination,
       reason: data.reason,
       plannedExit: data.plannedExit,
-      estimatedReturn: data.estimatedReturn
+      estimatedReturn: data.estimatedReturn,
+      members: data.members,
+      suratPerintah: data.suratPerintah
     });
   };
 
@@ -4362,6 +4612,9 @@
     const backdrop = document.getElementById('mobileModalBackdrop');
     if (sheet) sheet.classList.remove('open');
     if (backdrop) backdrop.classList.remove('open');
+    if (typeof window.mobileUpdateStepperUI === 'function' && currentKaryawanTab === 'form_pengajuan') {
+      window.mobileUpdateStepperUI(window.currentMobileFormStep || 1);
+    }
     window.editingTicketId = null;
     pendingMobileFormData = null;
   };

@@ -490,6 +490,15 @@ function loadTickets() {
     let list = JSON.parse(saved);
     let changed = false;
     list = list.map(t => {
+      // Pulihkan pratinjau dokumen surat perintah dinas dari sessionStorage jika tersedia
+      if (t && t.suratPerintah && !t.suratPerintah.dataUrl && t.id) {
+        try {
+          const cachedDoc = sessionStorage.getItem('KUJANG_DOC_' + t.id);
+          if (cachedDoc) {
+            t.suratPerintah.dataUrl = cachedDoc;
+          }
+        } catch (e) {}
+      }
       // Pulihkan tiket darurat jika sebelumnya terlanjur ditandai Kedaluwarsa oleh scheduler lama
       if ((t.isEmergency || (t.id && t.id.startsWith('TK-EMG'))) && t.status === 'Kedaluwarsa') {
         t.status = 'Disetujui';
@@ -1223,10 +1232,50 @@ function saveTickets(data) {
     return true;
   });
   data = cleanData;
+  window.ticketsList = data;
+
+  // Sanitasi & Proteksi Kuota Browser: Pisahkan DataURL berukuran besar ke sessionStorage
+  const safeData = data.map(item => {
+    if (!item) return item;
+    if (item.suratPerintah) {
+      if (item.suratPerintah.dataUrl && item.id) {
+        try {
+          sessionStorage.setItem('KUJANG_DOC_' + item.id, item.suratPerintah.dataUrl);
+        } catch (e) {
+          console.warn('SessionStorage quota exceeded for doc:', e);
+        }
+      }
+      // Simpan metadata ringan saja di localStorage tanpa base64 mentah jutaan karakter
+      const { dataUrl, ...restDoc } = item.suratPerintah;
+      return {
+        ...item,
+        suratPerintah: restDoc
+      };
+    }
+    return item;
+  });
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safeData));
   } catch (err) {
-    console.warn('Gagal menyimpan tiket ke localStorage (kuota penuh atau akses terbatas):', err);
+    console.warn('Gagal menyimpan tiket ke localStorage (kuota penuh atau akses terbatas), mencoba fallback minimal:', err);
+    try {
+      const minimalData = safeData.map(t => {
+        const copy = { ...t };
+        if (copy.suratPerintah) {
+          copy.suratPerintah = {
+            name: copy.suratPerintah.name || 'Surat_Perintah_Dinas.pdf',
+            size: copy.suratPerintah.size || 150000,
+            type: copy.suratPerintah.type || 'application/pdf',
+            uploadedAt: copy.suratPerintah.uploadedAt || new Date().toISOString()
+          };
+        }
+        return copy;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(minimalData));
+    } catch (fallbackErr) {
+      console.error('Penyimpanan tiket gagal total:', fallbackErr);
+    }
     if (typeof window.showToast === 'function') {
       window.showToast('Peringatan: Memori browser penuh. Data disimpan di sesi aktif.', 'warning');
     }
