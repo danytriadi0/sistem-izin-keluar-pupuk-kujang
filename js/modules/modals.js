@@ -4349,7 +4349,7 @@ document.addEventListener('DOMContentLoaded', () => {
           recipientName: emergencyTicket.approverName || 'Atasan Peninjau',
           actorSource: 'karyawan',
           type: 'izin_darurat',
-          title: '🚨 PERMOHONAN IZIN DARURAT K3',
+          title: 'PERMOHONAN IZIN DARURAT K3',
           message: `${emergencyTicket.applicantName} (${emergencyTicket.applicantNip}) mengajukan izin darurat keluar area (${emergencyTicket.category}). Membutuhkan otorisasi segera!`,
           ticketId: emergencyTicket.id,
           priority: 'urgent',

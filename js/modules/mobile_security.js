@@ -352,10 +352,9 @@
             </div>
             ${isLate ? `<div style="font-size: 0.675rem; color: #b91c1c; font-weight: 700; margin-top: 2px;">Terlambat ${t.lateMinutes || 30} menit</div>` : ''}
           </div>
-          <!-- Perubahan 1: Detail Pengajuan (Pil Putih Border Tipis + Icon Dokumen) -->
-            <button type="button" class="mobile-btn-secondary" style="padding: 5px 10px; font-size: 0.725rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 36px; cursor: pointer;" onclick="window.mobileSecurityInspectTicket('${t.id}')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-              <span>Lihat Detail Pengajuan</span>
+          <!-- Perubahan 1: Detail Pengajuan (Emoji Dokumen) -->
+            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 34px; height: 34px; min-width: 34px; min-height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileSecurityInspectTicket('${t.id}')">
+              📄
             </button>
         </div>
       `;
@@ -666,9 +665,8 @@
           ${statusInfoHtml}
 
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button type="button" class="mobile-btn-secondary" style="padding: 5px 10px; font-size: 0.725rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 36px; cursor: pointer;" onclick="window.mobileSecurityInspectTicket('${t.id}')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-              <span>Lihat Detail Pengajuan</span>
+            <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 34px; height: 34px; min-width: 34px; min-height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileSecurityInspectTicket('${t.id}')">
+              📄
             </button>
           </div>
         </div>
@@ -943,11 +941,10 @@
                 )
               }
             </div>
-            <!-- Tombol Detail Pengajuan (Kecil Ramping) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
+            <!-- Tombol Detail Pengajuan (Emoji Dokumen) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.675rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 32px; height: 32px; cursor: pointer;" onclick="window.mobileSecurityInspectTicket('${t.id}')">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                <span>Lihat Detail Pengajuan</span>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileSecurityInspectTicket('${t.id}')">
+                📄
               </button>
               <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'security')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -1004,11 +1001,10 @@
             <div style="font-size: 0.7rem; color: #334155; font-weight: 600;">
               Scan Out: <strong style="color: #0f172a;">${scanOutT || '—'}</strong> • Masuk: <strong style="color: ${isPulang ? '#64748b' : (scanInT ? '#0f172a' : '#dc2626')}; font-weight: 800;">${isPulang ? '—' : (scanInT || 'Belum')}</strong>
             </div>
-            <!-- Tombol Detail Pengajuan (Kecil Ramping) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
+            <!-- Tombol Detail Pengajuan (Emoji Dokumen) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.675rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 32px; height: 32px; cursor: pointer;" onclick="window.mobileSecurityInspectTicket('${t.id}')">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                <span>Lihat Detail Pengajuan</span>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileSecurityInspectTicket('${t.id}')">
+                📄
               </button>
               <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'security')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>

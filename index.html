@@ -1740,11 +1740,11 @@
                     <span class="antrian-count-pill" id="countAntrianAll">0</span>
                   </button>
                   <button type="button" class="btn-antrian-pill pill-darurat" id="btnFilterAntrianEmergency" onclick="window.setApproverAntrianFilter('emergency')">
-                    <span>🚨 Izin Darurat</span>
+                    <span>Izin Darurat</span>
                     <span class="antrian-count-pill" id="countAntrianEmergency">0</span>
                   </button>
                   <button type="button" class="btn-antrian-pill pill-regular" id="btnFilterAntrianRegular" onclick="window.setApproverAntrianFilter('regular')">
-                    <span>📋 Izin Reguler</span>
+                    <span>Izin Reguler</span>
                     <span class="antrian-count-pill" id="countAntrianRegular">0</span>
                   </button>
                 </div>
@@ -2962,7 +2962,7 @@
                       <th style="width: 190px; min-width: 190px;">Peristiwa</th>
                       <th style="min-width: 170px;">Eksekutor</th>
                       <th style="min-width: 200px;">Keterangan</th>
-                      <th style="text-align: right; width: 160px; min-width: 160px; white-space: nowrap;">Aksi</th>
+                      <th style="text-align: center; width: 60px; min-width: 60px; white-space: nowrap;">Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="adminAuditTableBody">
@@ -3653,7 +3653,7 @@
 
           <div style="display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; align-items: center;">
             <button type="button" class="btn-figma-blue" id="btnBannerEditEmergency">
-              <span>✏️ Edit Data Darurat</span>
+              <span>Edit Data Darurat</span>
             </button>
           </div>
         </div>
@@ -5101,13 +5101,13 @@
             <!-- 2. Header 3 Logo: Danantara (Kiri), Pupuk Indonesia (Tengah), Pupuk Kujang (Kanan) -->
             <div class="pdf-logos-row" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; padding: 0 6px;">
               <div style="flex: 1; text-align: left;">
-                <img src="assets/danantara.png" alt="Danantara Indonesia" style="height: 34px; max-width: 150px; object-fit: contain;">
+                <img id="pdfLogoDanantara" src="assets/danantara.png" alt="Danantara Indonesia" style="height: 34px; max-width: 150px; object-fit: contain;">
               </div>
               <div style="flex: 1; text-align: center;">
-                <img src="assets/pupuk-indonesia.png" alt="Pupuk Indonesia" style="height: 44px; max-width: 170px; object-fit: contain;">
+                <img id="pdfLogoPupukIndonesia" src="assets/pupuk-indonesia.png" alt="Pupuk Indonesia" style="height: 44px; max-width: 170px; object-fit: contain;">
               </div>
               <div style="flex: 1; text-align: right;">
-                <img src="assets/pupuk-kujang.png" alt="Pupuk Kujang" style="height: 44px; max-width: 150px; object-fit: contain;">
+                <img id="pdfLogoPupukKujang" src="assets/pupuk-kujang.png" alt="Pupuk Kujang" style="height: 44px; max-width: 150px; object-fit: contain;">
               </div>
             </div>
 
@@ -5119,12 +5119,12 @@
               <table id="pdfOfficialReportTable" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000000; font-size: 8pt; color: #000000; table-layout: fixed;">
                 <thead>
                   <tr style="background: #ffffff;">
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 14%; word-break: break-word;">Tanggal dan Waktu</th>
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 17%; word-break: break-word;">Identitas akses</th>
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 17%; word-break: break-word;">Departemen</th>
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 17%; word-break: break-word;">Keperluan</th>
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 22%; word-break: break-word;">WaktuScan out, Tap in, dan batas kembali</th>
-                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 13%; word-break: break-word;">Status akhir</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 14%; word-break: break-word;">Tanggal &amp; Waktu</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 18%; word-break: break-word;">Identitas Akses</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 16%; word-break: break-word;">Departemen</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 19%; word-break: break-word;">Keperluan</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 22%; word-break: break-word;">Waktu Gerbang &amp; Batas</th>
+                    <th style="border: 1px solid #000000; padding: 7px 5px; text-align: center; font-weight: 800; width: 11%; word-break: break-word;">Status Akhir</th>
                   </tr>
                 </thead>
                 <tbody id="pdfOfficialReportTableBody">
@@ -5133,18 +5133,19 @@
               </table>
             </div>
 
-            <!-- 5. Tanda Tangan VP (Sesuai Gambar 1: Rata Kanan Bawah Tabel) -->
-            <div class="pdf-signature-section" style="margin-left: auto; width: 260px; text-align: center; margin-top: 26px; page-break-inside: avoid;">
-              <div style="font-size: 0.825rem; font-weight: 700; color: #000000; margin-bottom: 8px;">VP Teknologi Informasi PKC</div>
-              <div id="pdfExportSignatureQr" style="width: 68px; height: 68px; margin: 0 auto 8px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1.2px dashed #008444; border-radius: 4px; background: #f0fdf4;">
+            <!-- 5. Tanda Tangan Pejabat Administrator (Dinamis Sesuai Akun Admin yang Mencetak) -->
+            <div class="pdf-signature-section" style="margin-left: auto; width: 260px; text-align: center; margin-top: 8px; page-break-inside: avoid;">
+              <div id="pdfExportSignerTitle" style="font-size: 0.825rem; font-weight: 700; color: #000000; margin-bottom: 4px;">Administrator Pengamanan &amp; K3</div>
+              <div id="pdfExportSignatureQr" style="display: inline-block; padding: 4px 4px 2px 4px; margin: 0 auto 4px auto; border: 1.2px dashed #008444; border-radius: 4px; background: #ffffff; text-align: center;">
                 <div style="font-weight: 800; font-size: 0.825rem; color: #008444;">(QR)</div>
               </div>
-              <div style="font-size: 0.9rem; font-weight: 800; color: #000000; text-decoration: underline; letter-spacing: 0.2px;"><u>Jojok Satriadi</u></div>
+              <div id="pdfExportSignerName" style="font-size: 0.9rem; font-weight: 800; color: #000000; text-decoration: underline; letter-spacing: 0.2px;"><u>Bambang Sutrisno, S.T.</u></div>
+              <div id="pdfExportSignerNip" style="font-size: 0.725rem; color: #334155; margin-top: 2px;">NIP: ADM-2016-019</div>
             </div>
           </div>
 
           <!-- Bagian Bawah Dokumen -->
-          <div style="margin-top: 24px;">
+          <div style="margin-top: 6px;">
             <!-- 6. Footer Resmi Perusahaan (Sesuai Gambar 1: Tengah Bawah) -->
             <div class="pdf-footer-section" style="text-align: center; font-size: 0.78rem; color: #1e293b; line-height: 1.4; page-break-inside: avoid; margin-bottom: 8px;">
               <div style="font-weight: 800; font-size: 0.88rem; color: #0f172a; margin-bottom: 2px;">PT Pupuk Kujang</div>
@@ -5161,9 +5162,13 @@
 
       <!-- Modal Footer (Tombol di Tengah Sesuai Aturan Sistem) -->
       <div class="modal-footer no-print" style="display: flex; justify-content: center; align-items: center; gap: 12px; padding: 14px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-        <button type="button" class="btn-primary" id="btnConfirmExportPdf" onclick="window.executePrintExportPdf()" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 24px; background: #008444; border: none; color: #ffffff; border-radius: 8px; cursor: pointer; font-size: 0.875rem; box-shadow: 0 2px 8px rgba(0, 132, 68, 0.3);">
+        <button type="button" class="btn-primary" id="btnDirectDownloadPdf" onclick="window.executeDirectDownloadPdf()" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 22px; background: #008444; border: none; color: #ffffff; border-radius: 8px; cursor: pointer; font-size: 0.875rem; box-shadow: 0 2px 8px rgba(0, 132, 68, 0.3);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Unduh PDF</span>
+        </button>
+        <button type="button" class="btn-secondary" id="btnPrintPdfModal" onclick="window.executePrintExportPdf()" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 20px; border: 1.2px solid #008444; background: #ffffff; color: #008444; border-radius: 8px; cursor: pointer; font-size: 0.875rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          <span>Cetak / Unduh PDF</span>
+          <span>Cetak Dokumen</span>
         </button>
         <button type="button" class="btn-secondary" onclick="window.closeExportPdfModal()" style="font-weight: 600; padding: 10px 20px; border-radius: 8px; font-size: 0.875rem; border: 1.2px solid #cbd5e1; background: #ffffff; color: #475569; cursor: pointer;">
           <span>Tutup</span>
@@ -5184,6 +5189,7 @@
   <!-- Scripts -->
   <script src="qrcode.min.js" defer></script>
   <script src="html5-qrcode.min.js" defer></script>
+  <script src="html2pdf.bundle.min.js" defer></script>
   <script src="js/data/mockData.js?v=20261111_1035"></script>
   <script src="js/data/authData.js?v=20261111_1035"></script>
   <script src="js/modules/auth.js?v=20261113_0530"></script>

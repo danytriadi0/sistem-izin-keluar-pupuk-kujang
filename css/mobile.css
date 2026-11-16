@@ -1052,7 +1052,7 @@ body.theme-dark .mobile-top-role-pill {
 
 .mobile-form-label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #334155;
   margin-bottom: 5px;
@@ -1530,7 +1530,7 @@ body.theme-dark .mobile-btn-secondary {
   background: transparent !important;
   outline: none !important;
   width: 100%;
-  font-size: 0.825rem;
+  font-size: 0.775rem;
   color: #0f172a;
   padding: 0 !important;
   font-family: inherit;
@@ -1986,7 +1986,7 @@ body.theme-dark .mobile-summary-value {
 #mobileAppContainer input.mobile-input,
 #mobileAppContainer select.mobile-select {
   width: 100% !important;
-  font-size: 0.8rem !important;
+  font-size: 0.725rem !important;
   line-height: 1.35 !important;
   padding: 0 10px !important;
   border-radius: 8px !important;
@@ -1996,7 +1996,7 @@ body.theme-dark .mobile-summary-value {
   box-sizing: border-box !important;
   font-family: inherit !important;
   outline: none !important;
-  height: 38px !important;
+  height: 35px !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
@@ -3247,4 +3247,40 @@ body.theme-dark .mobile-btn-export-csv,
   background: #0c4a6e !important;
   border-color: #0284c7 !important;
   color: #38bdf8 !important;
+}
+
+
+/* ==========================================================================
+   EXPLICIT COMPACT FONT SIZE RULES FOR ALL MOBILE INPUTS & PLACEHOLDERS
+   Prevents 16px blowout and guarantees clean 11.5px (0.725rem) editorial typography
+   ========================================================================== */
+#mobileAppContainer input,
+#mobileAppContainer select,
+#mobileAppContainer textarea,
+#mobileAppContainer .mobile-input,
+#mobileAppContainer .mobile-select,
+#mobileAppContainer .mobile-approver-search-input,
+#mobileAppContainer .mobile-search-input,
+#mobileAppContainer .mobile-filter-input,
+#mobileAppContainer .mobile-filter-select,
+#mobileAppContainer .mobile-filter-date,
+.mobile-approver-search-input,
+.mobile-approver-input-box input {
+  font-size: 0.725rem !important; /* 11.6px */
+  line-height: 1.35 !important;
+}
+
+#mobileAppContainer input::placeholder,
+#mobileAppContainer textarea::placeholder,
+#mobileAppContainer .mobile-approver-search-input::placeholder,
+#mobileAppContainer .mobile-search-input::placeholder,
+.mobile-approver-search-input::placeholder,
+.mobile-approver-input-box input::placeholder {
+  font-size: 0.725rem !important; /* 11.6px */
+  color: #94a3b8 !important;
+}
+
+.mobile-approver-input-box {
+  padding: 6px 10px !important;
+  height: 35px !important;
 }

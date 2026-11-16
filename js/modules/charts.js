@@ -686,7 +686,7 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
         ` : ''}
 
         <!-- Number on top of bar (Animated on hover) -->
-        <text id="${prefix}approverBarVal_${idx}" class="approver-bar-val" x="${x + barW / 2}" y="${isPeak ? y - 32 : y - 8}" text-anchor="middle" fill="${isPeak ? '#059669' : (isToday ? '#0284c7' : '#334155')}" font-size="12" font-weight="800" font-family="'Plus Jakarta Sans', sans-serif" style="transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), font-size 0.2s ease, fill 0.2s ease;">${b.total}</text>
+        <text id="${prefix}approverBarVal_${idx}" class="approver-bar-val" x="${x + barW / 2}" y="${isPeak ? y - 32 : y - 8}" text-anchor="middle" fill="${isPeak ? '#059669' : (isToday ? '#0284c7' : '#334155')}" font-size="${isMobile ? '10' : '12'}" font-weight="800" font-family="'Plus Jakarta Sans', sans-serif" style="transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), font-size 0.2s ease, fill 0.2s ease;">${b.total}</text>
 
         <!-- Rounded Bar (With explicit solid fallback fill to guarantee rendering) -->
         <rect id="${prefix}approverBarRect_${idx}" class="approver-svg-bar" x="${x}" y="${y}" width="${barW}" height="${barH}" rx="6" ry="6"
@@ -695,8 +695,8 @@ function getGambar2AestheticBarChartHtml(isMobile = false) {
         </rect>
 
         <!-- X-Axis Labels: Clean Day Name & Date -->
-        <text id="${prefix}approverDayLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 18}" text-anchor="middle" fill="${isToday ? '#0284c7' : (dark ? '#cbd5e1' : '#0f172a')}" font-size="12" font-weight="${isToday ? '800' : '700'}" font-family="'Plus Jakarta Sans', sans-serif" style="transition: fill 0.2s ease, font-weight 0.2s ease;">${b.label}</text>
-        <text id="${prefix}approverDateLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 34}" text-anchor="middle" fill="${isToday ? '#0284c7' : '#64748b'}" font-size="10" font-weight="${isToday ? '700' : '500'}" font-family="'Plus Jakarta Sans', sans-serif">${b.dateStr}</text>
+        <text id="${prefix}approverDayLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 18}" text-anchor="middle" fill="${isToday ? '#0284c7' : (dark ? '#cbd5e1' : '#0f172a')}" font-size="${isMobile ? '10' : '12'}" font-weight="${isToday ? '800' : '700'}" font-family="'Plus Jakarta Sans', sans-serif" style="transition: fill 0.2s ease, font-weight 0.2s ease;">${b.label}</text>
+        <text id="${prefix}approverDateLabel_${idx}" x="${x + barW / 2}" y="${bottomY + 34}" text-anchor="middle" fill="${isToday ? '#0284c7' : '#64748b'}" font-size="${isMobile ? '8.5' : '10'}" font-weight="${isToday ? '700' : '500'}" font-family="'Plus Jakarta Sans', sans-serif">${b.dateStr}</text>
         ${isToday ? `<circle cx="${x + barW / 2}" cy="${bottomY + 44}" r="2.5" fill="#0284c7" />` : ''}
       </g>
     `;

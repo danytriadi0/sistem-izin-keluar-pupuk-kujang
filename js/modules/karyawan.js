@@ -2335,7 +2335,7 @@ function renderEmpCards(list, containerElement) {
               </div>
               <div style="text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
                 <span class="figma-tag-badge ${isDinas ? 'badge-dinas' : 'badge-pribadi'}" style="white-space: nowrap;">${displayCategory}</span>
-                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">🚨 Darurat</span>` : ''}
+                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">Darurat</span>` : ''}
                 ${isGroupDinas ? `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>` : ''}
               </div>
             </div>
@@ -2454,7 +2454,7 @@ function renderEmpTable(list, containerElement) {
                 <td style="vertical-align: middle;">
                   <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                     <span style="font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); font-size: 0.8rem;">${t.id}</span>
-                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
+                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">Darurat</span>` : ''}
                     ${isGroupDinas ? `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>` : ''}
                   </div>
                   <div style="font-size: 0.725rem; color: #64748b; margin-top: 3px; line-height: 1.35;">

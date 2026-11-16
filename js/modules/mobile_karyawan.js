@@ -349,10 +349,7 @@
           <div style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">${t.id} <span class="mobile-badge ${getBadgeClass(t.status)}" style="margin-left: 4px;">${t.status}</span></div>
           <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">${t.category} • ${t.destination || 'Area Pabrik'}</div>
         </div>
-        <button type="button" class="mobile-btn-secondary" style="padding: 5px 10px; font-size: 0.725rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 36px; flex-shrink: 0; cursor: pointer;" onclick="window.mobileOpenTicketDetail('${t.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          <span>Detail Pengajuan</span>
-        </button>
+        <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; flex-shrink: 0; cursor: pointer;  box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenTicketDetail('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
       </div>
     `).join('');
 
@@ -429,7 +426,7 @@
             <h3 style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin: 0;">Total Pengajuan Izin</h3>
             <span style="font-size: 0.7rem; color: #64748b; font-weight: 500;">Distribusi kategori perizinan</span>
           </div>
-          <select id="mSelectDonutPeriod" style="padding: 2px 8px; font-size: 0.7rem; font-weight: 700; height: 28px; line-height: 24px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #1e293b; cursor: pointer; outline: none;" onchange="window.mobileSwitchDonutPeriod(this.value)">
+          <select id="mSelectDonutPeriod" style="padding: 2px 6px; font-size: 0.675rem; font-weight: 700; height: 26px; line-height: 22px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #1e293b; cursor: pointer; outline: none;" onchange="window.mobileSwitchDonutPeriod(this.value)">
             <option value="month" ${mobileDonutPeriod === 'month' ? 'selected' : ''}>Bulan Ini</option>
             <option value="today" ${mobileDonutPeriod === 'today' ? 'selected' : ''}>Hari Ini</option>
             <option value="all" ${mobileDonutPeriod === 'all' ? 'selected' : ''}>Semua Periode</option>
@@ -448,7 +445,7 @@
               ${emgLen > 0 ? `<circle cx="50" cy="50" r="38" fill="none" stroke="#dc2626" stroke-width="14" stroke-dasharray="${emgLen} ${strokeDash}" stroke-dashoffset="${-selesaiLen}" />` : ''}
             </svg>
             <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
-              <span style="font-size: 1.35rem; font-weight: 800; color: #0f172a; line-height: 1; font-family: 'Plus Jakarta Sans', sans-serif;">${donutTotal}</span>
+              <span style="font-size: 1.15rem; font-weight: 800; color: #0f172a; line-height: 1; font-family: 'Plus Jakarta Sans', sans-serif;">${donutTotal}</span>
               <span style="font-size: 0.65rem; color: #64748b; font-weight: 700; margin-top: 2px;">Total Izin</span>
             </div>
           </div>
@@ -462,7 +459,7 @@
                   <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; flex-shrink: 0;"></span>
                   <span>Izin Selesai</span>
                 </span>
-                <span style="font-size: 0.75rem; font-weight: 800; color: #059669; font-family: var(--font-mono);">${donutSelesai} (${selesaiPct}%)</span>
+                <span style="font-size: 0.7rem; font-weight: 800; color: #059669; font-family: var(--font-mono);">${donutSelesai} (${selesaiPct}%)</span>
               </div>
               <div style="width: 100%; height: 5px; border-radius: 999px; background: #e2e8f0; overflow: hidden;">
                 <div style="width: ${selesaiPct}%; height: 100%; background: #059669; border-radius: 999px;"></div>
@@ -476,7 +473,7 @@
                   <span style="width: 8px; height: 8px; border-radius: 50%; background: #dc2626; flex-shrink: 0;"></span>
                   <span>Izin Darurat</span>
                 </span>
-                <span style="font-size: 0.75rem; font-weight: 800; color: #dc2626; font-family: var(--font-mono);">${donutEmg} (${emgPct}%)</span>
+                <span style="font-size: 0.7rem; font-weight: 800; color: #dc2626; font-family: var(--font-mono);">${donutEmg} (${emgPct}%)</span>
               </div>
               <div style="width: 100%; height: 5px; border-radius: 999px; background: #e2e8f0; overflow: hidden;">
                 <div style="width: ${emgPct}%; height: 100%; background: #dc2626; border-radius: 999px;"></div>
@@ -561,7 +558,6 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
           <!-- Kolom 1 (Kiri): Izin Darurat (Merah Solid #dc2626, Teks Putih) -->
           <button type="button" class="mobile-btn-danger" style="margin: 0; min-height: 44px; padding: 0 10px; font-size: 0.8125rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25); cursor: pointer;" onclick="window.mobileOpenCreateModal(true)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             <span>Izin Darurat</span>
           </button>
 
@@ -716,12 +712,9 @@
           : `<span style="color: #0f172a; font-weight: 700;">Rencana:</span> ${formatTimeOnly(getTExitTime(t))} – ${formatTimeOnly(getTReturnTime(t)) || '13.00 WIB'}`
         }
             </div>
-            <!-- Tombol Detail Pengajuan (Kecil Ramping) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
+            <!-- Tombol Detail Pengajuan (Emoji Dokumen) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.675rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 32px; height: 32px; cursor: pointer;" onclick="window.mobileOpenTicketDetail('${t.id}')">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                <span>Lihat Detail Pengajuan</span>
-              </button>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; cursor: pointer;  box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenTicketDetail('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
               <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'karyawan')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               </button>
@@ -774,12 +767,9 @@
           : `${formatTimeOnly(getTExitTime(t))} – ${formatTimeOnly(getTReturnTime(t)) || '13.00 WIB'}`
         }
             </div>
-            <!-- Tombol Detail Pengajuan (Kecil Ramping) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
+            <!-- Tombol Detail Pengajuan (Emoji Dokumen) & Tombol Hapus 1 Riwayat (Tong Sampah Merah) -->
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.675rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 32px; height: 32px; cursor: pointer;" onclick="window.mobileOpenTicketDetail('${t.id}')">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                <span>Lihat Detail Pengajuan</span>
-              </button>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; cursor: pointer;  box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenTicketDetail('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
               <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'karyawan')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               </button>
@@ -1060,10 +1050,7 @@
               }
             </div>
             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <button type="button" class="mobile-btn-secondary" style="padding: 4px 8px; font-size: 0.675rem; width: auto; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; min-height: 32px; height: 32px; cursor: pointer;" onclick="window.mobileOpenTicketDetail('${t.id}')">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                <span>Lihat Detail Pengajuan</span>
-              </button>
+              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; cursor: pointer;  box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenTicketDetail('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
               <button type="button" class="mobile-btn-danger" title="Hapus Riwayat" aria-label="Hapus Riwayat" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);" onclick="window.mobileDeleteTicketItem('${t.id}', 'karyawan')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
               </button>
@@ -1318,7 +1305,7 @@
             </button>
           </div>
           <div style="text-align: center; margin-top: 8px;">
-            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
           </div>
         `;
       } else {
@@ -1332,7 +1319,7 @@
             </button>
           </div>
           <div style="text-align: center; margin-top: 8px;">
-            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
           </div>
         `;
       }
@@ -1343,8 +1330,8 @@
             <span>Buka QR Izin</span>
           </button>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <button type="button" class="mobile-btn-secondary" style="font-weight: 600; min-height: 44px;" onclick="window.mobileOpenTicketDetail('${t.id}')">
-              <span>Lihat Detail Pengajuan</span>
+            <button type="button" class="mobile-btn-secondary" style="font-weight: 600; min-height: 44px; white-space: nowrap;" onclick="window.mobileOpenTicketDetail('${t.id}')">
+              <span>Lihat Detail</span>
             </button>
             <button type="button" class="mobile-btn-danger mobile-btn-cancel-solid" style="background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileOpenCancelSheet('${t.id}')">
               <span>${isTaggedMember ? 'Batal Ikut' : 'Batalkan Izin'}</span>
@@ -1373,7 +1360,7 @@
           </button>
         ` : ''}
         <div style="text-align: center; margin-top: 8px;">
-          <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+          <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
         </div>
       `;
     } else if (t.status === 'Menunggu Verifikasi Atasan') {
@@ -1381,7 +1368,7 @@
        
         </div>
         <div style="text-align: center; margin-top: 8px;">
-          <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+          <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
         </div>
       `;
     } else if (isOutside) {
@@ -1430,7 +1417,7 @@
             </div>
           </div>
           <div style="text-align: center; margin-top: 8px;">
-            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
           </div>
         `;
       } else {
@@ -1442,7 +1429,7 @@
             </div>
           </div>
           <div style="text-align: center; margin-top: 8px;">
-            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail Pengajuan</a>
+            <a href="#" class="mobile-link-rincian" onclick="window.mobileOpenTicketDetail('${t.id}'); return false;">Lihat Detail</a>
           </div>
         `;
       }
@@ -3504,7 +3491,7 @@
       <div class="mobile-sheet-header" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
         <div>
           <span style="font-size: 0.675rem; color: #059669; font-weight: 700; text-transform: uppercase;">RINCIAN TIKET</span>
-          <h3 class="mobile-sheet-title" style="font-family: monospace; font-size: 1rem; margin: 0; color: #0f172a;">${t.id}</h3>
+          <h3 class="mobile-sheet-title" style="font-family: monospace; font-size: 0.925rem; margin: 0; color: #0f172a;">${t.id}</h3>
         </div>
         <button type="button" aria-label="Tutup" class="mobile-sheet-close" style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; border: none; border-radius: 50%; font-size: 1.1rem; color: #64748b; cursor: pointer; padding: 0;" onclick="window.mobileCloseSheet()">✕</button>
       </div>
@@ -3614,8 +3601,8 @@
       <div class="mobile-sheet-body">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <div>
-            <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-            <div style="font-size: 0.725rem; color: #64748b;">${t.category} • ${getTType(t)}</div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
+            <div style="font-size: 0.7rem; color: #64748b;">${t.category} • ${getTType(t)}</div>
           </div>
           <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
         </div>
@@ -3641,11 +3628,11 @@
             <div style="background: var(--bg-subtle, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
               <div>
                 <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Tujuan Keluar</div>
-                <div style="font-size: 0.8rem; color: #0f172a; font-weight: 700; word-break: break-word; overflow-wrap: anywhere; line-height: 1.4;">${t.destination || 'Area Rekayasa'}</div>
+                <div style="font-size: 0.75rem; color: #0f172a; font-weight: 700; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35;">${t.destination || 'Area Rekayasa'}</div>
               </div>
               <div style="border-top: 1px dashed #e2e8f0; padding-top: 8px;">
                 <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 2px;">Alasan Keperluan</div>
-                <div style="font-size: 0.775rem; color: #0f172a; font-weight: 700; word-break: break-word; overflow-wrap: anywhere; line-height: 1.45;">"${t.reason || 'Keperluan dinas kantor'}"</div>
+                <div style="font-size: 0.74rem; color: #0f172a; font-weight: 700; word-break: break-word; overflow-wrap: anywhere; line-height: 1.4;">"${t.reason || 'Keperluan dinas kantor'}"</div>
               </div>
             </div>
           </div>

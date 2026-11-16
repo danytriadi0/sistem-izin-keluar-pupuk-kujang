@@ -417,44 +417,12 @@ function renderGenericPaginationButtons(btnsContainer, totalPages, currentPage, 
 window.renderGenericPaginationButtons = renderGenericPaginationButtons;
 
 /**
- * Fitur Drag-to-Scroll (Klik & Geser Horisontal) untuk Tabel Data Figma
- * Memungkinkan pengguna menggeser tabel ke kiri-kanan dengan klik-tahan mouse tanpa scrollbar kaku
+ * Dukungan Scroll Horizontal untuk Tabel Data Figma
+ * Menggunakan scrollbar bawaan yang rapi dan roda mouse (horizontal / shift-wheel)
  */
 function enableDragScroll(slider) {
   if (!slider || slider._dragInitialized) return;
   slider._dragInitialized = true;
-
-  let isDown = false;
-  let startX = 0;
-  let scrollLeft = 0;
-
-  slider.addEventListener('mousedown', (e) => {
-    // Jangan aktifkan drag jika yang diklik adalah tombol interaktif, link, input, select
-    if (e.target.closest('button, a, input, select, label')) return;
-
-    isDown = true;
-    slider.classList.add('is-dragging');
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-  });
-
-  const stopDrag = () => {
-    if (!isDown) return;
-    isDown = false;
-    slider.classList.remove('is-dragging');
-  };
-
-  slider.addEventListener('mouseleave', stopDrag);
-  slider.addEventListener('mouseup', stopDrag);
-  window.addEventListener('mouseup', stopDrag);
-
-  slider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 1.5; // Rasio kecepatan geser responsif
-    slider.scrollLeft = scrollLeft - walk;
-  });
 
   // Dukungan scroll roda mouse (horizontal / shift-wheel)
   slider.addEventListener('wheel', (e) => {
@@ -662,11 +630,11 @@ window.deleteSelectedRiwayat = function (role) {
   }
 };
 
-window.toggleRowActionDropdown = function (btn, role, ticketId, isRiwayat) {
+window.toggleRowActionDropdown = function (btn, role, ticketId, isRiwayat, extraParam1, extraParam2) {
   const popover = document.getElementById('tableRowActionPopover');
   if (!popover || !btn) return;
 
-  const isCurrentOpen = popover.classList.contains('open') && popover._currentTicketId === ticketId;
+  const isCurrentOpen = popover.classList.contains('open') && popover._currentTicketId === ticketId && popover._currentRole === role;
   if (isCurrentOpen) {
     window.closeTableRowActionPopover();
     return;
@@ -682,6 +650,33 @@ window.toggleRowActionDropdown = function (btn, role, ticketId, isRiwayat) {
   popover._currentTicketId = ticketId;
   popover._currentRole = role;
   popover._triggerBtn = btn;
+  popover._extraParam1 = extraParam1;
+  popover._extraParam2 = extraParam2;
+
+  if (role === 'admin-audit') {
+    popover.innerHTML = `
+      <button type="button" class="table-row-popover-item" onclick="event.stopPropagation(); window.closeTableRowActionPopover(); if (typeof window.viewAdminTicketDetail === 'function') { window.viewAdminTicketDetail('${ticketId}'); } else if (typeof openTicketDetail === 'function') { openTicketDetail('${ticketId}', 'detail'); }">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <line x1="10" y1="9" x2="8" y2="9"></line>
+        </svg>
+        <span>Detail Pengajuan</span>
+      </button>
+      <button type="button" class="table-row-popover-item danger" onclick="event.stopPropagation(); window.closeTableRowActionPopover(); window.handleRowActionDelete('admin-audit', '${ticketId}', '${(extraParam1 || '').replace(/'/g, "\\'")}', '${(extraParam2 || '').replace(/'/g, "\\'")}');">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span>Hapus</span>
+      </button>
+    `;
+    popover.classList.add('open');
+    popover.setAttribute('aria-hidden', 'false');
+    return;
+  }
 
   // Aturan: Button Hapus HANYA ada di Riwayat.
   // Di Pelacakan, Antrean, dll TIDAK ADA button hapus, HANYA Detail Pengajuan.
@@ -751,16 +746,22 @@ window.closeTableRowActionPopover = function () {
     popover._currentTicketId = null;
     popover._currentRole = null;
     popover._triggerBtn = null;
+    popover._extraParam1 = null;
+    popover._extraParam2 = null;
   }
 };
 
-window.handleRowActionDelete = function (role, ticketId) {
+window.handleRowActionDelete = function (role, ticketId, extraParam1, extraParam2) {
   if (role === 'karyawan') {
     if (typeof window.deleteEmpTicket === 'function') window.deleteEmpTicket(ticketId);
   } else if (role === 'approver') {
     if (typeof window.deleteApproverTicket === 'function') window.deleteApproverTicket(ticketId);
   } else if (role === 'security') {
     if (typeof window.deleteSecurityTicket === 'function') window.deleteSecurityTicket(ticketId, 'riwayat');
+  } else if (role === 'admin-audit') {
+    if (typeof window.deleteAdminAuditLog === 'function') {
+      window.deleteAdminAuditLog(ticketId, extraParam1, extraParam2);
+    }
   }
 };
 

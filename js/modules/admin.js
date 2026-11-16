@@ -652,15 +652,14 @@ function renderAdminAudit() {
         <td>
           <div style="font-size: 0.775rem; color: var(--text-secondary); line-height: 1.4;">${log.desc}</div>
         </td>
-        <td style="text-align: right; white-space: nowrap;">
-          <div class="action-pills-row">
-            <button type="button" class="btn-pill-action btn-pill-detail" onclick="window.viewAdminTicketDetail('${log.ticketId}')" title="Lihat Rincian Tiket #${log.ticketId}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-              <span>Detail Pengajuan</span>
-            </button>
-            <button type="button" class="btn-pill-action btn-pill-delete" onclick="window.deleteAdminAuditLog('${log.ticketId}', '${encodeURIComponent(log.time)}', '${encodeURIComponent(log.event)}')" title="Hapus Catatan Audit Peristiwa Ini">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              <span>Hapus</span>
+        <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'admin-audit', '${log.ticketId}', true, '${encodeURIComponent(log.time)}', '${encodeURIComponent(log.event)}')" title="Opsi Tindakan #${log.ticketId}" aria-label="Opsi Tindakan">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="12" cy="19" r="2"></circle>
+              </svg>
             </button>
           </div>
         </td>
@@ -913,10 +912,10 @@ function renderAdminReports(isPrinting = false) {
         <td style="white-space: nowrap;">
           <div style="display: flex; align-items: center; gap: 0.45rem;">
             <span class="report-ticket-id">${t.id}</span>
-            ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
+            ${isEmergency ? `<span class="badge-editorial-darurat">Darurat</span>` : ''}
             ${isGroupDinas ? (() => {
               const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-              return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
+              return `<span class="badge-editorial-tim" title="Tim Dinas (${groupCount} Orang)">Tim (${groupCount})</span>`;
             })() : ''}
           </div>
         </td>
@@ -1067,7 +1066,8 @@ function printAdminReport() {
   const printTitle = document.getElementById('adminPrintTimestamp');
   if (printTitle) {
     const now = new Date();
-    printTitle.textContent = `Dicetak pada: ${now.toLocaleDateString('id-ID', { dateStyle: 'full' })} pukul ${now.toLocaleTimeString('id-ID')} WIB oleh Bambang Sutrisno, S.T. (Departemen Pengamanan & K3)`;
+    const adminActor = (window.ACTORS && window.ACTORS.admin) ? window.ACTORS.admin : { name: 'Administrator', department: 'Departemen Pengamanan & K3' };
+    printTitle.textContent = `Dicetak pada: ${now.toLocaleDateString('id-ID', { dateStyle: 'full' })} pukul ${now.toLocaleTimeString('id-ID')} WIB oleh ${adminActor.name} (${adminActor.department})`;
   }
   window._isPrintingAdminReport = true;
   renderAdminReports(true);
@@ -2806,10 +2806,10 @@ function renderAdminStatusTracking() {
             <a href="javascript:void(0)" onclick="window.viewAdminTicketDetail('${t.id}')" class="report-ticket-id" style="text-decoration: none; font-weight: 700; color: var(--primary-accent);">
               ${t.id}
             </a>
-            ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
+            ${isEmergency ? `<span class="badge-editorial-darurat">Darurat</span>` : ''}
             ${isGroupDinas ? (() => {
               const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-              return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
+              return `<span class="badge-editorial-tim" title="Tim Dinas (${groupCount} Orang)">Tim (${groupCount})</span>`;
             })() : ''}
           </div>
           <div style="margin-top: 3px;">${cleanCategoryBadge(t.category)}</div>
