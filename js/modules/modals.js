@@ -912,10 +912,6 @@ function setupSingleApproverCombobox(cfg) {
           <div class="approver-item-role">${highlightedTitle}</div>
           <div class="approver-item-dept">${highlightedDept}</div>
         </div>
-        <div class="approver-item-cta">
-          <span>${approver.isUnavailable ? 'Tidak Tersedia' : 'Pilih'}</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
       `;
 
       itemEl.addEventListener('click', (e) => {

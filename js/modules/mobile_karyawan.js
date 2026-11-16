@@ -2260,7 +2260,6 @@
           </div>
           <div class="mobile-approver-item-role">${a.title || 'Manajer'} • ${a.department || 'Rekayasa'}</div>
         </div>
-        <span style="color: ${a.isUnavailable ? '#94a3b8' : '#059669'}; font-size: 0.75rem; font-weight: 700;">${a.isUnavailable ? 'Tutup' : 'Pilih'}</span>
       </div>
     `).join('');
   };

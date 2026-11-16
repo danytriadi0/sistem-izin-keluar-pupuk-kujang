@@ -1314,10 +1314,6 @@ function renderAdminSupervisorDropdownItems(filterText = '') {
           <div class="approver-item-role">${highlightedTitle}</div>
           <div class="approver-item-dept">${highlightedDept}</div>
         </div>
-        <div class="approver-item-cta">
-          <span>Pilih</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
       </div>
     `;
   }).join('');
@@ -1636,7 +1632,7 @@ function openAdminEmpDropdown(targetField = 'name') {
     if (targetField === 'nip') {
       if (bannerBadge) bannerBadge.textContent = 'Ketik / cari NIP karyawan';
       if (bannerDesc) bannerDesc.textContent = 'Ketik angka atau format NIP karyawan untuk auto-fill data akun:';
-      if (subtitle) subtitle.textContent = 'Direktori Karyawan Berdasarkan NIP';
+      if (subtitle) subtitle.textContent = 'Direktori NIP Karyawan';
     } else {
       if (bannerBadge) bannerBadge.textContent = 'Ketik / cari nama karyawan';
       if (bannerDesc) bannerDesc.textContent = 'Ketik beberapa huruf nama karyawan untuk auto-fill data akun:';
@@ -1727,10 +1723,6 @@ function renderAdminEmpDropdownItems(filterText = '', targetField = 'name') {
           </div>
           <div class="approver-item-role">${emp.title || 'Karyawan'} • Atasan: <strong style="color: var(--corp-teal, #0f766e);">${emp.supervisor}</strong></div>
           <div class="approver-item-dept">${highlightedDept}</div>
-        </div>
-        <div class="approver-item-cta">
-          <span>Pilih</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
       </div>
     `;
