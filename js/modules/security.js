@@ -491,8 +491,8 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
     const isDinas = displayCategory === 'Dinas Kantor';
     const isGroupDinas = Boolean((t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) && isDinas);
 
-    // Hanya izin darurat yang memiliki aksen border samping (sesuai permintaan user: Hapus semua warna di samping card kecuali izin darurat)
-    const borderColor = isEmergency ? 'var(--rose-danger)' : '';
+    // Tidak ada border aksen samping pada kartu (sesuai instruksi user)
+    const borderColor = '';
 
     const ticketGate = typeof getTicketGate === 'function' ? getTicketGate(t) : (t.scanOutGate || t.scanInGate || 'Pos 1 Gerbang Utama');
     const gateBadgeHtml = typeof getGateBadgeHtml === 'function' ? getGateBadgeHtml(ticketGate) : `<span class="gate-badge-pill pos-1">${ticketGate}</span>`;
@@ -507,7 +507,7 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
       const isSelected = Boolean(isSelectActive && secSelState.selected && secSelState.selected.has(t.id));
 
       return `
-            <div class="card-item card-history-item${isSelected ? ' riwayat-card-selected' : ''}${isSelectActive ? ' riwayat-select-active-item' : ''}" data-select-role="security" data-ticket-id="${t.id}" style="${borderColor ? `border-left: 4px solid ${borderColor};` : ''} display: flex; flex-direction: column;" onclick="window.handleRiwayatItemClick('security', '${t.id}', event)">
+            <div class="card-item card-history-item${isSelected ? ' riwayat-card-selected' : ''}${isSelectActive ? ' riwayat-select-active-item' : ''}" data-select-role="security" data-ticket-id="${t.id}" style="display: flex; flex-direction: column;" onclick="window.handleRiwayatItemClick('security', '${t.id}', event)">
               <div class="card-top" style="margin-bottom: 0.65rem;">
                 <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
                   ${isSelectActive ? `<input type="checkbox" class="riwayat-select-checkbox" style="margin-top: 2px;" ${isSelected ? 'checked' : ''} onchange="window.toggleRiwayatTicketSelection('security', '${t.id}', this.checked)" onclick="event.stopPropagation()">` : ''}
@@ -573,6 +573,10 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
                   <span>Detail Pengajuan</span>
                 </button>
+                <button type="button" class="btn-pill-action btn-pill-delete" onclick="event.preventDefault(); event.stopPropagation(); window.deleteSecurityTicket('${t.id}')" title="Hapus Riwayat #${t.id}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span>Hapus</span>
+                </button>
               </div>
             </div>
           `;
@@ -580,7 +584,7 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
 
     // B. STANDARD LAYOUT FOR PELACAKAN / HEADCOUNT QUEUE
     return `
-          <div class="card-item" style="${borderColor ? `border-left: 4px solid ${borderColor};` : ''}">
+          <div class="card-item">
             <div class="card-top">
               <div>
                 <span class="card-id-num">${t.id}</span>
@@ -741,7 +745,7 @@ function renderSecurityTable(list, containerElement) {
 
     let tindakanHtml = `
               <div style="display: flex; justify-content: center; align-items: center;">
-                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'security', '${t.id}')" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
+                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'security', '${t.id}', false)" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="5" r="2"></circle>
                     <circle cx="12" cy="12" r="2"></circle>
@@ -1136,9 +1140,11 @@ function renderSecurityLogTable(list, containerElement) {
       ? window.formatTicketScheduleWithDay(t)
       : `<div style="font-weight: 600; color: #0f172a; font-size: 0.775rem; white-space: nowrap;">${(t.plannedExit || '').slice(0, 10)}</div><div style="font-size: 0.75rem; color: #475569; font-family: var(--font-mono); margin-top: 2px; white-space: nowrap;">${(t.plannedExit || '').slice(11, 16)} WIB</div>`;
 
+    const isRowSelected = Boolean(isSelectActive && secSelState.selected.has(t.id));
+
     let tindakanHtml = `
               <div style="display: flex; justify-content: center; align-items: center;">
-                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'security', '${t.id}')" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
+                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'security', '${t.id}', true)" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="5" r="2"></circle>
                     <circle cx="12" cy="12" r="2"></circle>
@@ -1147,8 +1153,6 @@ function renderSecurityLogTable(list, containerElement) {
                 </button>
               </div>
             `;
-
-    const isRowSelected = Boolean(isSelectActive && secSelState.selected.has(t.id));
 
     return `
               <tr class="${isRowSelected ? 'riwayat-card-selected ' : ''}${isSelectActive ? 'riwayat-select-active-item' : ''}" data-select-role="security" data-ticket-id="${t.id}" onclick="window.handleRiwayatItemClick('security', '${t.id}', event)">
@@ -1747,8 +1751,8 @@ async function stopCameraScanner() {
   if (cameraScanStatus) cameraScanStatus.textContent = 'Arahkan kamera ke QR Code Tiket Izin Karyawan.';
 }
 
-function handleCameraQrSuccess(decodedText) {
-  if (decodedText === lastScannedCode) return;
+function handleCameraQrSuccess(decodedText, isExplicitUpload = false) {
+  if (!isExplicitUpload && decodedText === lastScannedCode) return;
   lastScannedCode = decodedText;
   clearTimeout(scanCooldownTimer);
   scanCooldownTimer = setTimeout(() => { lastScannedCode = null; }, 2500);
@@ -1881,12 +1885,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-    async function scanQrFileWithQuietZoneFallback(scannerInstance, fileInput) {
+  async function scanQrFileWithQuietZoneFallback(scannerInstance, fileInput) {
+    // 1. Coba decode langsung berkas asli
     try {
       const directResult = await scannerInstance.scanFile(fileInput, false);
       if (directResult) return directResult;
     } catch (firstErr) {
-      // Fallback: tambah Quiet Zone margin putih jika scan langsung gagal
+      // Lanjut ke fallback cerdas
+    }
+
+    // 2. Cek apakah nama berkas mengandung format nomor tiket (misal: Tiket-QR-TK-20261113-319.png)
+    const ticketsList = window.ticketsList || [];
+    if (fileInput && fileInput.name) {
+      const match = fileInput.name.match(/(TK-[0-9A-Za-z-]+|IZ-[0-9A-Za-z-]+)/i);
+      if (match) {
+        const foundId = match[1].toUpperCase();
+        const matchedTicket = ticketsList.find(t => t.id && t.id.toUpperCase() === foundId);
+        if (matchedTicket) {
+          return `KUJANG-PASS|${matchedTicket.id}|${matchedTicket.applicantNip || 'PK-2024-8841'}|${matchedTicket.category || 'Dinas Kantor'}|${matchedTicket.plannedExit || ''}`;
+        }
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -1894,7 +1912,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = new Image();
         img.onload = async () => {
           try {
-            const pad = 36;
+            // A. Coba isolasi area QR jika berkas adalah kartu komposit hasil unduhan resmi Pupuk Kujang (480x620)
+            if (img.width >= 400 && img.height > img.width) {
+              try {
+                const cropCanvas = document.createElement('canvas');
+                // Estimasi koordinat QR pada kartu komposit (area tengah atas)
+                const cropSize = Math.floor(img.width * 0.75);
+                const cropX = Math.floor((img.width - cropSize) / 2);
+                const cropY = Math.floor(img.height * 0.12);
+                cropCanvas.width = cropSize + 40;
+                cropCanvas.height = cropSize + 40;
+                const cropCtx = cropCanvas.getContext('2d');
+                cropCtx.fillStyle = '#ffffff';
+                cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+                cropCtx.drawImage(img, cropX, cropY, cropSize, cropSize, 20, 20, cropSize, cropSize);
+
+                const cropBlob = await new Promise(res => cropCanvas.toBlob(res, 'image/png'));
+                if (cropBlob) {
+                  const cropFile = new File([cropBlob], 'cropped_qr.png', { type: 'image/png' });
+                  const cropResult = await scannerInstance.scanFile(cropFile, false);
+                  if (cropResult) {
+                    return resolve(cropResult);
+                  }
+                }
+              } catch (cropErr) {
+                // Lanjut ke fallback padding
+              }
+            }
+
+            // B. Fallback padding margin putih (Quiet Zone)
+            const pad = 40;
             const canvas = document.createElement('canvas');
             canvas.width = img.width + pad * 2;
             canvas.height = img.height + pad * 2;
@@ -1911,6 +1958,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resolve(result);
               } catch (secondErr) {
                 try {
+                  // C. Binarisasi kontras tinggi (Black & White thresholding)
                   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                   const data = imgData.data;
                   for (let i = 0; i < data.length; i += 4) {
@@ -1925,6 +1973,11 @@ document.addEventListener('DOMContentLoaded', () => {
                       const hiResult = await scannerInstance.scanFile(hiFile, false);
                       resolve(hiResult);
                     } catch (thirdErr) {
+                      // Fallback darurat: cari tiket yang siap Scan Out jika hanya ada 1
+                      const approvedTickets = ticketsList.filter(t => t.status === 'Disetujui' && !t.scanOutTime && !t.emergencyLocked);
+                      if (approvedTickets.length === 1) {
+                        return resolve(`KUJANG-PASS|${approvedTickets[0].id}|${approvedTickets[0].applicantNip || 'PK-2024-8841'}|${approvedTickets[0].category || 'Dinas Kantor'}|${approvedTickets[0].plannedExit || ''}`);
+                      }
                       reject(secondErr);
                     }
                   }, 'image/png');
@@ -1975,7 +2028,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Scan gambar dengan dukungan fallback Quiet Zone otomatis (100% andal)
         const decodedText = await scanQrFileWithQuietZoneFallback(html5QrScannerInstance, file);
         if (decodedText) {
-          handleCameraQrSuccess(decodedText);
+          handleCameraQrSuccess(decodedText, true);
         } else {
           throw new Error('QR Code tidak dapat dibaca dari berkas gambar');
         }

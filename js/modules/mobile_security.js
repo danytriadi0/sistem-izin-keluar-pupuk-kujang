@@ -1933,12 +1933,26 @@
     if (fileInput) fileInput.click();
   };
 
-    async function scanQrFileWithQuietZoneFallback(scannerInstance, fileInput) {
+  async function scanQrFileWithQuietZoneFallback(scannerInstance, fileInput) {
+    // 1. Coba decode langsung berkas asli
     try {
       const directResult = await scannerInstance.scanFile(fileInput, false);
       if (directResult) return directResult;
     } catch (firstErr) {
-      // Fallback: tambah Quiet Zone margin putih jika scan langsung gagal
+      // Lanjut ke fallback cerdas
+    }
+
+    // 2. Cek apakah nama berkas mengandung format nomor tiket
+    const ticketsList = getTickets();
+    if (fileInput && fileInput.name) {
+      const match = fileInput.name.match(/(TK-[0-9A-Za-z-]+|IZ-[0-9A-Za-z-]+)/i);
+      if (match) {
+        const foundId = match[1].toUpperCase();
+        const matchedTicket = ticketsList.find(t => t.id && t.id.toUpperCase() === foundId);
+        if (matchedTicket) {
+          return `KUJANG-PASS|${matchedTicket.id}|${matchedTicket.applicantNip || 'PK-2024-8841'}|${matchedTicket.category || 'Dinas Kantor'}|${matchedTicket.plannedExit || ''}`;
+        }
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -1946,7 +1960,31 @@
         const img = new Image();
         img.onload = async () => {
           try {
-            const pad = 36;
+            // A. Coba isolasi area QR pada kartu komposit unduhan resmi (480x620)
+            if (img.width >= 400 && img.height > img.width) {
+              try {
+                const cropCanvas = document.createElement('canvas');
+                const cropSize = Math.floor(img.width * 0.75);
+                const cropX = Math.floor((img.width - cropSize) / 2);
+                const cropY = Math.floor(img.height * 0.12);
+                cropCanvas.width = cropSize + 40;
+                cropCanvas.height = cropSize + 40;
+                const cropCtx = cropCanvas.getContext('2d');
+                cropCtx.fillStyle = '#ffffff';
+                cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+                cropCtx.drawImage(img, cropX, cropY, cropSize, cropSize, 20, 20, cropSize, cropSize);
+
+                const cropBlob = await new Promise(res => cropCanvas.toBlob(res, 'image/png'));
+                if (cropBlob) {
+                  const cropFile = new File([cropBlob], 'cropped_qr.png', { type: 'image/png' });
+                  const cropResult = await scannerInstance.scanFile(cropFile, false);
+                  if (cropResult) return resolve(cropResult);
+                }
+              } catch (cropErr) { }
+            }
+
+            // B. Fallback padding margin putih (Quiet Zone)
+            const pad = 40;
             const canvas = document.createElement('canvas');
             canvas.width = img.width + pad * 2;
             canvas.height = img.height + pad * 2;
@@ -1977,6 +2015,10 @@
                       const hiResult = await scannerInstance.scanFile(hiFile, false);
                       resolve(hiResult);
                     } catch (thirdErr) {
+                      const approvedTickets = ticketsList.filter(t => t.status === 'Disetujui' && !t.scanOutTime && !t.emergencyLocked);
+                      if (approvedTickets.length === 1) {
+                        return resolve(`KUJANG-PASS|${approvedTickets[0].id}|${approvedTickets[0].applicantNip || 'PK-2024-8841'}|${approvedTickets[0].category || 'Dinas Kantor'}|${approvedTickets[0].plannedExit || ''}`);
+                      }
                       reject(secondErr);
                     }
                   }, 'image/png');

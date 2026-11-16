@@ -1623,6 +1623,22 @@ function openDigitalPassModal(ticketId) {
 }
 window.openDigitalPassModal = openDigitalPassModal;
 
+// Helper Formatter Durasi Keterlambatan Lengkap (Hari, Jam, Menit)
+function formatLateDurationFull(totalMinutes) {
+  const mins = Math.max(1, Math.round(Number(totalMinutes) || 0));
+  const days = Math.floor(mins / (24 * 60));
+  const remainingAfterDays = mins % (24 * 60);
+  const hours = Math.floor(remainingAfterDays / 60);
+  const remainingMins = remainingAfterDays % 60;
+
+  const parts = [];
+  if (days > 0) parts.push(`${days} Hari`);
+  if (hours > 0) parts.push(`${hours} Jam`);
+  if (remainingMins > 0 || parts.length === 0) parts.push(`${remainingMins} Menit`);
+  return parts.join(' ');
+}
+window.formatLateDurationFull = formatLateDurationFull;
+
 // OPEN TICKET DETAIL & AUDIT TRAIL MODAL (FIGMA SCREEN 2 & 3)
 function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   if (typeof window.checkOverdueAndExpiredTickets === 'function') {
@@ -1658,6 +1674,11 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   window.currentDetailTicketId = ticket.id;
   window.currentModalTicketId = ticket.id;
 
+  // Kurangi badge notifikasi di sidebar audit trail admin saat detail telah dilihat
+  if (typeof window.markAuditDetailAsViewed === 'function') {
+    window.markAuditDetailAsViewed(ticket.id);
+  }
+
   const ACTORS = window.ACTORS || {};
   const modalTicketDetail = document.getElementById('modalTicketDetail');
 
@@ -1682,9 +1703,9 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
 
     if (isLateCompleted) {
       const lateMins = Number(ticket.lateMinutes) || 15;
-      detailStatusPillTop.innerHTML = `<span class="figma-clean-status" style="font-weight: 700; font-size: 0.85rem; color: #b45309;">Selesai (Terlambat ${lateMins} Menit)</span>`;
+      detailStatusPillTop.innerHTML = `<span class="figma-clean-status" style="font-weight: 700; font-size: 0.85rem; color: #b45309;">Selesai (Terlambat ${formatLateDurationFull(lateMins)})</span>`;
     } else if (isOutLate) {
-      // Real-time counter menit terlambat saat sedang di luar
+      // Real-time counter durasi terlambat saat sedang di luar (Hari, Jam, Menit)
       const calcLateMins = () => {
         let retDate = null;
         if (ticket.estimatedReturn) {
@@ -1699,7 +1720,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
 
       const renderRealtimeLate = () => {
         const curMins = calcLateMins();
-        detailStatusPillTop.innerHTML = `<span class="figma-clean-status" style="font-weight: 700; font-size: 0.85rem; color: #dc2626;">Sedang di Luar (Terlambat ${curMins} Menit)</span>`;
+        detailStatusPillTop.innerHTML = `<span class="figma-clean-status" style="font-weight: 700; font-size: 0.85rem; color: #dc2626;">Sedang di Luar (Terlambat ${formatLateDurationFull(curMins)})</span>`;
       };
 
       renderRealtimeLate();
@@ -4868,13 +4889,16 @@ if (typeof document !== 'undefined') {
 
 
 window.openDeleteConfirmModal = function (options) {
-  const { title = 'Konfirmasi Hapus', message = 'Apakah Anda yakin ingin menghapus data ini?', confirmText = 'Hapus', onConfirm = null } = options || {};
+  const { title = 'Konfirmasi Hapus', message = 'Apakah Anda yakin ingin menghapus data ini?', confirmText = 'Hapus', onConfirm = null, forceModal = false } = options || {};
 
   // Simpan posisi scroll sebelum modal muncul
   const savedScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-  // Cek apakah user telah memilih untuk melewati konfirmasi hapus selama sesi ini
-  if (sessionStorage.getItem('kujang_skip_confirm_delete') === 'true') {
+  // Cek apakah aksi merupakan penghapusan massal atau di-force muncul
+  const isMassDelete = Boolean(forceModal || (title && title.toLowerCase().includes('semua')));
+
+  // Cek apakah user telah memilih untuk melewati konfirmasi hapus selama sesi ini (hanya untuk hapus satuan dan bukan forceModal)
+  if (!isMassDelete && sessionStorage.getItem('kujang_skip_confirm_delete') === 'true') {
     if (typeof onConfirm === 'function') onConfirm();
     return;
   }
@@ -4889,13 +4913,14 @@ window.openDeleteConfirmModal = function (options) {
   if (modal) {
     if (titleEl) titleEl.textContent = title;
     if (msgEl) msgEl.innerHTML = typeof message === 'string' ? message.replace(/\n/g, '<br>') : message;
-    if (labelDontShow) labelDontShow.style.display = 'flex';
+    // Pada hapus massal, jangan tampilkan opsi skip konfirmasi agar data selalu aman
+    if (labelDontShow) labelDontShow.style.display = isMassDelete ? 'none' : 'flex';
     if (chkDontShow) chkDontShow.checked = false;
 
     if (btnExecute) {
       btnExecute.textContent = confirmText;
       btnExecute.onclick = function () {
-        if (chkDontShow && chkDontShow.checked) {
+        if (!isMassDelete && chkDontShow && chkDontShow.checked) {
           try { sessionStorage.setItem('kujang_skip_confirm_delete', 'true'); } catch (e) { }
         }
         modal.classList.remove('open');

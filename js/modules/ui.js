@@ -654,7 +654,7 @@ window.deleteSelectedRiwayat = function (role) {
   }
 };
 
-window.toggleRowActionDropdown = function (btn, role, ticketId) {
+window.toggleRowActionDropdown = function (btn, role, ticketId, isRiwayat) {
   const popover = document.getElementById('tableRowActionPopover');
   if (!popover || !btn) return;
 
@@ -675,6 +675,40 @@ window.toggleRowActionDropdown = function (btn, role, ticketId) {
   popover._currentRole = role;
   popover._triggerBtn = btn;
 
+  // Aturan: Button Hapus HANYA ada di Riwayat.
+  // Di Pelacakan, Antrean, dll TIDAK ADA button hapus, HANYA Detail Pengajuan.
+  // Ini berlaku di semua role, kecuali karyawan (karyawan riwayat selalu ada hapus).
+  let showDelete = false;
+  if (role === 'karyawan') {
+    showDelete = true;
+  } else if (isRiwayat !== undefined) {
+    showDelete = Boolean(isRiwayat);
+  } else {
+    if (role === 'approver') {
+      showDelete = (window.currentApproverNav === 'riwayat');
+    } else if (role === 'security') {
+      showDelete = (window.currentSecurityNav === 'riwayat');
+    }
+  }
+
+  // Pengaman ketat: jika tiket berstatus aktif/berjalan, mutlak BUKAN riwayat -> dilarang ada tombol hapus
+  const ticketsList = window.ticketsList || [];
+  const currentTicket = ticketsList.find(t => t.id === ticketId);
+  if (currentTicket && role !== 'karyawan') {
+    const ACTIVE_STATUSES = [
+      'Sedang di Luar',
+      'Terlambat',
+      'Menunggu Persetujuan',
+      'Menunggu Verifikasi Atasan',
+      'Menunggu Bukti Kedatangan',
+      'Menunggu Otorisasi Darurat',
+      'Disetujui'
+    ];
+    if (ACTIVE_STATUSES.includes(currentTicket.status)) {
+      showDelete = false;
+    }
+  }
+
   popover.innerHTML = `
     <button type="button" class="table-row-popover-item" onclick="event.stopPropagation(); window.closeTableRowActionPopover(); if (typeof openTicketDetail === 'function') openTicketDetail('${ticketId}', 'detail');">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -686,6 +720,7 @@ window.toggleRowActionDropdown = function (btn, role, ticketId) {
       </svg>
       <span>Detail Pengajuan</span>
     </button>
+    ${showDelete ? `
     <button type="button" class="table-row-popover-item danger" onclick="event.stopPropagation(); window.closeTableRowActionPopover(); window.handleRowActionDelete('${role}', '${ticketId}');">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="3 6 5 6 21 6"></polyline>
@@ -693,6 +728,7 @@ window.toggleRowActionDropdown = function (btn, role, ticketId) {
       </svg>
       <span>Hapus</span>
     </button>
+    ` : ''}
   `;
 
   popover.classList.add('open');

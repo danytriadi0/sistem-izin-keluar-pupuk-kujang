@@ -865,9 +865,19 @@
       return;
     }
 
-    const sheet = document.getElementById('mobileActionSheet');
-    const backdrop = document.getElementById('mobileModalBackdrop');
-    if (!sheet || !backdrop) return;
+    const handler = () => {
+      window.mobileConfirmBatchDelete(flag, finishedTickets.length);
+    };
+
+    if (typeof window.openDeleteConfirmModal === 'function') {
+      window.openDeleteConfirmModal({
+        title: 'Hapus Semua Riwayat',
+        message: `Hapus <strong>${finishedTickets.length} tiket</strong> riwayat selesai dari daftar tampilan Anda?`,
+        confirmText: 'Hapus Riwayat',
+        onConfirm: handler
+      });
+      return;
+    }
 
     sheet.innerHTML = `
       <div class="mobile-sheet-handle-bar"></div>
@@ -944,6 +954,21 @@
       const isDewi = (window.currentMobileRole === 'approver2' || window.currentActor === 'approver2');
       flag = isDewi ? 'deletedByApprover2' : 'deletedByApprover1';
     }
+
+    const handler = () => {
+      window.mobileConfirmSingleDelete(ticketId, flag);
+    };
+
+    if (typeof window.openDeleteConfirmModal === 'function') {
+      window.openDeleteConfirmModal({
+        title: 'Hapus Riwayat',
+        message: `Apakah Anda yakin ingin menghapus tiket <strong>${ticketId}</strong> dari daftar riwayat perangkat ini?`,
+        confirmText: 'Hapus',
+        onConfirm: handler
+      });
+      return;
+    }
+
     const sheet = document.getElementById('mobileActionSheet');
     const backdrop = document.getElementById('mobileModalBackdrop');
     if (!sheet || !backdrop) return;

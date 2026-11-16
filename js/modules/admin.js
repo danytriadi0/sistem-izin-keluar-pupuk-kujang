@@ -180,12 +180,17 @@ function updateAdminMetrics() {
 
   const sidebarAdminAuditBadge = document.getElementById('sidebarAdminAuditBadge');
   if (sidebarAdminAuditBadge) {
-    let totalEvents = 0;
-    tickets.forEach(t => {
-      const logs = t.activityLog || t.timeline || [];
-      totalEvents += logs.length;
-    });
-    sidebarAdminAuditBadge.textContent = totalEvents;
+    let viewedAuditTickets = [];
+    try {
+      viewedAuditTickets = JSON.parse(localStorage.getItem('KUJANG_VIEWED_AUDIT_TICKETS') || '[]');
+    } catch (e) { viewedAuditTickets = []; }
+
+    // Hitung tiket aktif di audit trail yang belum dilihat detail pengajuannya
+    const auditTicketsWithLogs = tickets.filter(t => !t.deletedFromAudit && ((t.timeline && t.timeline.length > 0) || (t.activityLog && t.activityLog.length > 0) || t.status));
+    const unreadAuditCount = auditTicketsWithLogs.filter(t => !viewedAuditTickets.includes(t.id)).length;
+
+    sidebarAdminAuditBadge.textContent = unreadAuditCount;
+    sidebarAdminAuditBadge.style.display = unreadAuditCount > 0 ? 'inline-block' : 'none';
   }
 
   // Calm Headcount Card
@@ -666,35 +671,44 @@ function deleteAdminAuditLog(ticketId, encodedTime, encodedEvent) {
   const time = decodeURIComponent(encodedTime);
   const event = decodeURIComponent(encodedEvent);
 
-  if (!confirm(`Apakah Anda yakin ingin menghapus catatan audit [${event}] untuk tiket #${ticketId} pada ${time}? Tindakan ini memerlukan otorisasi administrator.`)) {
-    return;
-  }
-
-  const tickets = window.ticketsList || [];
-  const targetTicket = tickets.find(t => t.id === ticketId);
-  if (!targetTicket) {
-    if (typeof window.showToast === 'function') {
-      window.showToast(`Tiket #${ticketId} tidak ditemukan.`, 'error');
+  const executeDelete = () => {
+    const tickets = window.ticketsList || [];
+    const targetTicket = tickets.find(t => t.id === ticketId);
+    if (!targetTicket) {
+      if (typeof window.showToast === 'function') {
+        window.showToast(`Tiket #${ticketId} tidak ditemukan.`, 'error');
+      }
+      return;
     }
-    return;
-  }
 
-  // Remove matching log from activityLog
-  if (Array.isArray(targetTicket.activityLog)) {
-    targetTicket.activityLog = targetTicket.activityLog.filter(l => !(l.time === time && l.event === event));
-  }
+    // Remove matching log from activityLog
+    if (Array.isArray(targetTicket.activityLog)) {
+      targetTicket.activityLog = targetTicket.activityLog.filter(l => !(l.time === time && l.event === event));
+    }
 
-  // Remove matching log from timeline
-  if (Array.isArray(targetTicket.timeline)) {
-    targetTicket.timeline = targetTicket.timeline.filter(l => !(l.time === time && l.event === event));
-  }
+    // Remove matching log from timeline
+    if (Array.isArray(targetTicket.timeline)) {
+      targetTicket.timeline = targetTicket.timeline.filter(l => !(l.time === time && l.event === event));
+    }
 
-  window.saveTickets(tickets);
-  renderAdminAudit();
-  renderAdminRecentFeed();
+    window.saveTickets(tickets);
+    renderAdminAudit();
+    renderAdminRecentFeed();
 
-  if (typeof window.showToast === 'function') {
-    window.showToast(`Catatan audit [${event}] untuk tiket #${ticketId} berhasil dihapus.`, 'info');
+    if (typeof window.showToast === 'function') {
+      window.showToast(`Catatan audit [${event}] untuk tiket #${ticketId} berhasil dihapus.`, 'info');
+    }
+  };
+
+  if (typeof window.openDeleteConfirmModal === 'function') {
+    window.openDeleteConfirmModal({
+      title: 'Hapus Catatan Audit',
+      message: `Apakah Anda yakin ingin menghapus catatan audit [${event}] untuk tiket #${ticketId} pada ${time}? Tindakan ini memerlukan otorisasi administrator.`,
+      confirmText: 'Hapus',
+      onConfirm: executeDelete
+    });
+  } else if (confirm(`Apakah Anda yakin ingin menghapus catatan audit [${event}] untuk tiket #${ticketId} pada ${time}? Tindakan ini memerlukan otorisasi administrator.`)) {
+    executeDelete();
   }
 }
 
@@ -735,12 +749,29 @@ function deleteAllAdminAudit() {
     window.openDeleteConfirmModal({
       title: 'Hapus Semua Log Audit Trail',
       message: `Apakah Anda yakin ingin menghapus <strong>seluruh (${count})</strong> catatan audit trail & log investigasi? Tindakan ini memerlukan otorisasi administrator dan tidak dapat dibatalkan.`,
+      confirmText: 'Hapus Semua',
+      forceModal: true,
       onConfirm: handler
     });
   } else if (confirm(`Apakah Anda yakin ingin menghapus seluruh (${count}) catatan audit trail & log investigasi? Tindakan ini tidak dapat dibatalkan.`)) {
     handler();
   }
 }
+
+function markAuditDetailAsViewed(ticketId) {
+  if (!ticketId) return;
+  try {
+    let viewed = JSON.parse(localStorage.getItem('KUJANG_VIEWED_AUDIT_TICKETS') || '[]');
+    if (!viewed.includes(ticketId)) {
+      viewed.push(ticketId);
+      localStorage.setItem('KUJANG_VIEWED_AUDIT_TICKETS', JSON.stringify(viewed));
+    }
+  } catch (e) {}
+  if (typeof updateAdminStats === 'function') {
+    updateAdminStats();
+  }
+}
+window.markAuditDetailAsViewed = markAuditDetailAsViewed;
 
 // ==========================================
 // 4. REPORTS & EXPORT EXCEL / PRINT PDF (FR-ADM-03, UC-22, UC-23)

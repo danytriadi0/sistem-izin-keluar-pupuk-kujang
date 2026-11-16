@@ -815,29 +815,6 @@ function renderApproverCards(list, containerElement, isTracking = false) {
               </div>
             ` : ''}
 
-            ${isEmergency && (t.status === 'Menunggu Otorisasi Darurat' || (t.emergencyLocked && t.status !== 'Disetujui' && !['Selesai', 'Ditolak', 'Dibatalkan', 'Kedaluwarsa'].includes(t.status))) ? `
-              <div class="approver-alert-banner emergency" style="border-radius: 8px; padding: 0.75rem 0.95rem; font-size: 0.8rem; margin: 0.65rem 0;">
-                <div style="font-weight: 800; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;">
-                  <span>Hasil Penulisan Form Kedaruratan (K3/Medis)</span>
-                  <span style="font-weight: 800; font-size: 0.75rem;">
-                    ${t.selectedMethod === 'passcode' ? '🔑 Cara: Sandi / OTP' : (t.selectedMethod === 'facescan' ? '🤳 Cara: Scan Wajah' : '📱 Cara: Persetujuan di App')}
-                  </span>
-                </div>
-                <div style="margin-top: 0.35rem; font-size: 0.75rem; line-height: 1.45; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Alasan: ${t.reason} — Tujuan: ${t.destination}">
-                  <strong>Alasan:</strong> "${t.reason}" — <strong>Tujuan:</strong> ${t.destination}
-                </div>
-                ${(t.selectedMethod === 'facescan' ? `
-                  <div style="margin-top: 0.4rem; font-size: 0.75rem;">
-                    🤳 Pemohon meminta scan wajah langsung di ponselnya. Atau klik tombol di bawah untuk menyetujui langsung.
-                  </div>
-                ` : `
-                  <div style="margin-top: 0.4rem; font-size: 0.75rem;">
-                    📱 Pemohon menunggu persetujuan langsung 1-klik Anda di aplikasi ini.
-                  </div>
-                `)}
-              </div>
-            ` : ''}
-
             ${t.approverNote ? `
               <div style="background:var(--bg-subtle, #f8fafc); border:1px solid var(--border-color); border-radius:6px; padding:0.45rem 0.65rem; font-size:0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
                 <strong>Catatan Keputusan:</strong> "${t.approverNote}"
@@ -1131,7 +1108,7 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
             let tindakanHtml = `
               <div style="display: flex; justify-content: center; align-items: center; gap: 0.35rem;">
                 ${extraAntrianBtns}
-                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'approver', '${t.id}')" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
+                <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'approver', '${t.id}', ${isRiwayatView})" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="5" r="2"></circle>
                     <circle cx="12" cy="12" r="2"></circle>

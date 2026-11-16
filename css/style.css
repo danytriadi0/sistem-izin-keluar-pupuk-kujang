@@ -867,7 +867,8 @@ body.theme-dark [style*="color: #b45309"] {
 }
 body.theme-dark .figma-clean-status.status-emergency,
 body.theme-dark [style*="color: #be123c"] {
-  color: #fb7185 !important;
+  color: #ef4444 !important;
+  font-weight: 800;
 }
 body.theme-dark .figma-clean-status.status-expired,
 body.theme-dark .figma-clean-status.status-cancelled {
@@ -13714,4 +13715,14 @@ body.theme-dark .riwayat-selected-count {
     font-size: 8pt !important;
     color: #000000 !important;
   }
+}
+
+/* Dark Mode Explicit Rule for Emergency Status Text (Vibrant Red) */
+body.theme-dark .status-emergency,
+body.theme-dark .figma-clean-status.status-emergency,
+body.theme-dark .figma-clean-status.status-emergency span,
+body.theme-dark [style*="color: #be123c"],
+body.theme-dark [style*="color:#be123c"] {
+  color: #ef4444 !important;
+  font-weight: 800 !important;
 }

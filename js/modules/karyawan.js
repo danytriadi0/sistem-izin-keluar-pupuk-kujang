@@ -1467,7 +1467,7 @@ function renderKaryawanDashboard() {
               <span>Edit Pengajuan</span>
             </button>
           ` : ''}
-          <button class="btn-figma-danger" onclick="openCancelModal('${activeTicket.id}')">
+          <button class="btn-figma-secondary" style="border: 1px solid var(--border-color, #cbd5e1); font-weight: 700; color: var(--text-primary, #334155);" onclick="openCancelModal('${activeTicket.id}')">
             <span>${isMemberOnly ? 'Batalkan Keikutsertaan' : 'Batalkan Izin'}</span>
           </button>
         `;
@@ -1508,7 +1508,7 @@ function renderKaryawanDashboard() {
         <div>
           <div style="font-size: 1.05rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
             <span>${activeTicket.id}</span>
-            ${isEmergency ? `<span style="font-size: 0.72rem; color: #be123c; font-weight: 800; background: #ffe4e6; padding: 2px 7px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.3px;">Izin Darurat</span>` : ''}
+            ${isEmergency ? `<span style="font-size: 0.72rem; color: var(--text-primary); font-weight: 700; background: var(--bg-secondary); padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border-color); letter-spacing: 0.3px;">Izin Darurat</span>` : ''}
             ${activeTicket.isGroupDinas ? `<span style="font-size: 0.75rem; color: #2563eb; font-weight: 700;">• Dinas Bersama (${activeMembers.length + (activeTicket.initiatorCancelled ? 0 : 1)} Orang)</span>` : ''}
           </div>
           <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; font-weight: 600; line-height: 1.35;">
@@ -1534,11 +1534,11 @@ function renderKaryawanDashboard() {
 
         ${isEmergLocked ? `
           <div style="margin-top: 0.85rem; font-size: 0.775rem; padding-top: 0.65rem; border-top: 1px solid var(--border-color, #f1f5f9);">
-            <div style="font-weight: 800; color: #b91c1c; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+            <div style="font-weight: 700; color: var(--text-primary, #0f172a); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
               <span>Izin Darurat Menunggu Otorisasi</span>
-              <span style="font-weight: 700; color: #b91c1c;">QR Terkunci</span>
+              <span style="font-weight: 600; color: var(--text-secondary, #64748b);">QR Terkunci</span>
             </div>
-            <div style="color: #475569; margin-top: 0.25rem; line-height: 1.45;">
+            <div style="color: var(--text-secondary, #475569); margin-top: 0.25rem; line-height: 1.45;">
               Sesuai SOP K3, QR Code izin darurat terkunci sampai diverifikasi dan disetujui oleh Atasan.
             </div>
           </div>
@@ -1600,25 +1600,25 @@ function renderKaryawanDashboard() {
         }
 
         return `
-          <div class="dashboard-recent-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; ${idx < completedItems.length - 1 ? 'border-bottom: 1px solid #f1f5f9;' : ''} gap: 0.65rem; flex-wrap: nowrap;">
+          <div class="dashboard-recent-row" style="display: grid; grid-template-columns: minmax(130px, 1.2fr) 140px 115px auto; align-items: center; padding: 0.85rem 0; ${idx < completedItems.length - 1 ? 'border-bottom: 1px solid var(--border-color, #f1f5f9);' : ''} gap: 0.75rem;">
             <!-- Kolom 1: ID Tiket & Kategori -->
-            <div style="min-width: 0; flex: 1 1 auto;">
-              <div style="font-size: 0.875rem; font-weight: 800; font-family: var(--font-mono); color: #0f172a; letter-spacing: -0.2px; white-space: nowrap;">${t.id}</div>
-              <div style="font-size: 0.75rem; color: #64748b; margin-top: 3px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${dayMonth} — ${t.category}</div>
+            <div style="min-width: 0; overflow: hidden;">
+              <div style="font-size: 0.875rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary, #0f172a); letter-spacing: -0.2px; white-space: nowrap;">${t.id}</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary, #64748b); margin-top: 3px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${dayMonth} — ${t.category}</div>
             </div>
 
-            <!-- Kolom 2: Rentang Waktu -->
-            <div style="flex-shrink: 0; text-align: right; white-space: nowrap;">
-              <span style="font-size: 0.8rem; color: #334155; font-weight: 600; font-family: var(--font-mono);">${timeSpan}</span>
+            <!-- Kolom 2: Rentang Waktu (Sejajar Rapi) -->
+            <div style="text-align: right; white-space: nowrap;">
+              <span style="font-size: 0.8rem; color: var(--text-primary, #334155); font-weight: 600; font-family: var(--font-mono);">${timeSpan}</span>
             </div>
 
-            <!-- Kolom 3: Status Pill -->
-            <div style="flex-shrink: 0; text-align: left; white-space: nowrap;">
+            <!-- Kolom 3: Status Pill (Dipenggal rapi dengan ellipsis sesuai Gambar 3) -->
+            <div style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${(t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]'))) ? 'Selesai (Terlambat)' : 'Selesai'}">
               ${getCleanEmpStatus(t.status || 'Selesai', t)}
             </div>
 
             <!-- Kolom 4: Aksi Detail Pengajuan & Hapus -->
-            <div style="flex-shrink: 0; text-align: right; white-space: nowrap;">
+            <div style="text-align: right; white-space: nowrap; display: flex; justify-content: flex-end;">
               <div class="action-pills-row">
                 <button type="button" class="btn-pill-action btn-pill-detail" onclick="openTicketDetail('${t.id}', 'detail')" title="Lihat Detail Pengajuan">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
@@ -2218,7 +2218,7 @@ function getCleanEmpStatus(status, ticket) {
     'pending': '#ffffff',
     'waiting-verify': '#ffffff',
     'waiting-proof': '#ffffff',
-    'emergency': '#ffffff',
+    'emergency': 'transparent',
     'rejected': 'rgba(220, 38, 38, 0.1)',
     'expired': 'rgba(100, 116, 139, 0.1)',
     'cancelled': 'rgba(100, 116, 139, 0.1)'
@@ -2232,7 +2232,7 @@ function getCleanEmpStatus(status, ticket) {
     'pending': '#cbd5e1',
     'waiting-verify': '#cbd5e1',
     'waiting-proof': '#cbd5e1',
-    'emergency': '#cbd5e1',
+    'emergency': 'transparent',
     'rejected': 'rgba(220, 38, 38, 0.25)',
     'expired': 'rgba(100, 116, 139, 0.25)',
     'cancelled': 'rgba(100, 116, 139, 0.25)'

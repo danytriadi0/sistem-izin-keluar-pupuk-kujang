@@ -251,7 +251,9 @@ function renderKaryawanDonutChart() {
   const centerTextCol = dark ? '#f8fafc' : '#0f172a';
   const centerSubCol = dark ? '#94a3b8' : '#64748b';
 
-  // Render centered donut chart with wide inner hole, quantitative legend, and zero stuck hover states
+  window._lastKaryawanDonutTotal = total;
+
+  // Render centered donut chart with wide inner hole and zero stuck hover states
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; padding: 0.5rem 0;" onmouseleave="window.unhoverKaryawanDonut(${total})">
       <!-- Center Donut Chart (Lebar dan proporsional, teks tidak menabrak lingkaran) -->
@@ -273,28 +275,13 @@ function renderKaryawanDonutChart() {
             `).join('')}
           </g>
           
-          <!-- Center Text Metric (Proporsional di tengah lubang donat 120px) -->
-          <text id="karyawanDonutCenterVal" x="${cx}" y="93" text-anchor="middle" font-size="24" font-weight="800" fill="${centerTextCol}" font-family="'Plus Jakarta Sans', sans-serif">${total}</text>
-          <text id="karyawanDonutCenterLbl" x="${cx}" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="${centerSubCol}" font-family="'Plus Jakarta Sans', sans-serif">Total Izin</text>
+          <!-- Center Text Metric (Isi default saat tidak diarahkan, detail muncul saat hover) -->
+          <g id="karyawanDonutCenterGroup" style="pointer-events: none;">
+            <text id="karyawanDonutCenterPct" x="${cx}" y="92" text-anchor="middle" font-size="26" font-weight="800" fill="${centerTextCol}" font-family="'Plus Jakarta Sans', sans-serif">${total}</text>
+            <text id="karyawanDonutCenterTitle" x="${cx}" y="110" text-anchor="middle" font-size="11" font-weight="700" fill="${centerSubCol}" font-family="'Plus Jakarta Sans', sans-serif">Total Izin</text>
+            <text id="karyawanDonutCenterCount" x="${cx}" y="115" text-anchor="middle" font-size="12" font-weight="600" fill="${centerSubCol}" font-family="'Plus Jakarta Sans', sans-serif"></text>
+          </g>
         </svg>
-      </div>
-
-      <!-- Quantitative Legend (Menjelaskan setiap warna secara kuantitatif & informatif) -->
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 260px; margin-top: 1rem; padding: 0.6rem 0.75rem; background: ${dark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc'}; border: 1px solid ${dark ? 'rgba(255,255,255,0.08)' : '#e2e8f0'}; border-radius: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <span style="width: 10px; height: 10px; border-radius: 50%; background: #059669; display: inline-block; flex-shrink: 0;"></span>
-            <span style="color: ${dark ? '#cbd5e1' : '#334155'}; font-weight: 600;">Total Izin (Biasa)</span>
-          </div>
-          <span style="font-weight: 700; color: #059669; font-family: monospace;">${countBiasa} izin <span style="font-size: 0.725rem; font-weight: 500; color: ${centerSubCol};">(${pctBiasa}%)</span></span>
-        </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem;">
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <span style="width: 10px; height: 10px; border-radius: 50%; background: #dc2626; display: inline-block; flex-shrink: 0;"></span>
-            <span style="color: ${dark ? '#cbd5e1' : '#334155'}; font-weight: 600;">Izin Darurat</span>
-          </div>
-          <span style="font-weight: 700; color: #dc2626; font-family: monospace;">${countDarurat} izin <span style="font-size: 0.725rem; font-weight: 500; color: ${centerSubCol};">(${pctDarurat}%)</span></span>
-        </div>
       </div>
     </div>
   `;
@@ -323,17 +310,43 @@ function hoverKaryawanDonut(e, key, label, count, total, pct, color) {
     s.style.filter = 'none';
   });
 
-  // Teks di tengah lingkaran membesar dan jelas tanpa menabrak cincin donat
-  const centerVal = document.getElementById('karyawanDonutCenterVal');
-  const centerLbl = document.getElementById('karyawanDonutCenterLbl');
-  if (centerVal && centerLbl) {
-    centerVal.textContent = `${pct}%`;
-    centerVal.setAttribute('font-size', '22');
-    centerVal.setAttribute('y', '92');
-    centerVal.setAttribute('fill', color);
-    centerLbl.textContent = `${count} Pengajuan`;
-    centerLbl.setAttribute('font-size', '11');
-    centerLbl.setAttribute('y', '110');
+  const dark = isThemeDark();
+  const titleColor = dark ? '#f8fafc' : '#0f172a';
+  const subColor = dark ? '#94a3b8' : '#64748b';
+
+  // Sesuaikan warna teks persentase agar kontras dan tajam
+  let pctColor = color;
+  if (dark) {
+    if (key === 'biasa') pctColor = '#10b981';
+    else if (key === 'darurat') pctColor = '#ef4444';
+  }
+
+  // Teks persis sesuai permintaan pengguna
+  const isDarurat = (key === 'darurat');
+  const titleText = isDarurat ? 'Total Izin darurat' : 'Total izin biasa';
+  const countText = `${count} ${isDarurat ? 'izin' : 'Izin'}`;
+
+  const centerPct = document.getElementById('karyawanDonutCenterPct');
+  const centerTitle = document.getElementById('karyawanDonutCenterTitle');
+  const centerCount = document.getElementById('karyawanDonutCenterCount');
+
+  if (centerPct) {
+    centerPct.textContent = `${pct}%`;
+    centerPct.setAttribute('fill', pctColor);
+    centerPct.setAttribute('font-size', '22');
+    centerPct.setAttribute('y', '78');
+  }
+  if (centerTitle) {
+    centerTitle.textContent = titleText;
+    centerTitle.setAttribute('fill', titleColor);
+    centerTitle.setAttribute('font-size', '11');
+    centerTitle.setAttribute('y', '97');
+  }
+  if (centerCount) {
+    centerCount.textContent = countText;
+    centerCount.setAttribute('fill', subColor);
+    centerCount.setAttribute('font-size', '12');
+    centerCount.setAttribute('y', '115');
   }
 
   // Animasi slice donat membesar & bercahaya
@@ -353,22 +366,33 @@ function unhoverKaryawanDonut(defaultTotal) {
   const centerTextCol = dark ? '#f8fafc' : '#0f172a';
   const centerSubCol = dark ? '#94a3b8' : '#64748b';
 
-  const centerVal = document.getElementById('karyawanDonutCenterVal');
-  const centerLbl = document.getElementById('karyawanDonutCenterLbl');
-  if (centerVal && centerLbl) {
-    if (defaultTotal !== undefined) {
-      centerVal.textContent = defaultTotal;
-    }
-    centerVal.setAttribute('font-size', '24');
-    centerVal.setAttribute('y', '93');
-    centerVal.setAttribute('fill', centerTextCol);
-    centerLbl.textContent = 'Total Izin';
-    centerLbl.setAttribute('font-size', '11');
-    centerLbl.setAttribute('y', '112');
-    centerLbl.setAttribute('fill', centerSubCol);
+  if (defaultTotal === undefined && window._lastKaryawanDonutTotal !== undefined) {
+    defaultTotal = window._lastKaryawanDonutTotal;
   }
 
-  // Reset all slices including selesai, proses, and darurat
+  const centerPct = document.getElementById('karyawanDonutCenterPct');
+  const centerTitle = document.getElementById('karyawanDonutCenterTitle');
+  const centerCount = document.getElementById('karyawanDonutCenterCount');
+
+  if (centerPct) {
+    if (defaultTotal !== undefined) {
+      centerPct.textContent = defaultTotal;
+    }
+    centerPct.setAttribute('font-size', '26');
+    centerPct.setAttribute('y', '92');
+    centerPct.setAttribute('fill', centerTextCol);
+  }
+  if (centerTitle) {
+    centerTitle.textContent = 'Total Izin';
+    centerTitle.setAttribute('font-size', '11');
+    centerTitle.setAttribute('y', '110');
+    centerTitle.setAttribute('fill', centerSubCol);
+  }
+  if (centerCount) {
+    centerCount.textContent = '';
+  }
+
+  // Reset all slices
   const allSlices = document.querySelectorAll('[id^="donutSlice_"]');
   allSlices.forEach(slice => {
     slice.setAttribute('stroke-width', '16');
