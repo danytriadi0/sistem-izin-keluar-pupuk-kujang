@@ -538,7 +538,7 @@
             <li>Atau pilih Unggah Gambar QR dari tiket.</li>
           </ol>
           <div style="font-size: 0.7rem; color: #64748b; margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 6px;">
-            Kamera tidak tersedia? Gunakan <a href="#" style="color: #2563eb; font-weight: 700; text-decoration: none;" onclick="window.mobileSwitchScannerMode('manual'); return false;">Input Manual / Barcode</a>.
+           jika Kamera tidak bisa digunakan? Gunakan Input Manual / Barcode</a>.
           </div>
         </div>
       </div>
@@ -755,14 +755,18 @@
   function getSecurityRiwayatFilteredData() {
     const tickets = getTickets();
     const isFinalStatus = (st) => (st === 'Selesai' || st === 'Ditolak' || st === 'Dibatalkan' || st === 'Kedaluwarsa');
+    const hasGateActivity = (t) => Boolean(t.scanOutTime || t.scanInTime || t.tapInTime || t.status === 'Selesai');
     const hasDeletableTickets = tickets.some(t =>
-      !t.deletedBySecurity && isFinalStatus(t.status)
+      !t.deletedBySecurity && isFinalStatus(t.status) && hasGateActivity(t)
     );
 
     // 1. Filter log transaksi gerbang & riwayat final Pos Jaga (Sesuai Rule 7: Strictly Final Status Only)
+    // Pos Jaga HANYA mencatat perizinan yang memiliki aktivitas di gerbang (setelah scan out / tap in / selesai)
+    // Tiket yang dibatalkan / ditolak / kedaluwarsa SEBELUM scan out tidak relevan bagi pos jaga
     let eligible = tickets.filter(t => {
       if (t.deletedBySecurity) return false;
-      return isFinalStatus(t.status);
+      if (!isFinalStatus(t.status)) return false;
+      return hasGateActivity(t);
     });
 
     // 2. Filter Periode (Hari Ini, Minggu Ini, Bulan Ini, Tahun Ini, Semua Waktu)

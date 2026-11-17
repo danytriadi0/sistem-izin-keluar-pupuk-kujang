@@ -328,11 +328,14 @@ function findUserByRoleOrId(roleOrId, maybeId) {
            allUsers.find(u => u.roleKey === 'karyawan2');
   }
   if (roleOrId === 'approver') {
-    if (window.activeApproverUser) return window.activeApproverUser;
-    return allUsers.find(u => u.roleKey === 'approver' || u.kujangId === 'KJG-881201' || u.nip === 'PK-2015-1002' || (u.name && u.name.includes('Hendra Gunawan')));
+    if (window.activeApproverUser && window.activeApproverUser.nip === 'PK-2015-1002') return window.activeApproverUser;
+    return allUsers.find(u => (u.roleKey === 'approver' || u.kujangId === 'KJG-881201' || u.nip === 'PK-2015-1002' || (u.name && u.name.includes('Hendra Gunawan'))) && u.nip !== 'PK-2012-0845' && u.status === 'Aktif') ||
+           allUsers.find(u => (u.roleKey === 'approver' || u.nip === 'PK-2015-1002' || (u.name && u.name.includes('Hendra Gunawan'))) && u.nip !== 'PK-2012-0845');
   }
   if (roleOrId === 'approver2') {
-    return allUsers.find(u => u.roleKey === 'approver2' || u.kujangId === 'KJG-881202' || u.nip === 'PK-2016-1044' || (u.name && u.name.includes('Dewi Sartika')));
+    if (window.activeApproverUser && (window.activeApproverUser.nip === 'PK-2012-0845' || window.activeApproverUser.roleKey === 'approver2')) return window.activeApproverUser;
+    return allUsers.find(u => (u.roleKey === 'approver2' || u.kujangId === 'KJG-881202' || u.nip === 'PK-2012-0845' || u.nip === 'PK-2016-1044' || (u.name && u.name.includes('Dewi Sartika'))) && u.status === 'Aktif') ||
+           allUsers.find(u => u.roleKey === 'approver2' || u.kujangId === 'KJG-881202' || u.nip === 'PK-2012-0845' || u.nip === 'PK-2016-1044' || (u.name && u.name.includes('Dewi Sartika')));
   }
   if (roleOrId === 'security') {
     if (window.activeSecurityUser) return window.activeSecurityUser;
@@ -504,17 +507,24 @@ function switchRole(role, kujangId) {
       }
     }
   } else if (role === 'approver') {
-    if (matchedUser && matchedUser.nip !== 'PK-2015-1002') {
-      window.activeApproverUser = matchedUser;
-      try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', matchedUser.nip); } catch (e) {}
-    } else if (matchedUser && matchedUser.nip === 'PK-2015-1002') {
-      window.activeApproverUser = null;
-      try { localStorage.removeItem('KUJANG_ACTIVE_APPR_NIP'); } catch (e) {}
+    const hendraUser = users.find(u => (u.nip === 'PK-2015-1002' || (u.roleKey === 'approver' && !u.nip.includes('0845'))) && u.status === 'Aktif') ||
+                       users.find(u => u.nip === 'PK-2015-1002' || u.roleKey === 'approver') || matchedUser;
+    window.activeApproverUser = hendraUser;
+    try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2015-1002'); } catch (e) {}
+    if (hendraUser && ACTORS && ACTORS.approver) {
+      ACTORS.approver.name = hendraUser.name;
+      ACTORS.approver.nip = hendraUser.nip;
+      if (hendraUser.department) ACTORS.approver.department = hendraUser.department;
     }
-    if (matchedUser && ACTORS && ACTORS.approver) {
-      ACTORS.approver.name = matchedUser.name;
-      ACTORS.approver.nip = matchedUser.nip;
-      if (matchedUser.department) ACTORS.approver.department = matchedUser.department;
+  } else if (role === 'approver2') {
+    const dewiUser = users.find(u => (u.nip === 'PK-2012-0845' || u.roleKey === 'approver2') && u.status === 'Aktif') ||
+                     users.find(u => u.nip === 'PK-2012-0845' || u.roleKey === 'approver2') || matchedUser;
+    window.activeApproverUser = dewiUser;
+    try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2012-0845'); } catch (e) {}
+    if (dewiUser && ACTORS && ACTORS.approver2) {
+      ACTORS.approver2.name = dewiUser.name;
+      ACTORS.approver2.nip = dewiUser.nip;
+      if (dewiUser.department) ACTORS.approver2.department = dewiUser.department;
     }
   } else if (role === 'security') {
     if (matchedUser && matchedUser.nip !== 'SEC-2018-042') {

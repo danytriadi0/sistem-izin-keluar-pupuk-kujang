@@ -1538,18 +1538,6 @@ function renderKaryawanDashboard() {
           </div>
         </div>
 
-        ${isEmergLocked ? `
-          <div style="margin-top: 0.85rem; font-size: 0.775rem; padding-top: 0.65rem; border-top: 1px solid var(--border-color, #f1f5f9);">
-            <div style="font-weight: 700; color: var(--text-primary, #0f172a); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-              <span>Izin Darurat Menunggu Otorisasi</span>
-              <span style="font-weight: 600; color: var(--text-secondary, #64748b);">QR Terkunci</span>
-            </div>
-            <div style="color: var(--text-secondary, #475569); margin-top: 0.25rem; line-height: 1.45;">
-              Sesuai SOP K3, QR Code izin darurat terkunci sampai diverifikasi dan disetujui oleh Atasan.
-            </div>
-          </div>
-        ` : ''}
-
         <div class="card-action-btns-wrap" style="display: flex; gap: 0.5rem; margin-top: 1.15rem; flex-wrap: wrap;">
           ${actionButtonsHtml}
         </div>
@@ -1903,20 +1891,6 @@ function renderPengajuanSayaView() {
             <div style="font-size: 0.825rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">${col2Val}</div>
           </div>
         </div>
-
-        ${isEmergLocked ? `
-          <div style="margin-top: 0.85rem; font-size: 0.775rem; padding-top: 0.65rem; border-top: 1px solid var(--border-color, #f1f5f9);">
-            <div style="font-weight: 800; color: #b91c1c; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-              <span>Izin Darurat Menunggu Otorisasi</span>
-              <span style="font-weight: 700; color: #b91c1c;">QR Terkunci</span>
-            </div>
-            <div style="color: #475569; margin-top: 0.25rem; line-height: 1.45;">
-              ${activeTicket.selectedMethod === 'facescan'
-                ? 'Metode otorisasi: <strong>Scan Wajah Atasan di Tempat</strong>. Silakan klik tombol "Scan Wajah Atasan" di bawah dan arahkan kamera ke wajah Atasan untuk membuka QR Code.'
-                : 'Sesuai SOP K3, QR Code izin darurat terkunci sampai diverifikasi dan disetujui oleh Atasan.'}
-            </div>
-          </div>
-        ` : ''}
 
         <div class="card-action-btns-wrap" style="display: flex; gap: 0.5rem; margin-top: 1.15rem; flex-wrap: wrap;">
           ${actionButtonsHtml}

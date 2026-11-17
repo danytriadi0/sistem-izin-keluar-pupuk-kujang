@@ -1,0 +1,160 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: "1"
+        - generic [ref=e7]: Pilih akun
+      - generic [ref=e8]:
+        - generic [ref=e9]: "2"
+        - generic [ref=e10]: Verifikasi OTP
+      - generic [ref=e11]:
+        - generic [ref=e12]: "3"
+        - generic [ref=e13]: Masuk SAKTI
+    - generic [ref=e14]:
+      - generic [ref=e15]: K
+      - generic [ref=e16]:
+        - generic [ref=e17]: KUJANG ID
+        - generic [ref=e18]: Identity Provider · PT Pupuk Kujang
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - button "TKO" [ref=e21] [cursor=pointer]
+        - button "TKNO" [ref=e22] [cursor=pointer]
+        - button "Tamu / Eksternal" [ref=e23] [cursor=pointer]
+      - generic [ref=e24]: Pilih tipe akun Anda terlebih dahulu
+      - generic [ref=e25]: Pilih metode login sesuai akun Anda
+      - generic [ref=e26]:
+        - generic [ref=e27] [cursor=pointer]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Identik / PI Smart
+            - generic [ref=e33]: Akun Pupuk Indonesia Group
+          - generic [ref=e34]: →
+        - generic [ref=e35] [cursor=pointer]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: ESS
+            - generic [ref=e41]: Employee Self Service
+          - generic [ref=e42]: →
+        - generic [ref=e43] [cursor=pointer]:
+          - generic [ref=e48]:
+            - generic [ref=e49]: DOF
+            - generic [ref=e50]: Digital Office
+          - generic [ref=e51]: →
+      - generic [ref=e52]: Karyawan Organik PKC tidak memasukkan username/password di sini. Pilih salah satu metode di atas untuk diarahkan ke halaman login masing-masing.
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: ⚡
+            - generic [ref=e57]: Akses Cepat Pengujian (1-Klik Masuk)
+          - generic [ref=e58]: Bypass Form
+        - generic [ref=e59]: "Pilih salah satu peran di bawah untuk langsung membuka sistem tanpa perlu mengisi form & OTP:"
+        - generic [ref=e60]:
+          - button "👨‍💼 Karyawan" [ref=e61] [cursor=pointer]
+          - button "👔 Atasan 1" [ref=e62] [cursor=pointer]
+          - button "💼 Atasan 2" [ref=e63] [cursor=pointer]
+          - button "🛡️ Pos Jaga" [ref=e64] [cursor=pointer]
+          - button "⚙️ Admin" [ref=e65] [cursor=pointer]
+      - generic [ref=e66]:
+        - generic [ref=e67]:
+          - generic [ref=e68]: ⚠️
+          - generic [ref=e69]: "Perhatian: Keamanan Akun"
+        - list [ref=e70]:
+          - listitem [ref=e71]: Akun terkunci otomatis setelah 3x login gagal
+          - listitem [ref=e72]: Jangan bagikan password atau kode OTP kepada siapapun
+          - listitem [ref=e73]: Hubungi IT Support ext. 1234 jika akun terkunci
+      - button "▶ Petunjuk demo mockup & Akun Cepat ▶" [ref=e75] [cursor=pointer]:
+        - generic [ref=e76]: ▶ Petunjuk demo mockup & Akun Cepat
+        - generic [ref=e77]: ▶
+  - generic [ref=e78]:
+    - complementary [ref=e79]:
+      - link "Pupuk Kujang Logo PUPUK KUJANG PT Pupuk Kujang" [ref=e81] [cursor=pointer]:
+        - /url: "#"
+        - img "Pupuk Kujang Logo" [ref=e83]
+        - generic [ref=e84]:
+          - generic [ref=e85]: PUPUK KUJANG
+          - generic [ref=e86]: PT Pupuk Kujang
+      - navigation [ref=e87]:
+        - generic [ref=e88]: MENU UTAMA
+        - generic "Dashboard" [ref=e89] [cursor=pointer]
+        - generic "Pengajuan Saya" [ref=e97] [cursor=pointer]
+        - generic "Riwayat Pengajuan" [ref=e103] [cursor=pointer]
+      - generic [ref=e109]:
+        - generic [ref=e110]: TERHUBUNG MELALUI
+        - generic [ref=e111]: Portal SAKTI / KUJANG ID
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - img "Avatar" [ref=e115]
+            - generic [ref=e116]:
+              - generic [ref=e117]: Budi Pratama, S.T.
+              - generic [ref=e118]: Karyawan — Rekayasa & Pemeliharaan
+          - button "Pengaturan" [ref=e119] [cursor=pointer]
+    - generic [ref=e123]:
+      - banner [ref=e124]:
+        - generic [ref=e125]:
+          - button "Toggle Sidebar" [ref=e126] [cursor=pointer]
+          - generic [ref=e128]:
+            - generic [ref=e129]: Karyawan
+            - generic [ref=e130]: ›
+            - generic [ref=e131]: Dashboard
+        - generic [ref=e132]:
+          - generic [ref=e133]: Selasa, 17 Nov 2026 — 09:26:51 WIB
+          - button "Notifikasi" [ref=e137] [cursor=pointer]:
+            - generic [ref=e141]: 9+
+          - generic "Beralih peran untuk menguji alur terintegrasi" [ref=e142]:
+            - button "Karyawan" [ref=e144] [cursor=pointer]
+            - button "Atasan" [ref=e150] [cursor=pointer]
+            - button "Pos Jaga" [ref=e157] [cursor=pointer]
+            - button "Admin K3" [ref=e162] [cursor=pointer]
+            - button "Reset" [ref=e167] [cursor=pointer]
+      - main [ref=e172]:
+        - generic [ref=e174]:
+          - generic [ref=e178]:
+            - heading "Selamat pagi, Budi Pratama, S.T." [level=2] [ref=e179]
+            - paragraph [ref=e180]: "Karyawan | Departemen Rekayasa & Pemeliharaan | Atasan: Ir. Hendra Gunawan, M.T."
+          - heading "Ringkasan Perizinan" [level=1] [ref=e184]
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: Total pengajuan bulan ini
+              - generic [ref=e188]: "8"
+              - generic [ref=e189]: 1–12 November 2026
+            - generic [ref=e190]:
+              - generic [ref=e191]: Izin selesai
+              - generic [ref=e192]: "6"
+              - generic [ref=e193]: 5 tepat waktu, 1 terlambat
+            - generic [ref=e194]:
+              - generic [ref=e195]: Izin aktif
+              - generic [ref=e196]: "1"
+              - generic [ref=e197]: Sedang di luar area
+          - generic [ref=e198]:
+            - generic [ref=e202]:
+              - heading "Pengajuan terbaru" [level=3] [ref=e203]
+              - link "Semua riwayat" [ref=e204] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e207]:
+                  - heading "Total Pengajuan Izin" [level=3] [ref=e208]
+                  - combobox "Filter Periode" [ref=e209] [cursor=pointer]:
+                    - option "Bulan Ini" [selected]
+                    - option "Tahun Ini"
+                    - option "Semua Riwayat"
+                - img [ref=e213]:
+                  - generic [ref=e214]:
+                    - generic [ref=e216] [cursor=pointer]
+                    - generic [ref=e217] [cursor=pointer]
+                  - generic:
+                    - generic: "16"
+                    - generic: Total Izin
+              - generic [ref=e218]:
+                - heading "Ketentuan izin keluar" [level=3] [ref=e220]
+                - list [ref=e221]:
+                  - listitem [ref=e222]: – Izin reguler memerlukan persetujuan Atasan. Maksimal satu tiket aktif.
+                  - listitem [ref=e223]: – Tunjukkan QR kepada petugas saat keluar dan kembali.
+                  - listitem [ref=e224]: – Ajukan perpanjangan sebelum batas jam kembali.
+              - generic [ref=e225]:
+                - heading "Kontak Pos Jaga 1" [level=3] [ref=e227]
+                - generic [ref=e228]:
+                  - generic [ref=e229]: Petugas Pengamanan — 24 jam
+                  - generic [ref=e230]: Ekstensi 110 / 0264 316 110
+                  - generic [ref=e231]: Hubungi petugas jika terjadi kendala pemindaian QR.
+        - text: – – – –
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"

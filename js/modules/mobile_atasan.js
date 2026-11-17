@@ -57,52 +57,57 @@
   let currentAtasanDetailTab = 'info'; // 'info' | 'jejak'
 
   function getActiveApprover() {
-    if (window.activeApproverUser && (window.currentActor === 'approver' || window.currentActor === 'approver2' || window.currentMobileRole === 'approver' || window.currentMobileRole === 'approver2')) {
-      return {
-        ...window.activeApproverUser,
-        dept: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan',
-        department: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan'
-      };
-    }
-    try {
-      const savedApprNip = localStorage.getItem('KUJANG_ACTIVE_APPR_NIP');
-      if (savedApprNip) {
-        const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
-        const found = users.find(u => u.nip === savedApprNip);
-        if (found) {
-          window.activeApproverUser = found;
-          return {
-            ...found,
-            dept: found.department || 'Departemen Rekayasa & Pemeliharaan',
-            department: found.department || 'Departemen Rekayasa & Pemeliharaan'
-          };
-        }
-      }
-    } catch(e) {}
+    const currentRole = (typeof window.getCurrentMobileRole === 'function' ? window.getCurrentMobileRole() : null) || window.currentMobileRole || window.currentActor || 'approver';
+    const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
 
-    let app = null;
-    if (window.currentActor === 'approver2' || window.currentMobileRole === 'approver2') {
-      app = {
+    if (currentRole === 'approver2') {
+      if (window.activeApproverUser && (window.activeApproverUser.nip === 'PK-2012-0845' || window.activeApproverUser.roleKey === 'approver2')) {
+        return {
+          ...window.activeApproverUser,
+          title: window.activeApproverUser.title || window.activeApproverUser.role || 'Supervisor Operasional Lapangan (Plt. Manager)',
+          dept: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan',
+          department: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan'
+        };
+      }
+      const dewi = users.find(u => (u.roleKey === 'approver2' || u.nip === 'PK-2012-0845' || (u.name && u.name.includes('Dewi Sartika'))) && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'approver2' || u.nip === 'PK-2012-0845' || (u.name && u.name.includes('Dewi Sartika'))) || {
         name: 'Dewi Sartika, S.T., M.M.',
         nip: 'PK-2012-0845',
         title: 'Supervisor Operasional Lapangan (Plt. Manager)',
         dept: 'Departemen Rekayasa & Pemeliharaan',
         department: 'Departemen Rekayasa & Pemeliharaan'
       };
-    } else {
-      app = (typeof window.getPrimaryApprover === 'function')
-        ? window.getPrimaryApprover()
-        : {
-          name: 'Ir. Hendra Gunawan, M.T.',
-          nip: 'PK-2015-1002',
-          title: 'Manajer Rekayasa & Pemeliharaan',
-          dept: 'Departemen Rekayasa & Pemeliharaan',
-          department: 'Departemen Rekayasa & Pemeliharaan'
-        };
+      return {
+        ...dewi,
+        title: dewi.title || dewi.role || 'Supervisor Operasional Lapangan (Plt. Manager)',
+        dept: dewi.department || dewi.dept || 'Departemen Rekayasa & Pemeliharaan',
+        department: dewi.department || dewi.dept || 'Departemen Rekayasa & Pemeliharaan'
+      };
     }
-    if (app && !app.dept) app.dept = app.department || 'Departemen Rekayasa & Pemeliharaan';
-    if (app && !app.department) app.department = app.dept || 'Departemen Rekayasa & Pemeliharaan';
-    return app;
+
+    if (window.activeApproverUser && window.activeApproverUser.nip === 'PK-2015-1002') {
+      return {
+        ...window.activeApproverUser,
+        title: window.activeApproverUser.title || window.activeApproverUser.role || 'Manajer Rekayasa & Pemeliharaan',
+        dept: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan',
+        department: window.activeApproverUser.department || 'Departemen Rekayasa & Pemeliharaan'
+      };
+    }
+
+    const hendra = users.find(u => (u.nip === 'PK-2015-1002' || (u.roleKey === 'approver' && !u.nip.includes('0845'))) && u.status === 'Aktif') ||
+                   users.find(u => (u.nip === 'PK-2015-1002' || u.roleKey === 'approver' || (u.name && u.name.includes('Hendra Gunawan'))) && u.nip !== 'PK-2012-0845') || {
+      name: 'Ir. Hendra Gunawan, M.T.',
+      nip: 'PK-2015-1002',
+      title: 'Manajer Rekayasa & Pemeliharaan',
+      dept: 'Departemen Rekayasa & Pemeliharaan',
+      department: 'Departemen Rekayasa & Pemeliharaan'
+    };
+    return {
+      ...hendra,
+      title: hendra.title || hendra.role || 'Manajer Rekayasa & Pemeliharaan',
+      dept: hendra.department || hendra.dept || 'Departemen Rekayasa & Pemeliharaan',
+      department: hendra.department || hendra.dept || 'Departemen Rekayasa & Pemeliharaan'
+    };
   }
 
   function isTicketAssignedToMobileApprover(ticket) {
@@ -111,6 +116,20 @@
     const aNip = (app.nip || '').trim();
     const aName = (app.name || '').toLowerCase();
 
+    // 1. Jika tiket telah dialihkan/dilimpahkan persetujuannya (reassignedTo):
+    // HANYA atasan yang dituju pelimpahan (reassignedTo) yang berhak di Antrean Persetujuan.
+    // Atasan lama pemohon TIDAK BISA memutuskan izin jika sudah dialihkan, melainkan hanya memantau status.
+    if (ticket.reassignedTo) {
+      if (ticket.reassignedToNip && aNip && ticket.reassignedToNip === aNip) return true;
+      const toName = (ticket.reassignedTo || '').toLowerCase();
+      if (aName.includes('dewi') && toName.includes('dewi')) return true;
+      if (aName.includes('hendra') && toName.includes('hendra')) return true;
+      if (aName.includes('subagja') && toName.includes('subagja')) return true;
+      if (toName === aName || (toName && aName && (toName.includes(aName) || aName.includes(toName)))) return true;
+      return false;
+    }
+
+    // 2. Jika tidak dialihkan, cek apakah tiket ditujukan ke Atasan ini:
     if (ticket.approverNip && aNip) {
       return ticket.approverNip === aNip;
     }
@@ -126,19 +145,37 @@
   }
 
   function isTicketReassignedFromMobileApprover(ticket) {
-    if (!ticket || !ticket.reassignedFrom) return false;
+    if (!ticket) return false;
     const app = getActiveApprover();
     const aName = (app.name || '').toLowerCase();
-    const fromName = (ticket.reassignedFrom || '').toLowerCase();
-    if (aName.includes('dewi')) {
-      return fromName.includes('dewi');
-    } else {
-      return fromName.includes('hendra');
+    const aNip = (app.nip || '').trim();
+
+    // 1. Jika tiket memiliki catatan pengalihan resmi (reassignedFrom)
+    if (ticket.reassignedFrom) {
+      if (ticket.reassignedFromNip && aNip && ticket.reassignedFromNip === aNip) return true;
+      const fromName = (ticket.reassignedFrom || '').toLowerCase();
+      if (aName.includes('dewi') && fromName.includes('dewi')) return true;
+      if (aName.includes('hendra') && fromName.includes('hendra')) return true;
+      if (aName.includes('subagja') && fromName.includes('subagja')) return true;
+      if (fromName === aName || (fromName && aName && (fromName.includes(aName) || aName.includes(fromName)))) return true;
     }
+
+    // 2. Jika tiket diajukan oleh bawahan langsung, tetapi pemohon memilih atasan lain (dialihkan sejak awal):
+    if (!isTicketAssignedToMobileApprover(ticket)) {
+      if (ticket.directSupervisorNip && aNip && ticket.directSupervisorNip === aNip) return true;
+      const dirSup = (ticket.directSupervisor || '').toLowerCase();
+      if (dirSup) {
+        if (aName.includes('dewi') && dirSup.includes('dewi')) return true;
+        if (aName.includes('hendra') && dirSup.includes('hendra')) return true;
+        if (aName.includes('subagja') && dirSup.includes('subagja')) return true;
+      }
+    }
+
+    return false;
   }
 
   function isTicketReassignedToMobileApprover(ticket) {
-    if (!ticket || !ticket.reassignedFrom) return false;
+    if (!ticket || !ticket.reassignedTo) return false;
     return isTicketAssignedToMobileApprover(ticket);
   }
 
@@ -150,6 +187,7 @@
 
     if (isTicketAssignedToMobileApprover(ticket)) return true;
     if (isTicketReassignedFromMobileApprover(ticket)) return true;
+    if (isTicketReassignedToMobileApprover(ticket)) return true;
 
     let empSupervisor = ticket.directSupervisor || '';
     let empSupervisorNip = ticket.directSupervisorNip || '';
@@ -320,11 +358,10 @@
     const approver = getActiveApprover();
     const tickets = getTeamTickets();
 
-    const pendingNew = tickets.filter(t =>
-      !t.isEmergency &&
-      !t.id.includes('-EMG-') &&
-      (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Verifikasi Atasan')
-    );
+    const pendingNew = tickets.filter(t => {
+      if (t.status === 'Menunggu Verifikasi Atasan') return true;
+      return !t.isEmergency && !t.id.includes('-EMG-') && t.status === 'Menunggu Persetujuan';
+    });
     const pendingExt = tickets.filter(t => (t.hasExtensionPending || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan')) && t.status !== 'Selesai' && !t.scanInTime && t.status !== 'Ditolak' && t.status !== 'Dibatalkan' && t.status !== 'Kedaluwarsa' && t.status !== 'Menunggu Verifikasi Atasan');
     const outsideTickets = tickets.filter(t => t.status === 'Sedang di Luar' || t.status === 'Terlambat');
     const lateTickets = tickets.filter(t => t.status === 'Terlambat' || (t.isLate && t.status !== 'Selesai'));
@@ -466,17 +503,18 @@
         if (isReassignedAway) {
           return `
             <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0; border-left: 3.5px solid #f59e0b; background: #ffffff; margin-bottom: 0; padding: 12px; border-radius: 10px;">
-              <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                <div>
+              <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                <div style="flex: 1; min-width: 0;">
                   <div style="font-size: 0.675rem; font-weight: 800; color: #b45309; text-transform: uppercase;">
                     IZIN DARURAT (DIALIHKAN)
                   </div>
-                  <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a; margin-top: 1px;">${getTName(pendingEmergTicket)}</div>
-                  <div style="font-size: 0.625rem; color: #64748b; font-weight: 600;">${pendingEmergTicket.id} • ${pendingEmergTicket.category || 'Darurat Medis/K3'}</div>
+                  <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-top: 1px; line-height: 1.35; word-break: break-word;">${getTName(pendingEmergTicket)}</div>
+                  <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${pendingEmergTicket.id} • ${pendingEmergTicket.category || 'Darurat Medis/K3'}</div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-                  <span class="mobile-badge" style="background: #fef3c7; color: #92400e; font-weight: 700; border: 1px solid #fde68a; font-size: 0.65rem; border-radius: 6px; padding: 2px 7px;">↳ Dialihkan ke ${pendingEmergTicket.approverName}</span>
-                </div>
+              </div>
+
+              <div style="margin: 2px 0 6px 0;">
+                <span class="mobile-badge" style="background: #fef3c7; color: #92400e; font-weight: 700; border: 1px solid #fde68a; font-size: 0.68rem; border-radius: 6px; padding: 3px 8px; display: inline-flex; max-width: 100%; word-break: break-word;">↳ Dialihkan ke ${pendingEmergTicket.approverName}</span>
               </div>
 
               <div class="mobile-clamp-1" style="font-size: 0.725rem; color: #475569; margin: 4px 0 8px 0; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35;">
@@ -495,16 +533,21 @@
             <div style="font-size: 0.675rem; font-weight: 800; color: #b91c1c; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
               <span>PRIORITAS TINGGI • IZIN DARURAT</span>
             </div>
-            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-              <div>
-                <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(pendingEmergTicket)}</div>
-                <div style="font-size: 0.625rem; color: #64748b; font-weight: 600;">${pendingEmergTicket.id} • ${pendingEmergTicket.category || 'Darurat Medis/K3'}</div>
+            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(pendingEmergTicket)}</div>
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${pendingEmergTicket.id} • ${pendingEmergTicket.category || 'Darurat Medis/K3'}</div>
               </div>
-              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-                <span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; font-weight: 800; border: 1px solid #fecaca;">Menunggu Otorisasi</span>
-                ${isReassignedToMe ? `<span style="background: #eff6ff; color: #1d4ed8; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #bfdbfe;">Dialihkan dari ${pendingEmergTicket.reassignedFrom}</span>` : ''}
+              <div style="flex-shrink: 0; text-align: right;">
+                <span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; font-weight: 800; border: 1px solid #fecaca; white-space: nowrap;">Menunggu Otorisasi</span>
               </div>
             </div>
+
+            ${isReassignedToMe ? `
+              <div style="margin: 2px 0 6px 0;">
+                <span style="display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; max-width: 100%; word-break: break-word;">↳ Dialihkan dari ${pendingEmergTicket.reassignedFrom}</span>
+              </div>
+            ` : ''}
 
             <div class="mobile-clamp-1" style="font-size: 0.75rem; color: #7f1d1d; margin: 4px 0 2px 0; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35;" title="${(pendingEmergTicket.destination || '').replace(/"/g, '&quot;')}">
               <strong>Tujuan:</strong> ${pendingEmergTicket.destination || 'RS Pupuk Kujang'}
@@ -541,20 +584,25 @@
         if (t.status === 'Menunggu Verifikasi Atasan') {
           return `
           <div class="mobile-ticket-item" style="border: 1.5px solid #93c5fd; border-radius: 10px; padding: 12px; margin-bottom: 0; background: #ffffff;">
-            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-              <div>
-                <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-                <div style="font-size: 0.625rem; color: #64748b; font-weight: 600;">${t.id} • ${t.category || 'Dinas Kantor'}</div>
+            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${t.id} • ${t.category || 'Dinas Kantor'}</div>
               </div>
-              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-                <span class="mobile-badge" style="background: #eff6ff; color: #1d4ed8; font-weight: 800; border: 1px solid #bfdbfe;">Menunggu Verifikasi Atasan</span>
-                ${isReassignedAway ? `
-                  <span style="background: #fef3c7; color: #92400e; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #fde68a;">Dialihkan ke ${t.approverName}</span>
-                ` : (isReassignedToMe ? `
-                  <span style="background: #eff6ff; color: #1d4ed8; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #bfdbfe;">Dialihkan dari ${t.reassignedFrom}</span>
-                ` : '')}
+              <div style="flex-shrink: 0; text-align: right;">
+                <span class="mobile-badge" style="background: #eff6ff; color: #1d4ed8; font-weight: 800; border: 1px solid #bfdbfe; white-space: nowrap;">Menunggu Verifikasi Atasan</span>
               </div>
             </div>
+
+            ${isReassignedAway ? `
+              <div style="margin: 2px 0 6px 0;">
+                <span style="display: inline-flex; align-items: center; gap: 4px; background: #fef3c7; color: #92400e; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #fde68a; max-width: 100%; word-break: break-word;">↳ Dialihkan ke ${t.approverName}</span>
+              </div>
+            ` : (isReassignedToMe ? `
+              <div style="margin: 2px 0 6px 0;">
+                <span style="display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; max-width: 100%; word-break: break-word;">↳ Dialihkan dari ${t.reassignedFrom}</span>
+              </div>
+            ` : '')}
 
             <div class="mobile-clamp-1" style="font-size: 0.725rem; color: #475569; margin: 4px 0 6px 0; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35;">
               Rencana: <strong>${formatTimeOnly(getTExitTime(t)) || '11.30 WIB'} s/d ${formatTimeOnly(getTReturnTime(t)) || '13.00 WIB'}</strong>${t.destination ? ` • Keperluan: <strong>${escapeHtml(t.destination)}</strong>` : ''}
@@ -611,20 +659,25 @@
         return `
         <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 0; background: #ffffff;">
           <!-- Header: Kiri Nama & ID, Kanan Status Badge (Sesuai Permintaan User) -->
-          <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-            <div>
-              <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-              <div style="font-size: 0.625rem; color: #64748b; font-weight: 600;">${t.id} • ${t.category || 'Dinas Kantor'}</div>
+          <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${t.id} • ${t.category || 'Dinas Kantor'}</div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
-              <span class="mobile-badge menunggu" style="background: #fef3c7; color: #92400e; font-weight: 800; border: 1px solid #fde68a;">Menunggu Persetujuan</span>
-              ${isReassignedAway ? `
-                <span style="background: #fef3c7; color: #92400e; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #fde68a;">Dialihkan ke ${t.approverName}</span>
-              ` : (isReassignedToMe ? `
-                <span style="background: #eff6ff; color: #1d4ed8; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #bfdbfe;">Dialihkan dari ${t.reassignedFrom}</span>
-              ` : '')}
+            <div style="flex-shrink: 0; text-align: right;">
+              <span class="mobile-badge menunggu" style="background: #fef3c7; color: #92400e; font-weight: 800; border: 1px solid #fde68a; white-space: nowrap;">Menunggu Persetujuan</span>
             </div>
           </div>
+
+          ${isReassignedAway ? `
+            <div style="margin: 2px 0 6px 0;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; background: #fef3c7; color: #92400e; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #fde68a; max-width: 100%; word-break: break-word;">↳ Dialihkan ke ${t.reassignedTo || t.approverName}</span>
+            </div>
+          ` : (isReassignedToMe ? `
+            <div style="margin: 2px 0 6px 0;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; max-width: 100%; word-break: break-word;">↳ Dialihkan dari ${t.reassignedFrom}</span>
+            </div>
+          ` : '')}
 
           <div class="mobile-clamp-1" style="font-size: 0.725rem; color: #475569; margin: 4px 0 8px 0; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35;" title="${(t.destination || '').replace(/"/g, '&quot;')}">
             Rencana Keluar: <strong>${formatTimeOnly(getTExitTime(t)) || '11.30 WIB'}</strong>
@@ -668,12 +721,12 @@
         const usulan = formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB';
         return `
           <div class="mobile-ticket-item" style="border: 1px solid #ddd6fe; border-radius: 10px; padding: 12px; margin-bottom: 0; background: #faf5ff;">
-            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-              <div>
-                <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-                <div style="font-size: 0.625rem; color: #64748b; font-weight: 600;">${t.id} • Perpanjangan</div>
+            <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${t.id} • Perpanjangan</div>
               </div>
-              <span class="mobile-badge sedang-di-luar" style="background:#f5f3ff; color:#7c3aed; font-size: 0.65rem; padding: 2px 8px; border: 1px solid #ddd6fe; flex-shrink: 0; font-weight: 700;">Menunggu Perpanjangan</span>
+              <span class="mobile-badge sedang-di-luar" style="background:#f5f3ff; color:#7c3aed; font-size: 0.65rem; padding: 2px 8px; border: 1px solid #ddd6fe; flex-shrink: 0; font-weight: 700; white-space: nowrap;">Menunggu Perpanjangan</span>
             </div>
 
             <div style="font-size: 0.75rem; color: #475569; margin: 4px 0 8px 0;">
@@ -769,6 +822,24 @@
         </div>
       </section>
 
+      <!-- Alert Banner: Pengajuan Dialihkan ke Atasan Lain (Identik PC) -->
+      ${reassignedAwayTickets.length > 0 ? `
+        <div class="mobile-alert-reassigned" style="margin-bottom: 12px; padding: 12px 14px; background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; border-radius: 10px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer;" onclick="window.mobileSwitchTab('antrean')">
+          <div style="font-size: 1.1rem; line-height: 1.2; color: #b45309; font-weight: 800;">↳</div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 0.775rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.3px;">
+              ${reassignedAwayTickets.length} PENGAJUAN DIALIHKAN KE ATASAN LAIN
+            </div>
+            <div style="font-size: 0.7rem; color: #78350f; margin-top: 3px; line-height: 1.4;">
+              ${reassignedAwayTickets.map(t => `Tiket <strong>${t.id}</strong> (${escapeHtml(getTName(t))}) dialihkan ke <strong>${escapeHtml(t.reassignedTo || t.approverName)}</strong>`).join(', ')}.
+            </div>
+            <div style="font-size: 0.675rem; color: #b45309; font-weight: 600; margin-top: 4px;">
+              Status pengajuan ini tetap dapat Anda pantau di menu Antrean & Pelacakan.
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
       <!-- Unified Section: Pengajuan Menunggu Persetujuan (Konsep Serupa Pengajuan Terbaru Karyawan dengan Aksi Atasan) -->
       <section class="mobile-card" style="border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; margin-bottom: 14px; padding: 14px;">
         <div class="mobile-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">
@@ -858,11 +929,10 @@
       t.status !== 'Dibatalkan'
     );
 
-    const pendingRegular = tickets.filter(t =>
-      !t.isEmergency &&
-      !t.id.includes('-EMG-') &&
-      (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Verifikasi Atasan')
-    );
+    const pendingRegular = tickets.filter(t => {
+      if (t.status === 'Menunggu Verifikasi Atasan') return true;
+      return !t.isEmergency && !t.id.includes('-EMG-') && t.status === 'Menunggu Persetujuan';
+    });
 
     // Izin darurat diletakkan di puncak antrean dengan prioritas tertinggi
     const pendingNew = [...pendingEmergTickets, ...pendingRegular];
@@ -1045,24 +1115,29 @@
 
           return `
             <div class="mobile-ticket-item" style="margin-bottom: 12px; ${isEmg ? 'border: 1.5px solid #fca5a5; background: #fff5f5;' : ''}">
-              <div class="mobile-ticket-item-header">
-                <div>
-                  <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-                  <div style="font-size: 0.7rem; color: #64748b;">${getTNip(t)} • ${getTDept(t)}</div>
+              <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+                  <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${getTNip(t)} • ${getTDept(t)}</div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                <div style="flex-shrink: 0; text-align: right;">
                   ${isEmg ? `
-                    <span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; font-weight: 800;">PRIORITAS DARURAT</span>
+                    <span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; font-weight: 800; white-space: nowrap;">PRIORITAS DARURAT</span>
                   ` : `
-                    <span class="mobile-badge menunggu">Menunggu Persetujuan</span>
+                    <span class="mobile-badge menunggu" style="white-space: nowrap;">Menunggu Persetujuan</span>
                   `}
-                  ${isReassignedAway ? `
-                    <span style="background: #fef3c7; color: #92400e; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #fde68a;"> Dialihkan ke ${t.approverName}</span>
-                  ` : (isReassignedToMe ? `
-                    <span style="background: #eff6ff; color: #1d4ed8; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 9999px; border: 1px solid #bfdbfe;"> Dialihkan dari ${t.reassignedFrom}</span>
-                  ` : '')}
                 </div>
               </div>
+
+              ${isReassignedAway ? `
+                <div style="margin: 2px 0 6px 0;">
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #fef3c7; color: #92400e; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #fde68a; max-width: 100%; word-break: break-word;">↳ Dialihkan ke ${t.reassignedTo || t.approverName}</span>
+                </div>
+              ` : (isReassignedToMe ? `
+                <div style="margin: 2px 0 6px 0;">
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; max-width: 100%; word-break: break-word;">↳ Dialihkan dari ${t.reassignedFrom}</span>
+                </div>
+              ` : '')}
 
               <div style="font-family: monospace; font-size: 0.7rem; font-weight: 700; color: #475569; margin-bottom: 3px;">
                 ${t.id}
@@ -1126,12 +1201,12 @@
           const usulan = formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB';
           return `
             <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0;">
-              <div class="mobile-ticket-item-header">
-                <div>
-                  <div style="font-size: 0.775rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-                  <div style="font-size: 0.7rem; color: #64748b;">${getTNip(t)} • ${getTDept(t)}</div>
+              <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+                  <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${getTNip(t)} • ${getTDept(t)}</div>
                 </div>
-                <span class="mobile-badge sedang-di-luar" style="background: #f5f3ff; color: #7c3aed;">Perpanjangan</span>
+                <span class="mobile-badge sedang-di-luar" style="background: #f5f3ff; color: #7c3aed; flex-shrink: 0; white-space: nowrap;">Perpanjangan</span>
               </div>
 
               <div style="font-family: monospace; font-size: 0.7rem; font-weight: 700; color: #475569; margin-bottom: 3px;">
@@ -1204,11 +1279,11 @@
             </div>
           </div>
           <div style="display: flex; gap: 8px; margin-top: 4px;">
-            <button type="button" class="mobile-btn-primary" style="flex: 2; padding: 7px 12px; font-size: 0.75rem;" onclick="window.mobileApplyAtasanFilter()">
-              Terapkan Filter
-            </button>
             <button type="button" class="mobile-btn-secondary" style="flex: 1; padding: 7px 12px; font-size: 0.75rem;" onclick="window.mobileResetAtasanFilter()">
               Reset
+            </button>
+            <button type="button" class="mobile-btn-primary" style="flex: 2; padding: 7px 12px; font-size: 0.75rem;" onclick="window.mobileApplyAtasanFilter()">
+              Terapkan Filter
             </button>
           </div>
         </div>
@@ -1789,12 +1864,12 @@
 
       return `
         <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0; margin-bottom: 10px; background: #ffffff;">
-          <div class="mobile-ticket-item-header">
-            <div>
-              <div style="font-size: 0.875rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-              <div style="font-size: 0.7rem; color: #64748b;">${getTNip(t)} • ${getTDept(t)}</div>
+          <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.875rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${getTNip(t)} • ${getTDept(t)}</div>
             </div>
-            <span class="mobile-badge ${statusBadgeClass}">${(isSelesai && isLate) ? 'Selesai (Terlambat)' : (t.status === 'Terlambat' ? 'Sedang di Luar (Terlambat)' : (isLate ? 'Sedang di Luar (Terlambat)' : t.status))}</span>
+            <span class="mobile-badge ${statusBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${(isSelesai && isLate) ? 'Selesai (Terlambat)' : (t.status === 'Terlambat' ? 'Sedang di Luar (Terlambat)' : (isLate ? 'Sedang di Luar (Terlambat)' : t.status))}</span>
           </div>
 
           <div style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 2px;">
@@ -2076,47 +2151,40 @@
       <!-- One-line Active Filter Summary -->
       ${activeFilterSummaryHtml}
 
-      <!-- Collapsible Filter Panel (Ditambah Filter Hari) -->
-      <div id="mAtasanTimFilterCard" class="mobile-filter-panel" style="display: ${isAtasanTimFilterOpen ? 'block' : 'none'}; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div class="mobile-filter-panel-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <span style="font-weight: 800; font-size: 0.8125rem; color: #0f172a;">Filter Pelacakan Tim</span>
-          <button type="button" style="border: none; background: none; font-size: 0.85rem; color: #64748b; cursor: pointer; padding: 4px;" onclick="window.mobileToggleAtasanTimFilter()">✕</button>
+      <!-- Collapsible Filter Panel (Identik dengan Antrean) -->
+      <div id="mAtasanTimFilterCard" class="mobile-filter-panel" style="display: ${isAtasanTimFilterOpen ? 'block' : 'none'};">
+        <div class="mobile-filter-panel-title">
+          <span>Cari & filter pelacakan</span>
+          <button type="button" style="border:none; background:none; font-size:0.75rem; color:#64748b; cursor:pointer;" onclick="window.mobileToggleAtasanTimFilter()">✕</button>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
           <div>
-            <label class="mobile-filter-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px;">Status Bawahan</label>
-            <select class="mobile-filter-select" id="mAtasanSelectTimFilter" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; font-size: 0.8rem; color: #0f172a; background: #ffffff;">
-              <option value="all" ${atasanTimFilter === 'all' ? 'selected' : ''}>Semua Status (${sortedEligible.length})</option>
-              <option value="outside" ${atasanTimFilter === 'outside' ? 'selected' : ''}>Sedang di Luar (${outsideTickets.length})</option>
-              <option value="late" ${atasanTimFilter === 'late' ? 'selected' : ''}>Terlambat (${lateTickets.length})</option>
-              <option value="ready" ${atasanTimFilter === 'ready' ? 'selected' : ''}>Siap Keluar / Disetujui (${readyTickets.length})</option>
-              <option value="pending" ${atasanTimFilter === 'pending' ? 'selected' : ''}>Menunggu Persetujuan (${pendingTickets.length})</option>
-              <option value="finished" ${atasanTimFilter === 'finished' ? 'selected' : ''}>Selesai (${finishedTickets.length})</option>
-            </select>
+            <label class="mobile-filter-label">Cari pengajuan tim</label>
+            <input type="text" class="mobile-filter-input" id="mAtasanTimInputSearch" placeholder="Nama / NIP / nomor tiket" value="${atasanTimSearchQuery}">
           </div>
-
-          <div>
-            <label class="mobile-filter-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px;">Periode Hari (Filter Hari)</label>
-            <select class="mobile-filter-select" id="mAtasanSelectTimDate" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; font-size: 0.8rem; color: #0f172a; background: #ffffff;" onchange="window.mobileToggleTimCustomDateInput(this.value)">
-              <option value="all" ${atasanTimDateFilter === 'all' ? 'selected' : ''}>Semua Hari</option>
-              <option value="today" ${atasanTimDateFilter === 'today' ? 'selected' : ''}>Hari Ini</option>
-              <option value="yesterday" ${atasanTimDateFilter === 'yesterday' ? 'selected' : ''}>Kemarin</option>
-              <option value="7days" ${atasanTimDateFilter === '7days' ? 'selected' : ''}>7 Hari Terakhir</option>
-              <option value="custom" ${atasanTimDateFilter === 'custom' ? 'selected' : ''}>Pilih Tanggal Spesifik...</option>
-            </select>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label class="mobile-filter-label">Tanggal pengajuan</label>
+              <input type="date" class="mobile-filter-input" id="mAtasanTimInputDate" value="${atasanTimCustomDate}">
+            </div>
+            <div>
+              <label class="mobile-filter-label">Status</label>
+              <select class="mobile-filter-select" id="mAtasanSelectTimFilter">
+                <option value="all" ${atasanTimFilter === 'all' ? 'selected' : ''}>Semua Status (${sortedEligible.length})</option>
+                <option value="outside" ${atasanTimFilter === 'outside' ? 'selected' : ''}>Sedang di Luar (${outsideTickets.length})</option>
+                <option value="late" ${atasanTimFilter === 'late' ? 'selected' : ''}>Terlambat (${lateTickets.length})</option>
+                <option value="ready" ${atasanTimFilter === 'ready' ? 'selected' : ''}>Siap Keluar (${readyTickets.length})</option>
+                <option value="pending" ${atasanTimFilter === 'pending' ? 'selected' : ''}>Menunggu Persetujuan (${pendingTickets.length})</option>
+                <option value="finished" ${atasanTimFilter === 'finished' ? 'selected' : ''}>Selesai (${finishedTickets.length})</option>
+              </select>
+            </div>
           </div>
-
-          <div id="mAtasanTimCustomDateWrap" style="display: ${atasanTimDateFilter === 'custom' ? 'block' : 'none'};">
-            <label class="mobile-filter-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px;">Pilih Tanggal</label>
-            <input type="date" class="mobile-filter-input" id="mAtasanTimInputDate" value="${atasanTimCustomDate}" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; font-size: 0.8rem; color: #0f172a; background: #ffffff; box-sizing: border-box;">
-          </div>
-
           <div style="display: flex; gap: 8px; margin-top: 4px;">
-            <button type="button" class="mobile-btn-primary" style="flex: 1; min-height: 40px; padding: 0 12px; font-size: 0.775rem; font-weight: 700; background: #059669; color: #ffffff; border: 1.5px solid #059669; border-radius: 8px; cursor: pointer;" onclick="window.mobileApplyTimFilter()">
-              Terapkan
+            <button type="button" class="mobile-btn-secondary" style="flex: 1; padding: 7px 12px; font-size: 0.75rem;" onclick="window.mobileResetTimFilter()">
+              Reset
             </button>
-            <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 40px; padding: 0 12px; font-size: 0.775rem; font-weight: 700; background: #ffffff; color: #475569; border: 1.5px solid #cbd5e1; border-radius: 8px; cursor: pointer;" onclick="window.mobileResetTimFilter()">
-              Atur Ulang
+            <button type="button" class="mobile-btn-primary" style="flex: 2; padding: 7px 12px; font-size: 0.75rem;" onclick="window.mobileApplyTimFilter()">
+              Terapkan Filter
             </button>
           </div>
         </div>
@@ -2222,12 +2290,12 @@
 
       return `
         <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0; margin-bottom: 10px; background: #ffffff;">
-          <div class="mobile-ticket-item-header">
-            <div>
-              <div style="font-size: 0.875rem; font-weight: 800; color: #0f172a;">${getTName(t)}</div>
-              <div style="font-size: 0.7rem; color: #64748b;">${getTNip(t)} • ${getTDept(t)}</div>
+          <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.875rem; font-weight: 800; color: #0f172a; line-height: 1.35; word-break: break-word;">${getTName(t)}</div>
+              <div style="font-size: 0.7rem; color: #64748b; font-weight: 600; line-height: 1.3; margin-top: 2px; word-break: break-word;">${getTNip(t)} • ${getTDept(t)}</div>
             </div>
-            <span class="mobile-badge ${statusBadgeClass}">${t.status}</span>
+            <span class="mobile-badge ${statusBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${t.status}</span>
           </div>
 
           <div style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 2px;">
@@ -2897,10 +2965,13 @@
   window.mobileApplyTimFilter = function () {
     const selStatus = document.getElementById('mAtasanSelectTimFilter');
     if (selStatus) atasanTimFilter = selStatus.value;
-    const selDate = document.getElementById('mAtasanSelectTimDate');
-    if (selDate) atasanTimDateFilter = selDate.value;
+    const inpSearch = document.getElementById('mAtasanTimInputSearch');
+    if (inpSearch) atasanTimSearchQuery = inpSearch.value.trim();
     const inpCustom = document.getElementById('mAtasanTimInputDate');
-    if (inpCustom) atasanTimCustomDate = inpCustom.value;
+    if (inpCustom) {
+      atasanTimCustomDate = inpCustom.value;
+      atasanTimDateFilter = inpCustom.value ? 'custom' : 'all';
+    }
 
     isAtasanTimFilterOpen = false;
     currentAtasanTimPage = 1;
@@ -3100,6 +3171,7 @@
     const sheet = document.getElementById('mobileActionSheet');
     if (!sheet) return;
 
+    const isEmerg = Boolean(t.isEmergency || (t.id && t.id.includes('-EMG-')) || t.status === 'Menunggu Otorisasi Darurat');
     const exitFormatted = formatTimeOnly(getTExitTime(t)) || '10.00 WIB';
     const isPulang = (t.type === 'Pulang Mendahului' || t.returnType === 'Pulang Mendahului');
     const returnFormatted = isPulang ? 'Pulang Lebih Awal' : (formatTimeOnly(getTReturnTime(t)) || '13.00 WIB');
@@ -3108,26 +3180,29 @@
       <div class="mobile-sheet-handle-bar"></div>
       <div class="mobile-sheet-header" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">
         <div>
-          <span style="font-size: 0.675rem; color: #059669; font-weight: 800; text-transform: uppercase;">PERSETUJUAN ATASAN</span>
+          <span style="font-size: 0.675rem; color: ${isEmerg ? '#dc2626' : '#059669'}; font-weight: 800; text-transform: uppercase;">${isEmerg ? 'OTORISASI IZIN DARURAT' : 'PERSETUJUAN ATASAN'}</span>
           <h3 class="mobile-sheet-title" style="font-family: monospace; font-size: 1rem; margin: 0; color: #0f172a;">${t.id}</h3>
         </div>
         <button type="button" aria-label="Tutup" class="mobile-sheet-close" style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; border: none; border-radius: 50%; font-size: 1.1rem; color: #64748b; cursor: pointer; padding: 0;" onclick="window.mobileCloseSheet()">✕</button>
       </div>
       <div class="mobile-sheet-body" style="padding: 14px 16px;">
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-          <div style="font-size: 0.825rem; font-weight: 800; color: #0f172a; margin-bottom: 2px;">${getTName(t)}</div>
+        <div style="background: ${isEmerg ? '#fff5f5' : '#f8fafc'}; border: 1px solid ${isEmerg ? '#fecaca' : '#e2e8f0'}; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="font-size: 0.825rem; font-weight: 800; color: #0f172a; margin-bottom: 2px;">${getTName(t)}</div>
+            ${isEmerg ? '<span style="font-size: 0.65rem; color: #b91c1c; background: #fee2e2; border: 1px solid #fca5a5; font-weight: 800; padding: 2px 6px; border-radius: 4px;">Darurat</span>' : ''}
+          </div>
           <div style="font-size: 0.725rem; color: #64748b;">${getTNip(t)} • ${t.department || 'Departemen Rekayasa & Pemeliharaan'}</div>
-          <div style="border-top: 1px dashed #e2e8f0; margin-top: 6px; padding-top: 6px; font-size: 0.725rem; color: #334155; display: flex; flex-direction: column; gap: 2px;">
-            <div><strong>Keperluan:</strong> ${t.category || 'Dinas Kantor'} (${t.destination || 'Area Rekayasa'})</div>
+          <div style="border-top: 1px dashed ${isEmerg ? '#fca5a5' : '#e2e8f0'}; margin-top: 6px; padding-top: 6px; font-size: 0.725rem; color: #334155; display: flex; flex-direction: column; gap: 2px;">
+            <div><strong>Keperluan:</strong> ${t.category || (isEmerg ? 'Darurat Medis/K3' : 'Dinas Kantor')} (${t.destination || 'Area Pabrik'})</div>
             <div><strong>Waktu:</strong> ${exitFormatted} s/d ${returnFormatted}</div>
           </div>
         </div>
 
         <div class="mobile-form-group" style="margin-bottom: 14px;">
           <label class="mobile-form-label" style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block;">
-            Catatan Persetujuan (Opsional)
+            Catatan ${isEmerg ? 'Otorisasi' : 'Persetujuan'} (Opsional)
           </label>
-          <textarea id="mApproveModalNote" class="mobile-textarea" placeholder="Misal: Disetujui. Selesaikan tugas tepat waktu dan patuhi SOP K3." style="font-size: 0.775rem; min-height: 64px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 10px;"></textarea>
+          <textarea id="mApproveModalNote" class="mobile-textarea" placeholder="${isEmerg ? 'Misal: Otorisasi darurat disetujui. Harap berhati-hati dan patuhi SOP K3.' : 'Misal: Disetujui. Selesaikan tugas tepat waktu dan patuhi SOP K3.'}" style="font-size: 0.775rem; min-height: 64px; width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 10px;"></textarea>
         </div>
 
         <div style="display: flex; gap: 8px;">
@@ -3135,7 +3210,7 @@
             Batal
           </button>
           <button type="button" class="mobile-btn-primary" style="flex: 1.5; min-height: 44px; font-size: 0.8rem; font-weight: 800; background: #059669; border-color: #059669; color: #ffffff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.mobileConfirmApproveFromModal('${t.id}')">
-            ✓ Setujui Pengajuan
+            ✓ ${isEmerg ? 'Otorisasi Darurat' : 'Setujui Pengajuan'}
           </button>
         </div>
       </div>
@@ -3151,8 +3226,12 @@
   };
 
   window.mobileConfirmApproveFromModal = function (ticketId) {
+    const list = window.ticketsList || [];
+    const t = list.find(x => x.id === ticketId);
+    const isEmerg = t && Boolean(t.isEmergency || (t.id && t.id.includes('-EMG-')) || t.status === 'Menunggu Otorisasi Darurat');
     const noteEl = document.getElementById('mApproveModalNote');
-    const note = (noteEl && noteEl.value && noteEl.value.trim()) ? noteEl.value.trim() : 'Disetujui. Selesaikan tugas tepat waktu.';
+    const defaultMsg = isEmerg ? 'Otorisasi darurat disetujui oleh Atasan. Harap berhati-hati dan patuhi SOP K3.' : 'Disetujui. Selesaikan tugas tepat waktu.';
+    const note = (noteEl && noteEl.value && noteEl.value.trim()) ? noteEl.value.trim() : defaultMsg;
     if (typeof window.mobileCloseSheet === 'function') window.mobileCloseSheet();
     window.mobileAtasanExecuteDecision(ticketId, 'approve', note);
   };
@@ -3202,18 +3281,24 @@
         t.approverNote = note;
         t.approverName = approver.name;
         t.approvedAt = nowFormatted;
+        const isEmerg = Boolean(t.isEmergency || (t.id && t.id.includes('-EMG-')));
+        if (isEmerg) {
+          t.emergencyUnlockMethod = 'Persetujuan Langsung Atasan di App';
+          t.emergencyUnlockedBy = approver.name;
+          t.emergencyUnlockedAt = nowFormatted;
+        }
         t.timeline.push(
           {
-            event: 'Disetujui Atasan',
+            event: isEmerg ? 'Otorisasi Darurat Berhasil (App Atasan)' : 'Disetujui Atasan',
             time: nowFormatted,
             by: `${approver.name} (${approver.title || 'Atasan Langsung'})`,
-            desc: `Persetujuan diberikan. Catatan: "${note}"`
+            desc: `${isEmerg ? 'Izin darurat disetujui oleh Atasan' : 'Persetujuan diberikan'}. Catatan: "${note}"`
           },
           {
-            event: 'QR Code Diterbitkan',
+            event: isEmerg ? 'QR Code Darurat Aktif' : 'QR Code Diterbitkan',
             time: nowFormatted,
             by: 'Sistem Gerbang Digital',
-            desc: 'Tiket QR aktif resmi siap dipindai di Pos Jaga Utama.'
+            desc: isEmerg ? 'QR Code resmi telah aktif dan siap dipindai keluar oleh Petugas Pengamanan di Pos Jaga.' : 'Tiket QR aktif resmi siap dipindai di Pos Jaga Utama.'
           }
         );
       } else {
@@ -3506,41 +3591,10 @@
       }
       return;
     }
-    if (typeof window.emergencyDirectApprove === 'function') {
-      window.emergencyDirectApprove(ticketId);
-      renderMobileAtasan(null, currentAtasanTab);
-      if (typeof window.renderMobileActiveView === 'function') window.renderMobileActiveView();
-      return;
+    // Buka Modal Sheet Otorisasi Izin Darurat dengan Catatan Opsional
+    if (typeof window.mobileOpenAtasanApproveModal === 'function') {
+      window.mobileOpenAtasanApproveModal(ticketId);
     }
-    if (!t) return;
-    const approver = getActiveApprover();
-    t.status = 'Disetujui';
-    t.emergencyLocked = false;
-    t.qrLocked = false;
-    t.emergencyUnlockMethod = 'Persetujuan Langsung Atasan di App';
-    t.emergencyUnlockedBy = approver.name;
-
-    const now = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const nowFormatted = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ${pad(now.getHours())}.${pad(now.getMinutes())} WIB`;
-
-    if (!t.timeline) t.timeline = [];
-    t.timeline.push({
-      event: 'Otorisasi Darurat Berhasil (1-Click Atasan)',
-      time: nowFormatted,
-      by: `${approver.name} (${approver.title || 'Manajer'})`,
-      desc: 'Izin darurat disetujui 1-Klik oleh Atasan melalui Aplikasi Mobile. QR Code aktif.'
-    });
-
-    if (typeof window.saveTickets === 'function') window.saveTickets(window.ticketsList || tickets);
-    else localStorage.setItem('kujang_tickets', JSON.stringify(window.ticketsList || tickets));
-
-    if (typeof window.showToast === 'function') {
-      window.showToast(`Izin Darurat #${t.id} disetujui! QR Code ${getTName(t)} kini telah aktif.`, 'success');
-    }
-    renderMobileAtasan(null, currentAtasanTab);
-    if (typeof window.renderMobileActiveView === 'function') window.renderMobileActiveView();
   };
 
   // Expose module function

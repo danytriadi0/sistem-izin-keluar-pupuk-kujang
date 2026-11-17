@@ -1,0 +1,97 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - complementary [ref=f3e3]:
+      - link "Pupuk Kujang Logo PUPUK KUJANG PT Pupuk Kujang" [ref=f3e5] [cursor=pointer]:
+        - /url: "#"
+        - img "Pupuk Kujang Logo" [ref=f3e7]
+        - generic [ref=f3e8]:
+          - generic [ref=f3e9]: PUPUK KUJANG
+          - generic [ref=f3e10]: PT Pupuk Kujang
+      - navigation [ref=f3e11]:
+        - generic "Dashboard" [ref=f3e12] [cursor=pointer]
+        - generic [ref=f3e20]: Persetujuan dan pelacakan
+        - generic "Antrian Persetujuan" [ref=f3e21] [cursor=pointer]: "1"
+        - generic "Pelacakan Izin Karyawan" [ref=f3e28] [cursor=pointer]
+        - generic "Riwayat Izin Karyawan" [ref=f3e34] [cursor=pointer]
+      - generic [ref=f3e39]:
+        - generic [ref=f3e40]: TERHUBUNG MELALUI
+        - generic [ref=f3e41]: Portal SAKTI / KUJANG ID
+        - generic [ref=f3e42]:
+          - generic [ref=f3e43]:
+            - img "Foto Ir. Hendra Gunawan, M.T." [ref=f3e45]
+            - generic [ref=f3e46]:
+              - generic [ref=f3e47]: Ir. Hendra Gunawan, M.T.
+              - generic [ref=f3e48]: "NIP: PK-2015-1002"
+          - button "Pengaturan" [ref=f3e49] [cursor=pointer]
+    - generic [ref=f3e53]:
+      - banner [ref=f3e54]:
+        - generic [ref=f3e55]:
+          - button "Toggle Sidebar" [ref=f3e56] [cursor=pointer]
+          - generic [ref=f3e58]:
+            - generic [ref=f3e59]: Atasan 1
+            - generic [ref=f3e60]: ›
+            - generic [ref=f3e61]: Pelacakan Izin Karyawan
+        - generic [ref=f3e62]:
+          - generic [ref=f3e63]: Selasa, 17 Nov 2026 — 13:37:12 WIB
+          - button "Notifikasi" [ref=f3e67] [cursor=pointer]:
+            - generic [ref=f3e71]: 9+
+          - generic "Beralih peran untuk menguji alur terintegrasi" [ref=f3e72]:
+            - button "Karyawan" [ref=f3e74] [cursor=pointer]
+            - button "Atasan" [ref=f3e80] [cursor=pointer]
+            - button "Pos Jaga" [ref=f3e87] [cursor=pointer]
+            - button "Admin K3" [ref=f3e92] [cursor=pointer]
+            - button "Reset" [ref=f3e97] [cursor=pointer]
+      - main [ref=f3e102]:
+        - text: – – –
+        - generic [ref=f3e104]:
+          - heading "Pelacakan Izin Karyawan" [level=1] [ref=f3e107]
+          - generic [ref=f3e108]:
+            - generic [ref=f3e109]:
+              - generic [ref=f3e110]: Cari pengajuan
+              - textbox "Cari tiket, alasan, atau tujuan" [ref=f3e115]
+            - generic [ref=f3e116]:
+              - generic [ref=f3e117]: Tanggal pengajuan
+              - combobox [ref=f3e118] [cursor=pointer]:
+                - option "Semua Waktu" [selected]
+                - option "Hari Ini"
+                - option "Minggu Ini"
+                - option "Bulan Ini"
+                - option "Tahun Ini"
+            - generic [ref=f3e119]:
+              - generic [ref=f3e120]: Urutkan
+              - combobox [ref=f3e121] [cursor=pointer]:
+                - option "Terbaru" [selected]
+                - option "Terlama"
+            - generic [ref=f3e122]:
+              - generic [ref=f3e123]: Kategori
+              - combobox [ref=f3e124] [cursor=pointer]:
+                - option "Semua Kategori" [selected]
+                - option "Dinas Kantor"
+                - option "Urusan Pribadi"
+            - generic [ref=f3e125]:
+              - generic [ref=f3e126]: Tipe Izin
+              - combobox [ref=f3e127] [cursor=pointer]:
+                - option "Semua Tipe Izin" [selected]
+                - option "Kembali ke Area"
+                - option "Pulang Lebih Awal (Tidak Kembali)"
+            - generic [ref=f3e128]:
+              - generic [ref=f3e129]: Status
+              - combobox [ref=f3e130] [cursor=pointer]:
+                - option "Semua Izin Berjalan" [selected]
+                - option "Sedang di Luar"
+                - option "Terlambat"
+                - option "Siap Keluar (Disetujui)"
+                - option "Khusus Izin Darurat"
+          - generic [ref=f3e132]:
+            - button "Card" [ref=f3e133] [cursor=pointer]
+            - button "List" [ref=f3e140] [cursor=pointer]
+          - generic [ref=f3e144]:
+            - heading "Tidak Ada Izin Berjalan" [level=3] [ref=f3e148]
+            - paragraph [ref=f3e149]: Saat ini tidak ada karyawan naungan Anda yang sedang berada di luar area atau terlambat.
+        - text: – – – –
+  - option "Aktif (Diberikan Akses)" [selected]
+  - option "Dicabut (Akses Ditangguhkan)"
+  - generic:
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)
+    - generic [ref=f3e150]: Selamat datang, Ir. Hendra Gunawan, M.T. (undefined)
+    - generic: Beralih ke mode Atasan (Ir. Hendra Gunawan, M.T.)

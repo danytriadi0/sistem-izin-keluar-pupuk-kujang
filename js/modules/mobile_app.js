@@ -511,9 +511,15 @@
       } else if (role === 'karyawan2') {
         targetUser = allUsers.find(u => u.nip === 'PK-2024-8842') || allUsers.find(u => u.roleKey === 'karyawan2');
       } else if (role === 'approver') {
-        targetUser = allUsers.find(u => u.nip === 'PK-2015-1002') || allUsers.find(u => u.roleKey === 'approver' || (u.role && u.role.includes('Manager')));
+        targetUser = allUsers.find(u => (u.nip === 'PK-2015-1002' || (u.roleKey === 'approver' && !u.nip.includes('0845'))) && u.status === 'Aktif') ||
+                     allUsers.find(u => u.nip === 'PK-2015-1002' || u.roleKey === 'approver' || (u.role && u.role.includes('Manager')));
+        window.activeApproverUser = targetUser;
+        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2015-1002'); } catch (e) {}
       } else if (role === 'approver2') {
-        targetUser = allUsers.find(u => u.nip === 'PK-2012-0845') || allUsers.find(u => u.roleKey === 'approver2' || (u.role && u.role.includes('Supervisor')));
+        targetUser = allUsers.find(u => (u.nip === 'PK-2012-0845' || u.roleKey === 'approver2') && u.status === 'Aktif') ||
+                     allUsers.find(u => u.nip === 'PK-2012-0845' || u.roleKey === 'approver2' || (u.role && u.role.includes('Supervisor')));
+        window.activeApproverUser = targetUser;
+        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2012-0845'); } catch (e) {}
       } else if (role === 'security') {
         targetUser = allUsers.find(u => u.nip === 'SEC-2018-042') || allUsers.find(u => u.roleKey === 'security' || (u.role && u.role.includes('Pengamanan')));
       }
@@ -522,8 +528,10 @@
       }
     }
 
-    // Also inform desktop switchRole if exists
-    if (typeof window.switchRole === 'function' && window.currentActor !== role) {
+    window.currentActor = role;
+
+    // Sinkronkan peran aktif di tingkat sistem
+    if (typeof window.switchRole === 'function') {
       window.switchRole(role);
     }
 

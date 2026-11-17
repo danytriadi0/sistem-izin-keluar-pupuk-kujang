@@ -177,7 +177,7 @@
 
   function getMobileApprovers() {
     return [
-      { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manajer Rekayasa & Pemeliharaan', department: 'Departemen Rekayasa & Pemeliharaan', initials: 'HG', avatarBg: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)', nip: 'PK-2016-3392' },
+      { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manajer Rekayasa & Pemeliharaan', department: 'Departemen Rekayasa & Pemeliharaan', initials: 'HG', avatarBg: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)', nip: 'PK-2015-1002' },
       { name: 'Dewi Sartika, S.T., M.M.', title: 'VP Operasional & Pemeliharaan', department: 'Departemen Rekayasa & Pemeliharaan', initials: 'DS', avatarBg: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', nip: 'PK-2012-0845' },
       { name: 'Agus Setiawan, S.T.', title: 'Supervisor Instrumen & Kelistrikan', department: 'Departemen Rekayasa & Pemeliharaan', initials: 'AS', avatarBg: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', nip: 'PK-2018-4421' },
       { name: 'Dr. Ir. Bambang Hermanto', title: 'Kepala Divisi Teknologi & Rekayasa', department: 'Direktorat Operasi Pabrik', initials: 'BH', avatarBg: 'linear-gradient(135deg, #b45309 0%, #d97706 100%)', nip: 'PK-2010-0112' },
@@ -1761,7 +1761,8 @@
     const approvers = getMobileApprovers();
     if (prefillData?.approverName || prefillData?.approver) {
       const apprName = prefillData.approverName || prefillData.approver;
-      selectedApproverData = approvers.find(a => a.name === apprName) || { name: apprName, title: 'Atasan Peninjau', initials: 'AP' };
+      const found = approvers.find(a => a.name === apprName || (a.nip && a.nip === prefillData.approverNip));
+      selectedApproverData = found || { name: apprName, nip: prefillData.approverNip || '', title: 'Atasan Peninjau', initials: 'AP' };
     } else if (isEditing) {
       selectedApproverData = approvers[0];
     } else {
@@ -1878,6 +1879,7 @@
 
                 <div class="mobile-approver-dropdown" id="mApproverDropdown" style="display: none;"></div>
                 <input type="hidden" id="mFormApproverValue" value="${selectedApproverData ? selectedApproverData.name : ''}" required>
+                <input type="hidden" id="mFormApproverNip" value="${selectedApproverData ? (selectedApproverData.nip || '') : ''}">
               </div>
             </div>
 
@@ -1975,11 +1977,21 @@
             <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px;">
               <div class="mobile-form-group" style="margin: 0;">
                 <label class="mobile-form-label">Rencana Waktu Keluar <span class="req">*</span></label>
-                <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)">
+                <div style="position: relative; display: flex; align-items: center;">
+                  <input type="datetime-local" class="mobile-input" id="mFormPlannedExit" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultExit}" required oninput="window.mobileHandleExitChange(this.value)" onchange="window.mobileHandleExitChange(this.value)" onclick="if(typeof this.showPicker==='function'){try{this.showPicker();}catch(e){}}" style="cursor: pointer; padding-right: 30px;">
+                  <button type="button" onclick="const el=document.getElementById('mFormPlannedExit');if(el&&typeof el.showPicker==='function'){try{el.showPicker();}catch(e){el.focus();}}else if(el){el.focus();}" style="position: absolute; right: 6px; background: none; border: none; padding: 4px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka Kalender" aria-label="Buka Kalender Waktu Keluar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </button>
+                </div>
               </div>
               <div class="mobile-form-group" id="mFormWrapReturn" style="margin: 0; display: ${initialType === 'Pulang Mendahului' ? 'none' : 'block'};">
                 <label class="mobile-form-label">Perkiraan Waktu Kembali <span class="req">*</span></label>
-                <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)">
+                <div style="position: relative; display: flex; align-items: center;">
+                  <input type="datetime-local" class="mobile-input" id="mFormEstimatedReturn" min="${formatDateTimeLocal(now)}" ${initialCat === 'Urusan Pribadi' ? `max="${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${(now.getDay() === 5 ? '16:30' : '16:00')}"` : ''} value="${defaultReturn}" ${initialType === 'Pulang Mendahului' ? '' : 'required'} oninput="window.mobileHandleReturnChange(this.value)" onchange="window.mobileHandleReturnChange(this.value)" onclick="if(typeof this.showPicker==='function'){try{this.showPicker();}catch(e){}}" style="cursor: pointer; padding-right: 30px;">
+                  <button type="button" onclick="const el=document.getElementById('mFormEstimatedReturn');if(el&&typeof el.showPicker==='function'){try{el.showPicker();}catch(e){el.focus();}}else if(el){el.focus();}" style="position: absolute; right: 6px; background: none; border: none; padding: 4px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka Kalender" aria-label="Buka Kalender Waktu Kembali">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -2377,7 +2389,7 @@
     }
 
     dd.innerHTML = filtered.map(a => `
-      <div class="mobile-approver-item" style="${a.isUnavailable ? 'opacity: 0.6; cursor: not-allowed;' : ''}" onclick="${a.isUnavailable ? `window.showToast('Atasan ${a.name.replace(/'/g, "\\\'")} saat ini Tidak Tersedia karena hak aksesnya dicabut.', 'warning');` : `window.mobileSelectApprover('${a.name.replace(/'/g, "\\'")}', '${(a.title || '').replace(/'/g, "\\'")}', '${(a.initials || 'HG')}')`}">
+      <div class="mobile-approver-item" style="${a.isUnavailable ? 'opacity: 0.6; cursor: not-allowed;' : ''}" onclick="${a.isUnavailable ? `window.showToast('Atasan ${a.name.replace(/'/g, "\\\'")} saat ini Tidak Tersedia karena hak aksesnya dicabut.', 'warning');` : `window.mobileSelectApprover('${a.name.replace(/'/g, "\\'")}', '${(a.title || '').replace(/'/g, "\\'")}', '${(a.initials || 'HG')}', '${(a.nip || '')}')`}">
         <div class="mobile-approver-item-avatar" style="background: ${a.avatarBg || 'linear-gradient(135deg, #059669 0%, #0d9488 100%)'};">
           ${a.initials || 'HG'}
         </div>
@@ -2402,13 +2414,19 @@
       (a.nip && a.nip.toLowerCase().includes(q))
     ) || approvers[0];
     if (match) {
-      window.mobileSelectApprover(match.name, match.title || 'Manajer', match.initials || 'HG');
+      window.mobileSelectApprover(match.name, match.title || 'Manajer', match.initials || 'HG', match.nip || '');
     }
   };
 
-  window.mobileSelectApprover = function (name, title, initials) {
-    selectedApproverData = { name, title, initials };
+  window.mobileSelectApprover = function (name, title, initials, nip) {
+    if (!nip) {
+      const approvers = getMobileApprovers();
+      const match = approvers.find(a => a.name === name);
+      if (match) nip = match.nip;
+    }
+    selectedApproverData = { name, title, initials, nip: nip || '' };
     const hiddenInput = document.getElementById('mFormApproverValue');
+    const hiddenNipInput = document.getElementById('mFormApproverNip');
     const card = document.getElementById('mApproverSelectedCard');
     const inputBox = document.getElementById('mApproverInputBox');
     const dd = document.getElementById('mApproverDropdown');
@@ -2417,6 +2435,7 @@
     const avatarEl = document.getElementById('mSelectedAvatar');
 
     if (hiddenInput) hiddenInput.value = name;
+    if (hiddenNipInput) hiddenNipInput.value = nip || '';
     if (nameEl) nameEl.textContent = name;
     if (titleEl) titleEl.textContent = title;
     if (avatarEl) avatarEl.textContent = initials;
@@ -2433,11 +2452,13 @@
   window.mobileChangeApprover = function () {
     selectedApproverData = null;
     const hiddenInput = document.getElementById('mFormApproverValue');
+    const hiddenNipInput = document.getElementById('mFormApproverNip');
     const card = document.getElementById('mApproverSelectedCard');
     const inputBox = document.getElementById('mApproverInputBox');
     const input = document.getElementById('mSearchApproverInput');
 
     if (hiddenInput) hiddenInput.value = '';
+    if (hiddenNipInput) hiddenNipInput.value = '';
     if (card) card.style.display = 'none';
     if (inputBox) inputBox.style.display = 'flex';
     if (input) {
@@ -2951,6 +2972,12 @@
     }
 
     const approverName = document.getElementById('mFormApproverValue')?.value || '';
+    let approverNip = document.getElementById('mFormApproverNip')?.value || selectedApproverData?.nip || '';
+    if (!approverNip && approverName) {
+      const approvers = getMobileApprovers();
+      const match = approvers.find(a => a.name === approverName);
+      if (match) approverNip = match.nip;
+    }
     const category = document.getElementById('mFormCategory')?.value || '';
     const returnType = document.getElementById('mFormReturnType')?.value || '';
     const destination = (document.getElementById('mFormDestination')?.value || '').trim();
@@ -3091,6 +3118,7 @@
     // Save pending form data for Step 2 Confirmation
     pendingMobileFormData = {
       approverName,
+      approverNip,
       category,
       returnType,
       type: returnType,
@@ -3280,10 +3308,16 @@
         const t = tickets.find(x => x.id === ticketId);
         if (t) {
           const oldApprover = t.approverName;
+          const oldApproverNip = t.approverNip || '';
           const newApprover = data.approverName;
+
+          const allUsersList = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+          const foundApproverUser = allUsersList.find(u => u.name === newApprover || (u.nip && u.nip === data.approverNip));
+          const newApproverNip = (foundApproverUser && foundApproverUser.nip) ? foundApproverUser.nip : (data.approverNip || (newApprover && newApprover.includes('Dewi') ? 'PK-2012-0845' : 'PK-2015-1002'));
           const isApproverChanged = Boolean(oldApprover && newApprover && oldApprover !== newApprover);
 
           t.approverName = data.approverName;
+          if (newApproverNip) t.approverNip = newApproverNip;
           t.category = data.category;
           t.type = data.returnType;
           t.returnType = data.returnType;
@@ -3299,7 +3333,7 @@
               name: m.name,
               department: m.department || t.department,
               supervisor: m.supervisor || t.approverName,
-              supervisorNip: m.supervisorNip || null,
+              supervisorNip: m.supervisorNip || t.approverNip || null,
               status: m.status || 'aktif'
             }));
             t.isGroupDinas = t.members.length > 0;
@@ -3314,7 +3348,9 @@
 
           if (isApproverChanged) {
             t.reassignedFrom = oldApprover;
+            t.reassignedFromNip = oldApproverNip;
             t.reassignedTo = newApprover;
+            t.reassignedToNip = newApproverNip;
             t.reassignedAt = nowFormatted;
             t.reassignedBy = `${emp.name} (Karyawan)`;
 
@@ -3331,6 +3367,7 @@
               window.createNotification({
                 recipientRole: 'approver',
                 recipientName: newApprover,
+                recipientNip: newApproverNip,
                 actorSource: 'karyawan',
                 type: 'pengajuan_dialihkan',
                 title: 'Pengajuan Dialihkan ke Anda',
@@ -3343,10 +3380,11 @@
               window.createNotification({
                 recipientRole: 'approver',
                 recipientName: oldApprover,
+                recipientNip: oldApproverNip,
                 actorSource: 'karyawan',
                 type: 'pengajuan_dialihkan_keluar',
                 title: 'Pengajuan Dialihkan ke Atasan Lain',
-                message: `Pengajuan #${ticketId} (${emp.name}) dialihkan oleh pemohon ke ${newApprover}.`,
+                message: `Pengajuan #${ticketId} (${emp.name}) dialihkan oleh pemohon ke ${newApprover}. Status tetap dapat Anda pantau.`,
                 ticketId: ticketId,
                 priority: 'normal'
               });
