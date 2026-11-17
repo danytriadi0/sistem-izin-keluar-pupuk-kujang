@@ -964,6 +964,11 @@
       window.mobileConfirmBatchDelete(flag, finishedTickets.length);
     };
 
+    // Opsi 1: Tutup lembar detail jika sedang terbuka agar dialog konfirmasi tampil bersih
+    if (typeof window.mobileCloseSheet === 'function') {
+      window.mobileCloseSheet();
+    }
+
     if (typeof window.openDeleteConfirmModal === 'function') {
       window.openDeleteConfirmModal({
         title: 'Hapus Semua Riwayat',
@@ -1063,6 +1068,11 @@
     const handler = () => {
       window.mobileConfirmSingleDelete(ticketId, flag);
     };
+
+    // Opsi 1: Tutup lembar detail pengajuan terlebih dahulu agar dialog konfirmasi tampil bersih di depan
+    if (typeof window.mobileCloseSheet === 'function') {
+      window.mobileCloseSheet();
+    }
 
     if (typeof window.openDeleteConfirmModal === 'function') {
       window.openDeleteConfirmModal({

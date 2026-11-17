@@ -9356,6 +9356,11 @@ body.theme-dark .figma-contact-sub {
     justify-content: center !important;
   }
 
+  /* Khusus Modal Konfirmasi Hapus Riwayat di Mobile: Z-Index di atas sheet & backdrop mobile */
+  #modalDeleteConfirm {
+    z-index: 10070 !important;
+  }
+
   /* Khusus Modal Konfirmasi Hapus Riwayat di Mobile: Batal di Kiri, Hapus Kecil di Kanan (Ukuran Proporsional Seragam) */
   #modalDeleteConfirm .modal-footer {
     display: flex !important;
@@ -14390,4 +14395,10 @@ body.theme-dark [style*="color: #be123c"],
 body.theme-dark [style*="color:#be123c"] {
   color: #ef4444 !important;
   font-weight: 800 !important;
+}
+
+
+/* Global Z-Index enforcement for delete confirm modal */
+#modalDeleteConfirm {
+  z-index: 10070 !important;
 }

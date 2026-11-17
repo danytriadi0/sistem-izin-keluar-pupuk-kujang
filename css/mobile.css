@@ -3391,3 +3391,9 @@ body.theme-dark .mobile-summary-value {
   color: #f8fafc !important;
 }
 
+
+
+/* Modal Konfirmasi Hapus Riwayat - Tampil di atas semua sheet & backdrop */
+#modalDeleteConfirm {
+  z-index: 10070 !important;
+}
