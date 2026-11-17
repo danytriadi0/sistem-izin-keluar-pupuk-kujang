@@ -4252,56 +4252,25 @@
               style="font-family: var(--font-mono); color: var(--text-primary, #0f172a); font-size: 0.875rem;">TK-EMG-...</strong>
           </div>
           <div
-            style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem;">
+            style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem;">
             <span>Pemohon: <strong id="emgUnlockApplicant" style="color: var(--text-primary);">Budi Pratama,
                 S.T.</strong></span>
-            <span>Tujuan: <strong id="emgUnlockDestination" style="color: var(--text-primary);">-</strong></span>
           </div>
           <div style="font-size: 0.725rem; color: #475569; margin-top: 0.2rem;">
             Atasan Berwenang: <strong id="emgUnlockApprover">Ir. Hendra Gunawan, M.T. / Dewi Sartika</strong>
           </div>
         </div>
 
-        <!-- Header Metode Terpilih (Sesuai pilihan di form permohonan) -->
-        <div id="emgUnlockSelectedMethodCard"
-          style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; background: var(--bg-subtle, #f8fafc); padding: 0.65rem 0.95rem; border-radius: 8px; border: 1.5px solid var(--border-color, #e2e8f0); gap: 0.75rem; flex-wrap: wrap;">
-          <div>
-            <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Metode Otorisasi Terpilih:</div>
-            <div style="font-size: 0.875rem; font-weight: 800; color: var(--text-primary);" id="emgUnlockMethodTitle">
-              📱 1. Persetujuan Langsung Atasan di App
-            </div>
-          </div>
-          <button type="button" class="btn-figma-blue" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;" onclick="window.closeEmergencyUnlockModal(); window.openEditTicketModal(window.currentEmergencyTicketId);">
-            <span>✏️ Ganti Metode di Edit Pengajuan</span>
-          </button>
-        </div>
-
         <!-- PANE TAB 1: PERSETUJUAN DI APP -->
         <div class="emg-tab-pane active" id="tabEmgApprove">
           <div
-            style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px; padding: 1rem; text-align: center;">
+            style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px; padding: 1.15rem 1rem; text-align: center;">
             <div style="font-weight: 800; font-size: 0.95rem; color: #166534;">Menunggu Otorisasi 1-Klik Atasan</div>
-            <p style="font-size: 0.8rem; color: #15803d; margin-top: 0.35rem; line-height: 1.45;">
-              Atasan (Ir. Hendra Gunawan atau Dewi Sartika) menerima notifikasi prioritas tinggi di aplikasinya. Begitu
+            <p style="font-size: 0.8rem; color: #15803d; margin-top: 0.45rem; line-height: 1.5;">
+              Atasan (<span id="emgUnlockApproverNote">Ir. Hendra Gunawan atau Dewi Sartika</span>) menerima notifikasi prioritas tinggi di aplikasinya. Begitu
               Atasan menekan tombol <strong>Setujui Langsung</strong>, QR Code tiket Anda akan langsung terbuka secara
               otomatis.
             </p>
-            <div
-              style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed #bbf7d0; display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
-              <span style="font-size: 0.725rem; color: #166534;">Simulasi Pengujian Cepat: Beralih ke Akun Atasan</span>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
-                <button type="button" class="btn-card-detail"
-                  style="font-size: 0.75rem; background: #059669; color: #fff; border: none; padding: 0.45rem 0.85rem; border-radius: 6px; cursor: pointer;"
-                  onclick="window.switchRole('approver'); window.closeEmergencyUnlockModal();">
-                  Buka Dashboard Atasan 1 (Ir. Hendra) →
-                </button>
-                <button type="button" class="btn-card-detail"
-                  style="font-size: 0.75rem; background: #4f46e5; color: #fff; border: none; padding: 0.45rem 0.85rem; border-radius: 6px; cursor: pointer;"
-                  onclick="window.switchRole('approver2'); window.closeEmergencyUnlockModal();">
-                  Buka Dashboard Atasan 2 (Dewi Sartika) →
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 

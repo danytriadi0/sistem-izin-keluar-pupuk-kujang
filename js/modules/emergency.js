@@ -30,13 +30,15 @@ function openEmergencyUnlockModal(ticketId, defaultMethod = null) {
   const elTicketId = document.getElementById('emgUnlockTicketId');
   const elApplicant = document.getElementById('emgUnlockApplicant');
   const elApprover = document.getElementById('emgUnlockApprover');
+  const elApproverNote = document.getElementById('emgUnlockApproverNote');
   const elDestination = document.getElementById('emgUnlockDestination');
   const elPasscodeInput = document.getElementById('inputEmergencyPasscode');
   const elPasscodeHint = document.getElementById('emgUnlockPasscodeHint');
 
   if (elTicketId) elTicketId.textContent = ticket.id;
   if (elApplicant) elApplicant.textContent = ticket.applicantName || 'Budi Pratama, S.T.';
-  if (elApprover) elApprover.textContent = ticket.approverName || 'Ir. Hendra Gunawan / Dewi Sartika';
+  if (elApprover) elApprover.textContent = ticket.approverName || 'Atasan Berwenang';
+  if (elApproverNote) elApproverNote.textContent = ticket.approverName || 'Atasan Berwenang';
   if (elDestination) elDestination.textContent = ticket.destination || '-';
   if (elPasscodeInput) elPasscodeInput.value = '';
   if (elPasscodeHint) elPasscodeHint.textContent = ticket.emergencyPasscode || '849201';
