@@ -152,15 +152,20 @@
     }
 
     if (t.timeline && t.timeline.length > 0) {
-      return t.timeline.map((item, idx) => `
+      // Reverse timeline so newest is at the TOP (Shopee & mobile style)
+      const reversedTimeline = [...t.timeline].reverse();
+      return reversedTimeline.map((item, idx) => `
         <div class="mobile-timeline-item">
           <div class="mobile-timeline-track">
             <div class="mobile-timeline-dot ${idx === 0 ? 'active' : 'done'}"></div>
-            ${idx < t.timeline.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
+            ${idx < reversedTimeline.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
           </div>
           <div class="mobile-timeline-content">
             <div class="mobile-timeline-time">${item.time}</div>
-            <div class="mobile-timeline-title">${item.event}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap;">
+              <span style="${idx === 0 ? 'font-weight: 800; color: #0f172a;' : ''}">${item.event}</span>
+              ${idx === 0 ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
             <div class="mobile-timeline-desc">${item.desc || (item.by ? 'Oleh ' + item.by : '')}</div>
           </div>
         </div>
@@ -171,58 +176,85 @@
     const isScanOut = t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat' || Boolean(t.scanOutTime);
     const isScanIn = t.status === 'Selesai' || Boolean(t.scanInTime);
 
-    return `
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot done"></div>
-          <div class="mobile-timeline-line"></div>
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${t.createdAt ? formatTimeOnly(t.createdAt) : '09.20 WIB'}</div>
-          <div class="mobile-timeline-title">Pengajuan Dibuat</div>
-          <div class="mobile-timeline-desc">${t.category || 'Dinas Kantor'} • ${getTType(t)}</div>
-        </div>
-      </div>
+    const fallbackItems = [];
 
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot ${isApproved ? 'done' : 'active'}"></div>
-          <div class="mobile-timeline-line"></div>
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${isApproved ? 'Telah Disetujui' : 'Menunggu'}</div>
-          <div class="mobile-timeline-title">${isApproved ? 'Disetujui oleh Atasan' : 'Menunggu Persetujuan Atasan'}</div>
-          <div class="mobile-timeline-desc">${isApproved ? 'Disetujui • ' + (t.approverName || 'Ir. Hendra Gunawan, M.T.') : 'Menunggu tinjauan atasan'}</div>
-        </div>
-      </div>
-
-      ${isScanOut ? `
+    if (isScanIn) {
+      fallbackItems.push(`
         <div class="mobile-timeline-item">
           <div class="mobile-timeline-track">
             <div class="mobile-timeline-dot done"></div>
-            ${isScanIn ? '<div class="mobile-timeline-line"></div>' : ''}
-          </div>
-          <div class="mobile-timeline-content">
-            <div class="mobile-timeline-time">${t.scanOutTime ? formatTimeOnly(t.scanOutTime) : '10.05 WIB'}</div>
-            <div class="mobile-timeline-title">Scan Out Gerbang Pos Jaga</div>
-            <div class="mobile-timeline-desc">${t.scanOutGate || 'Pos 1 Gerbang Utama'} • Karyawan keluar gerbang kawasan pabrik</div>
-          </div>
-        </div>
-      ` : ''}
-
-      ${isScanIn ? `
-        <div class="mobile-timeline-item">
-          <div class="mobile-timeline-track">
-            <div class="mobile-timeline-dot done"></div>
+            <div class="mobile-timeline-line"></div>
           </div>
           <div class="mobile-timeline-content">
             <div class="mobile-timeline-time">${t.scanInTime ? formatTimeOnly(t.scanInTime) : '12.50 WIB'}</div>
-            <div class="mobile-timeline-title">Tap In Kartu Akses (Masuk Kembali)</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+              <span style="font-weight: 800; color: #0f172a;">Tap In Kartu Akses (Masuk Kembali)</span>
+              <span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>
+            </div>
             <div class="mobile-timeline-desc">${t.scanInGate || 'Pos 1 Gerbang Utama'} • Karyawan kembali ke area pabrik</div>
           </div>
         </div>
-      ` : ''}
-    `;
+      `);
+    }
+
+    if (isScanOut) {
+      const isLatest = !isScanIn;
+      fallbackItems.push(`
+        <div class="mobile-timeline-item">
+          <div class="mobile-timeline-track">
+            <div class="mobile-timeline-dot done"></div>
+            <div class="mobile-timeline-line"></div>
+          </div>
+          <div class="mobile-timeline-content">
+            <div class="mobile-timeline-time">${t.scanOutTime ? formatTimeOnly(t.scanOutTime) : '10.05 WIB'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+              <span style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">Scan Out Gerbang Pos Jaga</span>
+              ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
+            <div class="mobile-timeline-desc">${t.scanOutGate || 'Pos 1 Gerbang Utama'} • Karyawan keluar gerbang kawasan pabrik</div>
+          </div>
+        </div>
+      `);
+    }
+
+    if (isApproved) {
+      const isLatest = !isScanIn && !isScanOut;
+      fallbackItems.push(`
+        <div class="mobile-timeline-item">
+          <div class="mobile-timeline-track">
+            <div class="mobile-timeline-dot ${isApproved ? 'done' : 'active'}"></div>
+            <div class="mobile-timeline-line"></div>
+          </div>
+          <div class="mobile-timeline-content">
+            <div class="mobile-timeline-time">${isApproved ? 'Telah Disetujui' : 'Menunggu'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+              <span style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">Disetujui oleh Atasan</span>
+              ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
+            <div class="mobile-timeline-desc">${isApproved ? 'Disetujui • ' + (t.approverName || 'Ir. Hendra Gunawan, M.T.') : 'Menunggu tinjauan atasan'}</div>
+          </div>
+        </div>
+      `);
+    }
+
+    const isLatestPengajuan = !isScanIn && !isScanOut && !isApproved;
+    fallbackItems.push(`
+      <div class="mobile-timeline-item">
+        <div class="mobile-timeline-track">
+          <div class="mobile-timeline-dot done"></div>
+        </div>
+        <div class="mobile-timeline-content">
+          <div class="mobile-timeline-time">${t.createdAt ? formatTimeOnly(t.createdAt) : '09.20 WIB'}</div>
+          <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+            <span style="${isLatestPengajuan ? 'font-weight: 800; color: #0f172a;' : ''}">Pengajuan Dibuat</span>
+            ${isLatestPengajuan ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+          </div>
+          <div class="mobile-timeline-desc">${t.category || 'Dinas Kantor'} • ${getTType(t)}</div>
+        </div>
+      </div>
+    `);
+
+    return fallbackItems.join('');
   }
 
   function extractTicketId(raw) {

@@ -1085,13 +1085,13 @@ function printAdminReport() {
 // ==========================================
 const AVAILABLE_SUPERVISORS = [
   {
-    name: 'Ir. Hendra Gunawan, M.T.',
-    nip: 'PK-2015-1002',
+    name: 'Dr. Ahmad Subagja, M.M.',
+    nip: 'PK-2012-0543',
     title: 'Atasan 1 (Manager)',
-    department: 'Departemen Rekayasa & Pemeliharaan',
+    department: 'Departemen Produksi Amonia-1A',
     roleLabel: 'Atasan 1 (Manager)',
-    isDirectSupervisor: true,
-    avatarBg: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)'
+    isDirectSupervisor: false,
+    avatarBg: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)'
   },
   {
     name: 'Dewi Sartika, S.T., M.M.',
@@ -1101,15 +1101,6 @@ const AVAILABLE_SUPERVISORS = [
     roleLabel: 'Atasan 2 (Supervisor / Plt)',
     isDirectSupervisor: false,
     avatarBg: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
-  },
-  {
-    name: 'Dr. Ahmad Subagja, M.M.',
-    nip: 'PK-2012-0543',
-    title: 'Atasan 1 (Manager)',
-    department: 'Departemen Produksi Amonia-1A',
-    roleLabel: 'Atasan 1 (Manager)',
-    isDirectSupervisor: false,
-    avatarBg: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)'
   },
   {
     name: 'Bambang Sutrisno, S.T.',
@@ -1127,7 +1118,22 @@ function getAdminAvailableSupervisors() {
     const apps = window.getActiveApprovers();
     if (apps && apps.length > 0) return apps;
   }
-  return AVAILABLE_SUPERVISORS;
+  let deletedList = [];
+  try {
+    deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+  } catch (e) { }
+  const delNips = new Set(deletedList.map(d => (d.nip || '').trim().toLowerCase()));
+  const delNames = new Set(deletedList.map(d => (d.name || '').trim().toLowerCase()));
+
+  const seen = new Set();
+  return AVAILABLE_SUPERVISORS.filter(s => {
+    const n = (s.nip || '').trim().toLowerCase();
+    const nm = (s.name || '').trim().toLowerCase();
+    if (delNips.has(n) || delNames.has(nm)) return false;
+    if (seen.has(n || nm)) return false;
+    seen.add(n || nm);
+    return true;
+  });
 }
 
 function initAdminSupervisorSearchableDropdown() {
@@ -1390,7 +1396,7 @@ const MASTER_EMPLOYEES = [
     name: 'Ir. Hendra Gunawan, M.T.',
     email: 'hendra.gunawan@pupuk-kujang.co.id',
     department: 'Departemen Rekayasa & Pemeliharaan',
-    supervisor: 'Dewi Sartika, S.T., M.M.',
+    supervisor: '',
     title: 'Manager Rekayasa & Pemeliharaan',
     roleKey: 'approver',
     roleTitle: 'Atasan 1 (Manager)',
@@ -1401,7 +1407,7 @@ const MASTER_EMPLOYEES = [
     name: 'Dewi Sartika, S.T., M.M.',
     email: 'dewi.sartika@pupuk-kujang.co.id',
     department: 'Departemen Rekayasa & Pemeliharaan',
-    supervisor: 'Ir. Hendra Gunawan, M.T.',
+    supervisor: '',
     title: 'Supervisor Operasional Lapangan (Plt. Manager)',
     roleKey: 'approver2',
     roleTitle: 'Atasan 2 (Supervisor / Plt)',
@@ -1412,7 +1418,7 @@ const MASTER_EMPLOYEES = [
     name: 'Sertu Agus',
     email: 'pos1.security@pupuk-kujang.co.id',
     department: 'Departemen Pengamanan & K3',
-    supervisor: 'Bambang Sutrisno, S.T.',
+    supervisor: '',
     title: 'Petugas Pengamanan Pos 1',
     roleKey: 'security',
     roleTitle: 'Petugas Pos Jaga (Satpam)',
@@ -1423,7 +1429,7 @@ const MASTER_EMPLOYEES = [
     name: 'Kopral Dani',
     email: 'pos2.security@pupuk-kujang.co.id',
     department: 'Departemen Pengamanan & K3',
-    supervisor: 'Bambang Sutrisno, S.T.',
+    supervisor: '',
     title: 'Petugas Pengamanan Pos 2',
     roleKey: 'security',
     roleTitle: 'Petugas Pos Jaga (Satpam)',
@@ -1434,7 +1440,7 @@ const MASTER_EMPLOYEES = [
     name: 'Praka Ilham',
     email: 'pos3.security@pupuk-kujang.co.id',
     department: 'Departemen Pengamanan & K3',
-    supervisor: 'Bambang Sutrisno, S.T.',
+    supervisor: '',
     title: 'Petugas Pengamanan Pos 3',
     roleKey: 'security',
     roleTitle: 'Petugas Pos Jaga (Satpam)',
@@ -1445,7 +1451,7 @@ const MASTER_EMPLOYEES = [
     name: 'Bambang Sutrisno, S.T.',
     email: 'bambang.sutrisno@pupuk-kujang.co.id',
     department: 'Departemen Pengamanan & K3',
-    supervisor: 'Dr. Ahmad Subagja, M.M.',
+    supervisor: '',
     title: 'Supervisi Pengamanan & K3',
     roleKey: 'admin',
     roleTitle: 'Administrator Pengamanan & K3',
@@ -1456,7 +1462,7 @@ const MASTER_EMPLOYEES = [
     name: 'Dr. Ahmad Subagja, M.M.',
     email: 'ahmad.subagja@pupuk-kujang.co.id',
     department: 'Departemen Produksi Amonia-1A',
-    supervisor: 'Direktur Operasi & Produksi',
+    supervisor: '',
     title: 'Manager Produksi Amonia-1A',
     roleKey: 'approver',
     roleTitle: 'Atasan 1 (Manager)',
@@ -1553,23 +1559,49 @@ const MASTER_EMPLOYEES = [
 ];
 
 function getAdminAllEmployees() {
-  const merged = [...MASTER_EMPLOYEES];
-  const users = window.MOCK_USERS || [];
+  const merged = [];
+  const seenNip = new Set();
+  const seenName = new Set();
+
+  function addEmp(emp) {
+    if (!emp) return;
+    const nipKey = (emp.nip || '').trim().toLowerCase();
+    const nameKey = (emp.name || '').trim().toLowerCase();
+    if (nipKey && seenNip.has(nipKey)) return;
+    if (nameKey && seenName.has(nameKey)) return;
+    if (nipKey) seenNip.add(nipKey);
+    if (nameKey) seenName.add(nameKey);
+    merged.push(emp);
+  }
+
+  // Masukkan users aktif terlebih dahulu (prioritas data terkini)
+  const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
   users.forEach(u => {
-    if (!merged.some(m => m.nip === u.nip || m.name.toLowerCase() === (u.name || '').toLowerCase())) {
-      merged.push({
-        nip: u.nip || '',
-        name: u.name || '',
-        email: u.email || '',
-        department: u.department || 'Departemen Rekayasa & Pemeliharaan',
-        supervisor: u.directSupervisor || u.supervisor || 'Ir. Hendra Gunawan, M.T.',
-        title: u.role || 'Karyawan',
-        roleKey: u.roleKey || 'karyawan',
-        roleTitle: u.role || 'Karyawan',
-        jabatan: u.jabatan || u.role || 'Staf Operasional Pabrik'
-      });
-    }
+    const isKaryawanBiasa = (u.roleKey === 'karyawan' || u.roleKey === 'karyawan2') || 
+      ((u.role || '').toLowerCase().includes('karyawan') && !(u.role || '').toLowerCase().includes('manager'));
+    addEmp({
+      nip: u.nip || '',
+      name: u.name || '',
+      email: u.email || '',
+      department: u.department || 'Departemen Rekayasa & Pemeliharaan',
+      supervisor: isKaryawanBiasa ? (u.directSupervisor || u.supervisor || '') : '',
+      title: u.role || 'Karyawan',
+      roleKey: u.roleKey || 'karyawan',
+      roleTitle: u.role || 'Karyawan',
+      jabatan: u.jabatan || u.role || 'Staf Operasional Pabrik'
+    });
   });
+
+  // Masukkan master data karyawan pelengkap
+  MASTER_EMPLOYEES.forEach(m => {
+    const isKaryawanBiasa = (m.roleKey === 'karyawan' || m.roleKey === 'karyawan2') ||
+      ((m.title || '').toLowerCase().includes('staf') && !(m.title || '').toLowerCase().includes('manager'));
+    addEmp({
+      ...m,
+      supervisor: isKaryawanBiasa ? (m.supervisor || '') : ''
+    });
+  });
+
   return merged;
 }
 
@@ -1711,6 +1743,21 @@ function renderAdminEmpDropdownItems(filterText = '', targetField = 'name') {
     const highlightedNip = targetField === 'nip' ? highlightAdminEmpMatch(emp.nip, filterText) : emp.nip;
     const highlightedDept = emp.department;
 
+    // Tulisan Atasan HANYA untuk Karyawan biasa, BUKAN untuk Manager / Atasan / Admin / Pos Jaga
+    const isKaryawanBiasa = (emp.roleKey === 'karyawan' || emp.roleKey === 'karyawan2') || 
+      ((emp.title || emp.role || '').toLowerCase().includes('staf') && 
+       !(emp.title || emp.role || '').toLowerCase().includes('manager') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('supervisor') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('atasan') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('plt') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('admin') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('satpam') &&
+       !(emp.title || emp.role || '').toLowerCase().includes('pengamanan'));
+
+    const atasanBadge = (isKaryawanBiasa && emp.supervisor && emp.supervisor.trim() !== '' && emp.supervisor !== '-')
+      ? ` • Atasan: <strong style="color: var(--corp-teal, #0f766e);">${emp.supervisor}</strong>`
+      : '';
+
     return `
       <div class="approver-item" data-nip="${emp.nip}" onclick="window.selectAdminEmployeeByNip('${emp.nip}')">
         <div class="approver-item-avatar" style="background: ${grad};">
@@ -1721,7 +1768,7 @@ function renderAdminEmpDropdownItems(filterText = '', targetField = 'name') {
             <span class="approver-item-name">${highlightedName}</span>
             <span class="approver-item-nip">${highlightedNip}</span>
           </div>
-          <div class="approver-item-role">${emp.title || 'Karyawan'} • Atasan: <strong style="color: var(--corp-teal, #0f766e);">${emp.supervisor}</strong></div>
+          <div class="approver-item-role">${emp.title || 'Karyawan'}${atasanBadge}</div>
           <div class="approver-item-dept">${highlightedDept}</div>
         </div>
       </div>
@@ -1733,8 +1780,89 @@ function renderAdminEmpDropdownItems(filterText = '', targetField = 'name') {
   }
 }
 
+function showAndFocusExistingAdminUser(existingUser) {
+  if (!existingUser) return;
+  // 1. Reset filter peran ke 'all'
+  const roleFilterEl = document.getElementById('adminUserRoleFilter');
+  if (roleFilterEl) roleFilterEl.value = 'all';
+  adminUserRoleFilter = 'all';
+
+  // 2. Set input pencarian ke NIP / Nama pengguna agar langsung muncul
+  const searchInputEl = document.getElementById('adminUserSearchInput');
+  if (searchInputEl) {
+    searchInputEl.value = existingUser.nip || existingUser.name;
+    adminUserSearchTerm = existingUser.nip || existingUser.name;
+  }
+
+  // 3. Reset ke halaman 1 dan render ulang tabel
+  window.adminUsersCurrentPage = 1;
+  renderAdminUsers();
+
+  // 4. Scroll ke tabel dan berikan efek highlight bercahaya pada baris akun tersebut
+  setTimeout(() => {
+    const tableEl = document.getElementById('adminUsersTableBody');
+    if (!tableEl) return;
+    const rows = tableEl.querySelectorAll('tr');
+    rows.forEach(tr => {
+      const text = tr.textContent.toLowerCase();
+      if ((existingUser.nip && text.includes(existingUser.nip.toLowerCase())) ||
+          (existingUser.kujangId && text.includes(existingUser.kujangId.toLowerCase())) ||
+          (existingUser.name && text.includes(existingUser.name.toLowerCase()))) {
+        tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        tr.style.transition = 'all 0.4s ease';
+        tr.style.backgroundColor = '#fef3c7';
+        tr.style.outline = '2px solid #f59e0b';
+        tr.style.boxShadow = '0 0 14px rgba(245, 158, 11, 0.45)';
+        setTimeout(() => {
+          tr.style.backgroundColor = '';
+          tr.style.outline = '';
+          tr.style.boxShadow = '';
+        }, 4000);
+      }
+    });
+  }, 120);
+}
+window.showAndFocusExistingAdminUser = showAndFocusExistingAdminUser;
+
 function selectAdminEmployee(emp) {
   if (!emp) return;
+  const mode = document.getElementById('adminUserEditMode')?.value || 'add';
+  const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+
+  // PENCEGAHAN DUPLIKASI: Jika akun sudah ada, tutup form dan tampilkan pop up Akun Sudah Ada
+  if (mode === 'add') {
+    const existing = users.find(u =>
+      (u.nip && emp.nip && u.nip.trim().toLowerCase() === emp.nip.trim().toLowerCase()) ||
+      (u.name && emp.name && u.name.trim().toLowerCase() === emp.name.trim().toLowerCase())
+    );
+    if (existing) {
+      if (typeof closeAdminEmpDropdown === 'function') closeAdminEmpDropdown();
+      if (typeof closeAdminUserModal === 'function') closeAdminUserModal();
+      const isRevoked = existing.status === 'Dicabut' || existing.status === 'Nonaktif';
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Akun Sudah Ada',
+          message: `Akun dengan Nama <strong>${existing.name}</strong> (NIP: ${existing.nip}, KUJANG ID: ${existing.kujangId}) <strong>SUDAH TERDAFTAR</strong> dalam sistem dengan status <strong>${existing.status}</strong>.<br><br>Anda tidak dapat menambahkan akun yang sama kembali untuk mencegah duplikasi data.<br><br>${isRevoked ? 'Status hak akses akun ini saat ini <strong>Dicabut</strong>. Anda dapat mengaktifkannya kembali langsung melalui tombol di bawah atau mengelolanya pada tabel Direktori Pengguna.' : 'Akun ini berstatus aktif dan dapat langsung dikelola pada tabel Direktori Pengguna.'}`,
+          buttonText: 'Tutup & Lihat Tabel',
+          actionText: isRevoked ? 'Aktifkan Akses Sekarang' : 'Lihat Akun di Tabel',
+          onAction: () => {
+            if (isRevoked && typeof window.toggleUserAccess === 'function') {
+              window.toggleUserAccess(existing.kujangId, true);
+            }
+            showAndFocusExistingAdminUser(existing);
+          },
+          onConfirm: () => {
+            showAndFocusExistingAdminUser(existing);
+          }
+        });
+      } else {
+        alert(`[AKUN SUDAH ADA]\n\nAkun ${existing.name} (${existing.nip}) sudah terdaftar dalam sistem.`);
+        showAndFocusExistingAdminUser(existing);
+      }
+      return;
+    }
+  }
+
   const inputNip = document.getElementById('adminInputNip');
   const inputName = document.getElementById('adminInputName');
   const inputEmail = document.getElementById('adminInputEmail');
@@ -2124,10 +2252,55 @@ function saveAdminUserAccess(event) {
 
   let idx = -1;
   if (mode === 'add') {
-    if (users.some(u => u.kujangId.toLowerCase() === kujangId.toLowerCase())) {
-      alert(`KUJANG ID ${kujangId} sudah terdaftar dalam sistem.`);
+    // CEK AKUN SUDAH ADA (NIP / NAMA / KUJANG ID) - Cegah Duplikasi
+    const cleanNip = nip.trim().toLowerCase();
+    const cleanName = name.trim().toLowerCase();
+    const cleanId = kujangId.trim().toLowerCase();
+
+    const existingUser = users.find(u =>
+      (u.nip && u.nip.trim().toLowerCase() === cleanNip) ||
+      (u.name && u.name.trim().toLowerCase() === cleanName) ||
+      (u.kujangId && u.kujangId.trim().toLowerCase() === cleanId)
+    );
+
+    if (existingUser) {
+      closeAdminUserModal();
+      const isRevoked = existingUser.status === 'Dicabut' || existingUser.status === 'Nonaktif';
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Akun Sudah Ada',
+          message: `Akun dengan Nama <strong>${existingUser.name}</strong> (NIP: ${existingUser.nip}, KUJANG ID: ${existingUser.kujangId}) <strong>SUDAH TERDAFTAR</strong> dalam sistem dengan status <strong>${existingUser.status}</strong>.<br><br>Anda tidak dapat menambahkan akun yang sama kembali untuk mencegah duplikasi data.<br><br>${isRevoked ? 'Status hak akses akun ini saat ini <strong>Dicabut</strong>. Anda dapat mengaktifkannya kembali langsung melalui tombol di bawah atau mengelolanya pada tabel Direktori Pengguna.' : 'Akun ini berstatus aktif dan dapat langsung dikelola pada tabel Direktori Pengguna.'}`,
+          buttonText: 'Tutup & Lihat Tabel',
+          actionText: isRevoked ? 'Aktifkan Akses Sekarang' : 'Lihat Akun di Tabel',
+          onAction: () => {
+            if (isRevoked && typeof window.toggleUserAccess === 'function') {
+              window.toggleUserAccess(existingUser.kujangId, true);
+            }
+            showAndFocusExistingAdminUser(existingUser);
+          },
+          onConfirm: () => {
+            showAndFocusExistingAdminUser(existingUser);
+          }
+        });
+      } else {
+        alert(`[AKUN SUDAH ADA]\n\nAkun dengan nama ${existingUser.name} (${existingUser.nip}) sudah terdaftar dalam sistem.`);
+        showAndFocusExistingAdminUser(existingUser);
+      }
       return;
     }
+
+    // Bersihkan dari KUJANG_DELETED_USERS jika sebelumnya pernah dihapus (Pemulihan resmi oleh Admin)
+    try {
+      let deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+      deletedList = deletedList.filter(d => 
+        (d.nip && d.nip.trim().toLowerCase() !== cleanNip) &&
+        (d.name && d.name.trim().toLowerCase() !== cleanName) &&
+        (d.kujangId && d.kujangId.trim().toLowerCase() !== cleanId)
+      );
+      localStorage.setItem('KUJANG_DELETED_USERS', JSON.stringify(deletedList));
+      window.DELETED_USERS = deletedList;
+    } catch (e) {}
+
     const nowIso = new Date().toISOString();
     const newUser = {
       kujangId,
@@ -2148,6 +2321,26 @@ function saveAdminUserAccess(event) {
     users.unshift(newUser);
     idx = 0;
   } else {
+    // Validasi saat edit: jangan sampai mengubah NIP/Nama menjadi bentrok dengan akun lain
+    const cleanNip = nip.trim().toLowerCase();
+    const cleanName = name.trim().toLowerCase();
+    const conflictUser = users.find(u =>
+      u.kujangId !== originalId &&
+      ((u.nip && u.nip.trim().toLowerCase() === cleanNip) || (u.name && u.name.trim().toLowerCase() === cleanName))
+    );
+    if (conflictUser) {
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Konflik Data Pengguna',
+          message: `NIP atau Nama tersebut sudah digunakan oleh akun lain: <strong>${conflictUser.name}</strong> (${conflictUser.nip}).<br><br>Mohon gunakan NIP atau Nama yang valid.`,
+          buttonText: 'Mengerti'
+        });
+      } else {
+        alert(`NIP atau Nama tersebut sudah digunakan oleh akun ${conflictUser.name}.`);
+      }
+      return;
+    }
+
     idx = users.findIndex(u => u.kujangId === originalId || u.kujangId === kujangId);
     if (idx !== -1) {
       users[idx] = {
@@ -2208,7 +2401,7 @@ function saveAdminUserAccess(event) {
   }
 }
 
-function toggleUserAccess(kujangId) {
+function toggleUserAccess(kujangId, skipConfirm = false) {
   let users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
   const user = users.find(u => u.kujangId === kujangId);
   if (!user) return;
@@ -2237,6 +2430,44 @@ function toggleUserAccess(kujangId) {
     user.updatedAt = new Date().toISOString();
     if (user.status === 'Dicabut') {
       autoCancelTicketsForRevokedUser(user);
+
+      // Jika user yang dicabut adalah Atasan, alihkan antrean tiket persetujuan ke atasan lain
+      if (user.roleKey === 'approver' || user.roleKey === 'approver2') {
+        const activeApprovers = users.filter(u => (u.roleKey === 'approver' || u.roleKey === 'approver2') && u.status === 'Aktif' && u.kujangId !== user.kujangId);
+        const fallbackApp = activeApprovers[0];
+        if (fallbackApp) {
+          const allTickets = (typeof window.loadTickets === 'function' ? window.loadTickets() : window.ticketsList) || [];
+          let reassignedCount = 0;
+          allTickets.forEach(t => {
+            if ((t.approverName === user.name || t.approverNip === user.nip) && (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Otorisasi Darurat')) {
+              t.reassignedFrom = user.name;
+              t.reassignedTo = fallbackApp.name;
+              t.approverName = fallbackApp.name;
+              t.approverNip = fallbackApp.nip;
+              if (!t.timeline) t.timeline = [];
+              t.timeline.unshift({
+                event: 'Dialihkan Otomatis oleh Sistem',
+                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+                by: 'Sistem Administrasi KUJANG ID',
+                desc: `Hak akses atasan (${user.name}) dicabut oleh Administrator. Persetujuan dialihkan ke ${fallbackApp.name}.`
+              });
+              reassignedCount++;
+            }
+          });
+          if (reassignedCount > 0 && typeof window.saveTickets === 'function') {
+            window.saveTickets(allTickets);
+          }
+        }
+      }
+
+      // Jika user yang dicabut sedang aktif di browser/tab ini, otomatis logout
+      const curSession = typeof window.getKujangCurrentUser === 'function' ? window.getKujangCurrentUser() : null;
+      if (curSession && (curSession.nip === user.nip || curSession.kujangId === user.kujangId || curSession.id === user.kujangId)) {
+        window.setKujangCurrentUser(null);
+        if (typeof window.kujangLogout === 'function') {
+          window.kujangLogout();
+        }
+      }
     } else {
       // Jika diaktifkan kembali: periksa apakah ada pejabat lain di DEPARTEMEN YANG SAMA yang sedang aktif
       const roleDef = AVAILABLE_ROLES_JABATAN.find(r => r.roleKey === user.roleKey && r.isSingleSeat);
@@ -2273,7 +2504,7 @@ function toggleUserAccess(kujangId) {
     }
   };
 
-  if (typeof window.openDeleteConfirmModal === 'function') {
+  if (!skipConfirm && typeof window.openDeleteConfirmModal === 'function') {
     window.openDeleteConfirmModal({
       title: willRevoke ? 'Konfirmasi Cabut Hak Akses' : 'Konfirmasi Aktifkan Hak Akses',
       message: `Apakah Anda yakin ingin ${actionText} untuk akun <strong>${user.name}</strong> (${user.kujangId})?`,
@@ -2381,6 +2612,15 @@ function deleteAdminUser(kujangId) {
     // 3. Batalkan seluruh permohonan aktif pemohon jika user adalah karyawan
     autoCancelTicketsForRevokedUser(user);
 
+    // Jika user yang dihapus sedang aktif di browser/tab ini, otomatis logout
+    const curSession = typeof window.getKujangCurrentUser === 'function' ? window.getKujangCurrentUser() : null;
+    if (curSession && (curSession.nip === user.nip || curSession.kujangId === user.kujangId || curSession.id === user.kujangId)) {
+      window.setKujangCurrentUser(null);
+      if (typeof window.kujangLogout === 'function') {
+        window.kujangLogout();
+      }
+    }
+
     // 4. Hapus dari daftar users dan DEFAULT_USERS
     users = users.filter(u => u.kujangId !== kujangId && u.nip !== user.nip && u.name !== user.name);
     window.MOCK_USERS = users;
@@ -2391,6 +2631,37 @@ function deleteAdminUser(kujangId) {
 
     if (typeof window.saveUsers === 'function') {
       window.saveUsers(users);
+    }
+
+    // 5. Bersihkan dari quick switch storage, KUJANG_ACCOUNTS, dan cache pengguna aktif
+    try {
+      const savedQs = localStorage.getItem('KUJANG_QUICK_SWITCH_ACCOUNTS');
+      if (savedQs) {
+        const qsObj = JSON.parse(savedQs);
+        ['karyawan', 'approver', 'security'].forEach(cat => {
+          if (Array.isArray(qsObj[cat])) {
+            qsObj[cat] = qsObj[cat].filter(a => a.nip !== user.nip && a.name !== user.name);
+          }
+        });
+        localStorage.setItem('KUJANG_QUICK_SWITCH_ACCOUNTS', JSON.stringify(qsObj));
+      }
+    } catch (e) {}
+
+    if (Array.isArray(window.KUJANG_ACCOUNTS)) {
+      window.KUJANG_ACCOUNTS = window.KUJANG_ACCOUNTS.filter(a => a.nip !== user.nip && a.username !== (user.username || '').toLowerCase());
+    }
+
+    if (window.activeApproverUser && (window.activeApproverUser.nip === user.nip || window.activeApproverUser.name === user.name)) {
+      window.activeApproverUser = fallbackApp1 || fallbackApp2 || null;
+      if (fallbackApp1) {
+        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', fallbackApp1.nip); } catch (e) {}
+      } else {
+        try { localStorage.removeItem('KUJANG_ACTIVE_APPR_NIP'); } catch (e) {}
+      }
+    }
+    if (window.activeEmployeeUser && (window.activeEmployeeUser.nip === user.nip || window.activeEmployeeUser.name === user.name)) {
+      window.activeEmployeeUser = null;
+      try { localStorage.removeItem('KUJANG_ACTIVE_EMP_NIP'); } catch (e) {}
     }
 
     renderAdminUsers();
@@ -2444,14 +2715,28 @@ function deleteAdminUser(kujangId) {
 window.deleteAdminUser = deleteAdminUser;
 
 function renderAdminUsers() {
-  const users = window.MOCK_USERS || [];
+  let users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+  const seenNip = new Set();
+  users = users.filter(u => {
+    if (!u) return false;
+    const k = (u.nip || '').trim().toLowerCase();
+    if (k && seenNip.has(k)) return false;
+    if (k) seenNip.add(k);
+    return true;
+  });
   const tbody = document.getElementById('adminUsersTableBody');
   const countEl = document.getElementById('adminUsersCount');
   if (!tbody) return;
 
   const filtered = users.filter(user => {
-    if (adminUserRoleFilter !== 'all' && user.roleKey !== adminUserRoleFilter) {
-      return false;
+    if (adminUserRoleFilter !== 'all') {
+      if (adminUserRoleFilter === 'approver') {
+        if (user.roleKey !== 'approver' && user.roleKey !== 'approver2') return false;
+      } else if (adminUserRoleFilter === 'karyawan') {
+        if (user.roleKey !== 'karyawan' && user.roleKey !== 'karyawan2') return false;
+      } else if (user.roleKey !== adminUserRoleFilter) {
+        return false;
+      }
     }
     if (adminUserSearchTerm) {
       const matcher = typeof window.matchSearchTokens === 'function' ? window.matchSearchTokens : (typeof matchSearchTokens === 'function' ? matchSearchTokens : null);
@@ -2550,8 +2835,8 @@ function renderAdminUsers() {
     return;
   }
 
-  // Pagination Hak Akses KUJANG ID (6 per halaman)
-  const pageSize = 6;
+  // Pagination Hak Akses KUJANG ID (10 per halaman agar lebih banyak akun terlihat langsung)
+  const pageSize = 10;
   const totalCount = filtered.length;
   const totalPages = Math.ceil(totalCount / pageSize) || 1;
   let currentPage = window.adminUsersCurrentPage || 1;

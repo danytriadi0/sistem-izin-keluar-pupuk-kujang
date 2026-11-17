@@ -480,16 +480,70 @@
     } catch (e) {
       deletedUsers = [];
     }
-    if (deletedUsers.includes(role)) {
-      if (typeof window.showToast === 'function') {
+    const delNips = new Set(deletedUsers.map(d => (d.nip || '').trim().toLowerCase()));
+    const delNames = new Set(deletedUsers.map(d => (d.name || '').trim().toLowerCase()));
+
+    // Pastikan scanner berhenti saat berpindah peran
+    if (typeof window.mobileStopCameraScanner === 'function') {
+      window.mobileStopCameraScanner();
+    }
+
+    // Sinkronisasikan currentUser sesuai peran baru agar konsisten di seluruh master data
+    const allUsers = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+    let targetUser = null;
+    if (role === 'karyawan') {
+      targetUser = allUsers.find(u => u.nip === 'PK-2024-8841' && !delNips.has('pk-2024-8841')) ||
+                   allUsers.find(u => (u.roleKey === 'karyawan' || u.role === 'Karyawan') && !delNips.has((u.nip || '').toLowerCase()));
+    } else if (role === 'karyawan2') {
+      targetUser = allUsers.find(u => u.nip === 'PK-2024-8842' && !delNips.has('pk-2024-8842')) ||
+                   allUsers.find(u => u.roleKey === 'karyawan2' && !delNips.has((u.nip || '').toLowerCase()));
+    } else if (role === 'approver') {
+      targetUser = allUsers.find(u => u.roleKey === 'approver' && u.status === 'Aktif' && !delNips.has((u.nip || '').toLowerCase())) ||
+                   allUsers.find(u => u.roleKey === 'approver' && !delNips.has((u.nip || '').toLowerCase()));
+      if (targetUser) {
+        window.activeApproverUser = targetUser;
+        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', targetUser.nip); } catch (e) {}
+      }
+    } else if (role === 'approver2') {
+      targetUser = allUsers.find(u => u.roleKey === 'approver2' && u.status === 'Aktif' && !delNips.has((u.nip || '').toLowerCase())) ||
+                   allUsers.find(u => u.roleKey === 'approver2' && !delNips.has((u.nip || '').toLowerCase()));
+      if (targetUser) {
+        window.activeApproverUser = targetUser;
+        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', targetUser.nip); } catch (e) {}
+      }
+    } else if (role === 'security') {
+      targetUser = allUsers.find(u => u.nip === 'SEC-2018-042' && !delNips.has('sec-2018-042')) ||
+                   allUsers.find(u => (u.roleKey === 'security' || (u.role && u.role.includes('Pengamanan'))) && !delNips.has((u.nip || '').toLowerCase()));
+    }
+
+    if (!targetUser) {
+      const isDel = deletedUsers.find(d => d.role === role || d.roleKey === role);
+      const delName = isDel ? isDel.name : role;
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dihapus',
+          message: `Akun <strong>${delName}</strong> telah <strong>DIHAPUS</strong> oleh Administrator dari sistem PT Pupuk Kujang.<br><br>Akun ini tidak lagi memiliki hak akses dan tidak dapat digunakan untuk masuk ke dalam sistem.`,
+          buttonText: 'Batal'
+        });
+      } else if (typeof window.showToast === 'function') {
         window.showToast('Akun ini telah dinonaktifkan atau dihapus dari sistem.', 'danger');
       }
       return;
     }
 
-    // Pastikan scanner berhenti saat berpindah peran
-    if (typeof window.mobileStopCameraScanner === 'function') {
-      window.mobileStopCameraScanner();
+    if (targetUser.status === 'Dicabut' || targetUser.status === 'Nonaktif') {
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dicabut',
+          message: `Hak akses untuk akun <strong>${targetUser.name}</strong> telah <strong>DICABUT</strong> oleh Administrator.<br><br>Anda <strong>TIDAK DAPAT MASUK</strong> ke akun ini sebelum hak akses diaktifkan kembali di Direktori Admin.`,
+          buttonText: 'Batal'
+        });
+      }
+      return;
+    }
+
+    if (typeof window.setKujangCurrentUser === 'function') {
+      window.setKujangCurrentUser(targetUser);
     }
 
     currentMobileRole = role;
@@ -502,32 +556,6 @@
       sessionStorage.setItem('KUJANG_MOBILE_ACTIVE_TAB', 'dashboard');
     } catch (e) {}
 
-    // Sinkronisasikan currentUser sesuai peran baru agar konsisten di seluruh master data
-    if (typeof window.setKujangCurrentUser === 'function') {
-      const allUsers = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
-      let targetUser = null;
-      if (role === 'karyawan') {
-        targetUser = allUsers.find(u => u.nip === 'PK-2024-8841') || allUsers.find(u => u.roleKey === 'karyawan' || u.role === 'Karyawan');
-      } else if (role === 'karyawan2') {
-        targetUser = allUsers.find(u => u.nip === 'PK-2024-8842') || allUsers.find(u => u.roleKey === 'karyawan2');
-      } else if (role === 'approver') {
-        targetUser = allUsers.find(u => (u.nip === 'PK-2015-1002' || (u.roleKey === 'approver' && !u.nip.includes('0845'))) && u.status === 'Aktif') ||
-                     allUsers.find(u => u.nip === 'PK-2015-1002' || u.roleKey === 'approver' || (u.role && u.role.includes('Manager')));
-        window.activeApproverUser = targetUser;
-        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2015-1002'); } catch (e) {}
-      } else if (role === 'approver2') {
-        targetUser = allUsers.find(u => (u.nip === 'PK-2012-0845' || u.roleKey === 'approver2') && u.status === 'Aktif') ||
-                     allUsers.find(u => u.nip === 'PK-2012-0845' || u.roleKey === 'approver2' || (u.role && u.role.includes('Supervisor')));
-        window.activeApproverUser = targetUser;
-        try { localStorage.setItem('KUJANG_ACTIVE_APPR_NIP', 'PK-2012-0845'); } catch (e) {}
-      } else if (role === 'security') {
-        targetUser = allUsers.find(u => u.nip === 'SEC-2018-042') || allUsers.find(u => u.roleKey === 'security' || (u.role && u.role.includes('Pengamanan')));
-      }
-      if (targetUser) {
-        window.setKujangCurrentUser(targetUser);
-      }
-    }
-
     window.currentActor = role;
 
     // Sinkronkan peran aktif di tingkat sistem
@@ -539,15 +567,9 @@
     renderMobileShell();
     renderActiveView();
 
-    const roleNames = {
-      karyawan: 'Karyawan (Budi Pratama, S.T.)',
-      karyawan2: 'Karyawan 2 (Arthur Morgan, S.Tr.T.)',
-      approver: 'Atasan 1 (Ir. Hendra Gunawan, M.T.)',
-      approver2: 'Atasan 2 (Dewi Sartika, S.T., M.M.)',
-      security: 'Pos Jaga (Sertu Agus - Pos 1)'
-    };
+    const roleDisplayName = targetUser.name ? `${targetUser.role || targetUser.title || role} (${targetUser.name})` : role;
     if (typeof window.showToast === 'function') {
-      window.showToast(`Beralih ke tampilan simulasi: ${roleNames[role] || role}`, 'info');
+      window.showToast(`Beralih ke tampilan: ${roleDisplayName}`, 'info');
     }
   };
 
@@ -684,13 +706,13 @@
         avatarBg: 'linear-gradient(135deg, #0d9488 0%, #059669 100%)'
       },
       approver: {
-        name: 'Ir. Hendra Gunawan, M.T.',
-        nip: 'PK-2016-3392',
-        roleLabel: 'Atasan 1 (Manager Rekayasa & Pemeliharaan)',
-        dept: 'Departemen Rekayasa & Pemeliharaan',
-        initials: 'HG',
-        photoUrl: 'img/avatars/hendra.svg',
-        avatarBg: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)'
+        name: (window.activeApproverUser && window.activeApproverUser.name) || (window.ACTORS && window.ACTORS.approver && window.ACTORS.approver.name) || 'Dr. Ahmad Subagja, M.M.',
+        nip: (window.activeApproverUser && window.activeApproverUser.nip) || (window.ACTORS && window.ACTORS.approver && window.ACTORS.approver.nip) || 'PK-2012-0543',
+        roleLabel: 'Atasan 1 (Manager)',
+        dept: (window.activeApproverUser && window.activeApproverUser.department) || (window.ACTORS && window.ACTORS.approver && window.ACTORS.approver.department) || 'Departemen Produksi Amonia-1A',
+        initials: 'AS',
+        photoUrl: 'img/avatars/default.svg',
+        avatarBg: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
       },
       approver2: {
         name: 'Dewi Sartika, S.T., M.M.',

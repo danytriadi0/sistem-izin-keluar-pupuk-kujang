@@ -2081,11 +2081,13 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
     }
   }
 
-  // --- TAB 2: RIWAYAT AKTIVITAS (CONNECTED TIMELINE) ---
+  // --- TAB 2: RIWAYAT AKTIVITAS (CONNECTED TIMELINE - NEWEST FIRST) ---
   const figmaDetailTimelineList = document.getElementById('figmaDetailTimelineList');
   if (figmaDetailTimelineList) {
     if (ticket.timeline && Array.isArray(ticket.timeline) && ticket.timeline.length > 0) {
-      figmaDetailTimelineList.innerHTML = ticket.timeline.map((item, idx) => {
+      // Reverse timeline so that NEWEST is at the TOP, OLDEST at the BOTTOM (Shopee style)
+      const reversedTimeline = [...ticket.timeline].reverse();
+      figmaDetailTimelineList.innerHTML = reversedTimeline.map((item, idx) => {
         let dotColor = '#059669'; // default green
         const evLower = (item.event || '').toLowerCase();
         if (evLower.includes('dibuat') || evLower.includes('diajukan')) {
@@ -2115,12 +2117,15 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
           }
         }
 
+        const isLatest = (idx === 0);
+
         return `
           <div class="figma-timeline-item">
             <div class="figma-timeline-dot" style="background: ${dotColor};"></div>
             <div class="figma-timeline-top" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <span class="figma-timeline-event" style="${idx === 0 ? 'font-weight: 800; color: #0f172a;' : ''}">${item.event}</span>
+                <span class="figma-timeline-event" style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">${item.event}</span>
+                ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
                 ${photoUrl ? `
                   <span style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; background: #ffffff;" onclick="event.stopPropagation(); if(typeof window.viewArrivalProofPhoto==='function') window.viewArrivalProofPhoto('${ticket.id}', ${historyIdx >= 0 ? historyIdx : "''"})" title="Klik untuk lihat foto bukti">
                     <img src="${photoUrl}" alt="Foto Bukti" style="width: 24px; height: 18px; border-radius: 2px; object-fit: cover; vertical-align: middle;">
@@ -2143,65 +2148,82 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
       const dayStr = typeof window.formatDisplayDateOnly === 'function' ? window.formatDisplayDateOnly(ticket.plannedExit || ticket.createdAt) : '16 Okt 2026';
       const exitHour = ticket.plannedExit ? ticket.plannedExit.slice(11, 16) : '08.15';
 
-      let timelineHtml = `
-        <!-- Step 1: Pengajuan Dibuat -->
-        <div class="figma-timeline-item">
-          <div class="figma-timeline-dot"></div>
-          <div class="figma-timeline-top">
-            <span class="figma-timeline-event">Pengajuan Dibuat</span>
-            <span class="figma-timeline-time">${dayStr} — ${exitHour} WIB</span>
-          </div>
-          <div class="figma-timeline-actor" style="display:flex; align-items:center; gap:6px;">${window.renderUserPhoto(ticket.applicantName || 'Budi Pratama, S.T.', 20)} <span>${ticket.applicantName || 'Budi Pratama, S.T.'} — ${ticket.applicantNip || 'PK-2024-8841'}</span></div>
-          <div class="figma-timeline-desc">${ticket.category} — ${ticket.destination}</div>
-        </div>
-      `;
+      let fallbackSteps = [];
 
-      if (isApproved) {
-        timelineHtml += `
-          <!-- Step 2: Disetujui Atasan -->
+      if (isDone) {
+        fallbackSteps.push(`
+          <!-- Step 4: Tap In (Kartu Akses) -->
           <div class="figma-timeline-item">
-            <div class="figma-timeline-dot"></div>
+            <div class="figma-timeline-dot green"></div>
             <div class="figma-timeline-top">
-              <span class="figma-timeline-event">Disetujui Atasan</span>
-              <span class="figma-timeline-time">${dayStr} — 08.32 WIB</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="figma-timeline-event" style="font-weight: 800; color: #0f172a;">Tap In (Kartu Akses)</span>
+                <span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>
+              </div>
+              <span class="figma-timeline-time">${dayStr} — ${ticket.scanInTime || '10.52'} WIB</span>
             </div>
-            <div class="figma-timeline-actor" style="display:flex; align-items:center; gap:6px;">${window.renderUserPhoto(ticket.approverName || 'Ir. Hendra Gunawan, M.T.', 20)} <span>${ticket.approverName || 'Ir. Hendra Gunawan, M.T.'}</span></div>
-            <div class="figma-timeline-desc">"${ticket.approverNote || 'Disetujui. Sampaikan hasil pemeriksaan setelah kembali.'}"</div>
+            <div class="figma-timeline-actor">Pos 1 — ${ticket.securityName || 'Agus Setiawan'}</div>
+            <div class="figma-timeline-desc">Tepat Waktu — kembali ke kawasan pabrik.</div>
           </div>
-        `;
+        `);
       }
 
       if (isScanOut) {
-        timelineHtml += `
+        const isLatest = !isDone;
+        fallbackSteps.push(`
           <!-- Step 3: Scan Out Pos Jaga -->
           <div class="figma-timeline-item">
             <div class="figma-timeline-dot"></div>
             <div class="figma-timeline-top">
-              <span class="figma-timeline-event">Scan Out Pos Jaga</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="figma-timeline-event" style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">Scan Out Pos Jaga</span>
+                ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+              </div>
               <span class="figma-timeline-time">${dayStr} — ${ticket.scanOutTime || '09.03'} WIB</span>
             </div>
             <div class="figma-timeline-actor" style="display:flex; align-items:center; gap:6px;">${window.renderUserPhoto(ticket.securityName || 'Agus Setiawan', 20)} <span>Pos 1 — ${ticket.securityName || 'Agus Setiawan'}</span></div>
             <div class="figma-timeline-desc">Identitas dan QR sesuai. Karyawan keluar area.</div>
           </div>
-        `;
+        `);
       }
 
-      if (isDone) {
-        timelineHtml += `
-          <!-- Step 4: Tap In (Kartu Akses) -->
+      if (isApproved) {
+        const isLatest = !isDone && !isScanOut;
+        fallbackSteps.push(`
+          <!-- Step 2: Disetujui Atasan -->
           <div class="figma-timeline-item">
-            <div class="figma-timeline-dot green"></div>
+            <div class="figma-timeline-dot"></div>
             <div class="figma-timeline-top">
-              <span class="figma-timeline-event">Tap In (Kartu Akses)</span>
-              <span class="figma-timeline-time">${dayStr} — ${ticket.scanInTime || '10.52'} WIB</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="figma-timeline-event" style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">Disetujui Atasan</span>
+                ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+              </div>
+              <span class="figma-timeline-time">${dayStr} — 08.32 WIB</span>
             </div>
-            <div class="figma-timeline-actor">Pos 1 — ${ticket.securityName || 'Agus Setiawan'}</div>
-            <div class="figma-timeline-desc">Tepat Waktu — 8 menit sebelum batas kembali pukul 11.00 WIB.</div>
+            <div class="figma-timeline-actor" style="display:flex; align-items:center; gap:6px;">${window.renderUserPhoto(ticket.approverName || 'Ir. Hendra Gunawan, M.T.', 20)} <span>${ticket.approverName || 'Ir. Hendra Gunawan, M.T.'}</span></div>
+            <div class="figma-timeline-desc">"${ticket.approverNote || 'Disetujui. Sampaikan hasil pemeriksaan setelah kembali.'}"</div>
           </div>
-        `;
+        `);
       }
 
-      figmaDetailTimelineList.innerHTML = timelineHtml;
+      const isLatestPengajuan = !isDone && !isScanOut && !isApproved;
+      fallbackSteps.push(`
+        <!-- Step 1: Pengajuan Dibuat -->
+        <div class="figma-timeline-item">
+          <div class="figma-timeline-dot"></div>
+          <div class="figma-timeline-top">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="figma-timeline-event" style="${isLatestPengajuan ? 'font-weight: 800; color: #0f172a;' : ''}">Pengajuan Dibuat</span>
+              ${isLatestPengajuan ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
+            <span class="figma-timeline-time">${dayStr} — ${exitHour} WIB</span>
+          </div>
+          <div class="figma-timeline-actor" style="display:flex; align-items:center; gap:6px;">${window.renderUserPhoto(ticket.applicantName || 'Budi Pratama, S.T.', 20)} <span>${ticket.applicantName || 'Budi Pratama, S.T.'} — ${ticket.applicantNip || 'PK-2024-8841'}</span></div>
+          <div class="figma-timeline-desc">${ticket.category} — ${ticket.destination}</div>
+        </div>
+      `);
+
+      figmaDetailTimelineList.innerHTML = fallbackSteps.join('');
     }
   }
 
@@ -4951,7 +4973,14 @@ window.closeDeleteConfirmModal = function () {
 };
 
 window.openNoticeModal = function (options) {
-  const { title = 'Pemberitahuan', message = '', buttonText = 'Batal', onConfirm = null } = options || {};
+  const { 
+    title = 'Pemberitahuan', 
+    message = '', 
+    buttonText = 'Batal', 
+    onConfirm = null,
+    actionText = null,
+    onAction = null
+  } = options || {};
   const modal = document.getElementById('modalNoticeAlert');
   const titleEl = document.getElementById('noticeModalTitle');
   const msgEl = document.getElementById('noticeModalMessage');
@@ -4959,13 +4988,38 @@ window.openNoticeModal = function (options) {
   if (modal) {
     if (titleEl) titleEl.textContent = title;
     if (msgEl) msgEl.innerHTML = typeof message === 'string' ? message.replace(/\n/g, '<br>') : message;
+
+    const footer = modal.querySelector('.modal-footer');
+    let btnAction = document.getElementById('btnNoticeAction');
+    if (actionText && typeof onAction === 'function') {
+      if (!btnAction) {
+        btnAction = document.createElement('button');
+        btnAction.id = 'btnNoticeAction';
+        btnAction.type = 'button';
+        btnAction.className = 'btn-figma-primary';
+        btnAction.style.cssText = 'padding: 0.45rem 1.25rem; font-size: 0.825rem; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; background: #059669; color: #ffffff; margin-left: 0.5rem;';
+        if (footer) footer.appendChild(btnAction);
+      }
+      btnAction.textContent = actionText;
+      btnAction.style.display = 'inline-flex';
+      btnAction.onclick = function () {
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+        onAction();
+      };
+    } else if (btnAction) {
+      btnAction.style.display = 'none';
+    }
+
     if (btnDismiss) {
       btnDismiss.textContent = buttonText;
       btnDismiss.onclick = function () {
         modal.classList.remove('open');
+        modal.style.display = 'none';
         if (typeof onConfirm === 'function') onConfirm();
       };
     }
+    modal.style.display = 'flex';
     modal.classList.add('open');
   } else {
     alert(typeof message === 'string' ? message.replace(/<[^>]+>/g, '') : message);

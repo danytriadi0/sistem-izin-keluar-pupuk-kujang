@@ -1311,15 +1311,20 @@
   function renderAtasanTimelineHtml(t, approver) {
     if (!t) return '<p style="font-size:0.75rem; color:#64748b; margin:0;">Tidak ada kronologi aktivitas.</p>';
     if (t.timeline && t.timeline.length > 0) {
-      return t.timeline.map((item, idx) => `
+      // Reverse timeline so newest event is at top (Shopee / mobile style)
+      const reversedTimeline = [...t.timeline].reverse();
+      return reversedTimeline.map((item, idx) => `
         <div class="mobile-timeline-item">
           <div class="mobile-timeline-track">
             <div class="mobile-timeline-dot ${idx === 0 ? 'active' : 'done'}"></div>
-            ${idx < t.timeline.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
+            ${idx < reversedTimeline.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
           </div>
           <div class="mobile-timeline-content">
             <div class="mobile-timeline-time">${item.time || formatTimeOnly(item.rawTime) || 'Tercatat'}</div>
-            <div class="mobile-timeline-title">${item.event || item.title || 'Aktivitas'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap;">
+              <span style="${idx === 0 ? 'font-weight: 800; color: #0f172a;' : ''}">${item.event || item.title || 'Aktivitas'}</span>
+              ${idx === 0 ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
             <div class="mobile-timeline-desc">${item.desc || (item.by ? 'Oleh ' + item.by : '')}</div>
           </div>
         </div>
@@ -1331,11 +1336,69 @@
     const isScanIn = t.status === 'Selesai';
     const isRejected = t.status === 'Ditolak';
 
-    return `
+    const fallbackItems = [];
+
+    if (isScanIn) {
+      fallbackItems.push(`
+        <div class="mobile-timeline-item">
+          <div class="mobile-timeline-track">
+            <div class="mobile-timeline-dot done"></div>
+            <div class="mobile-timeline-line"></div>
+          </div>
+          <div class="mobile-timeline-content">
+            <div class="mobile-timeline-time">${t.scanInTime ? formatTimeOnly(t.scanInTime) : 'Tercatat'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+              <span style="font-weight: 800; color: #0f172a;">Tap In (Kembali)</span>
+              <span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>
+            </div>
+            <div class="mobile-timeline-desc">${t.scanInGate || 'Pos 1'} • Kembali ke area pabrik</div>
+          </div>
+        </div>
+      `);
+    }
+
+    if (isScanOut) {
+      const isLatest = !isScanIn;
+      fallbackItems.push(`
+        <div class="mobile-timeline-item">
+          <div class="mobile-timeline-track">
+            <div class="mobile-timeline-dot done"></div>
+            <div class="mobile-timeline-line"></div>
+          </div>
+          <div class="mobile-timeline-content">
+            <div class="mobile-timeline-time">${t.scanOutTime ? formatTimeOnly(t.scanOutTime) : 'Tercatat'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+              <span style="${isLatest ? 'font-weight: 800; color: #0f172a;' : ''}">Scan Out Tercatat</span>
+              ${isLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+            </div>
+            <div class="mobile-timeline-desc">${t.scanOutGate || 'Pos 1'} • Meninggalkan area</div>
+          </div>
+        </div>
+      `);
+    }
+
+    const isDecisionLatest = !isScanIn && !isScanOut;
+    fallbackItems.push(`
+      <div class="mobile-timeline-item">
+        <div class="mobile-timeline-track">
+          <div class="mobile-timeline-dot ${isApproved ? 'done' : (isRejected ? 'danger' : 'active')}"></div>
+          <div class="mobile-timeline-line"></div>
+        </div>
+        <div class="mobile-timeline-content">
+          <div class="mobile-timeline-time">${isApproved ? (t.approvedAt ? formatTimeOnly(t.approvedAt) : 'Telah Disetujui') : (isRejected ? (t.rejectedAt ? formatTimeOnly(t.rejectedAt) : 'Ditolak') : 'Menunggu')}</div>
+          <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+            <span style="${isDecisionLatest ? 'font-weight: 800; color: #0f172a;' : ''}">${isApproved ? 'Disetujui oleh Atasan' : (isRejected ? 'Pengajuan Ditolak' : 'Menunggu Keputusan Atasan')}</span>
+            ${isDecisionLatest ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+          </div>
+          <div class="mobile-timeline-desc">${isApproved ? 'Disetujui • ' + (t.approverName || (approver && approver.name)) : (isRejected ? 'Alasan: ' + (t.rejectionReason || 'Alasan belum memadai') : 'Menunggu tinjauan atasan')}</div>
+        </div>
+      </div>
+    `);
+
+    fallbackItems.push(`
       <div class="mobile-timeline-item">
         <div class="mobile-timeline-track">
           <div class="mobile-timeline-dot done"></div>
-          <div class="mobile-timeline-line"></div>
         </div>
         <div class="mobile-timeline-content">
           <div class="mobile-timeline-time">${t.createdAt ? formatTimeOnly(t.createdAt) : 'Tercatat'}</div>
@@ -1343,46 +1406,9 @@
           <div class="mobile-timeline-desc">${getTName(t)} • ${t.category || 'Dinas Kantor'}</div>
         </div>
       </div>
+    `);
 
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot ${isApproved ? 'done' : (isRejected ? 'danger' : 'active')}"></div>
-          ${(isApproved || isScanOut) ? '<div class="mobile-timeline-line"></div>' : ''}
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${isApproved ? (t.approvedAt ? formatTimeOnly(t.approvedAt) : 'Telah Disetujui') : (isRejected ? (t.rejectedAt ? formatTimeOnly(t.rejectedAt) : 'Ditolak') : 'Menunggu')}</div>
-          <div class="mobile-timeline-title">${isApproved ? 'Disetujui oleh Atasan' : (isRejected ? 'Pengajuan Ditolak' : 'Menunggu Keputusan Atasan')}</div>
-          <div class="mobile-timeline-desc">${isApproved ? 'Disetujui • ' + (t.approverName || approver.name) : (isRejected ? 'Alasan: ' + (t.rejectionReason || 'Alasan belum memadai') : 'Menunggu tinjauan atasan')}</div>
-        </div>
-      </div>
-
-      ${isScanOut ? `
-        <div class="mobile-timeline-item">
-          <div class="mobile-timeline-track">
-            <div class="mobile-timeline-dot done"></div>
-            ${isScanIn ? '<div class="mobile-timeline-line"></div>' : ''}
-          </div>
-          <div class="mobile-timeline-content">
-            <div class="mobile-timeline-time">${t.scanOutTime ? formatTimeOnly(t.scanOutTime) : 'Tercatat'}</div>
-            <div class="mobile-timeline-title">Scan Out Tercatat</div>
-            <div class="mobile-timeline-desc">${t.scanOutGate || 'Pos 1'} • Meninggalkan area</div>
-          </div>
-        </div>
-      ` : ''}
-
-      ${isScanIn ? `
-        <div class="mobile-timeline-item">
-          <div class="mobile-timeline-track">
-            <div class="mobile-timeline-dot done"></div>
-          </div>
-          <div class="mobile-timeline-content">
-            <div class="mobile-timeline-time">${t.scanInTime ? formatTimeOnly(t.scanInTime) : 'Tercatat'}</div>
-            <div class="mobile-timeline-title">Tap In (Kembali)</div>
-            <div class="mobile-timeline-desc">${t.scanInGate || 'Pos 1'} • Kembali ke area pabrik</div>
-          </div>
-        </div>
-      ` : ''}
-    `;
+    return fallbackItems.join('');
   }
 
   window.mobileToggleAtasanDetailTab = function (tab) {

@@ -907,7 +907,21 @@ function loadUsers() {
     // Explicitly strip any users in deletedList
     users = users.filter(u => !isUserDeleted(u));
 
+    // DEDUPLIKASI OTOMATIS: Pastikan tidak ada akun ganda dengan NIP atau Nama yang sama
+    const seenUsers = new Map();
     let changed = false;
+    users = users.filter(u => {
+      if (!u) return false;
+      const nipKey = (u.nip || '').trim().toLowerCase();
+      const nameKey = (u.name || '').trim().toLowerCase();
+      const key = nipKey ? `nip:${nipKey}` : (nameKey ? `name:${nameKey}` : u.kujangId);
+      if (seenUsers.has(key)) {
+        changed = true;
+        return false;
+      }
+      seenUsers.set(key, true);
+      return true;
+    });
     users.forEach(u => {
       if (u.role && u.role.toLowerCase().includes('pemohon')) {
         u.role = 'Karyawan';
@@ -1096,7 +1110,13 @@ function syncActorsFromUsers(data) {
         window.ACTORS.karyawan.approverName = primaryApprover.name;
       }
     } else {
-      window.ACTORS.approver = null;
+      window.ACTORS.approver = {
+        nip: '-',
+        name: 'Pejabat Belum Ditugaskan',
+        title: 'Manager Rekayasa & Pemeliharaan',
+        department: 'Departemen Rekayasa & Pemeliharaan',
+        roleLabel: 'Atasan 1 (Manager)'
+      };
       if (window.ACTORS.karyawan) {
         window.ACTORS.karyawan.approverName = '';
       }
@@ -1115,7 +1135,13 @@ function syncActorsFromUsers(data) {
         roleLabel: 'Atasan 2 (Supervisor / Plt)'
       };
     } else {
-      window.ACTORS.approver2 = null;
+      window.ACTORS.approver2 = {
+        nip: '-',
+        name: 'Pejabat Belum Ditugaskan',
+        title: 'Supervisor Operasional Lapangan (Plt. Manager)',
+        department: 'Departemen Rekayasa & Pemeliharaan',
+        roleLabel: 'Atasan 2 (Supervisor / Plt)'
+      };
     }
   }
 
@@ -1171,14 +1197,30 @@ function getActiveApprovers() {
   const deletedKujangIds = new Set(deletedList.map(d => d.kujangId).filter(Boolean));
   const deletedNames = new Set(deletedList.map(d => d.name).filter(Boolean));
 
-  const approverUsers = users.filter(u => {
-    if (u.kujangId && deletedKujangIds.has(u.kujangId)) return false;
-    if (u.nip && deletedNips.has(u.nip)) return false;
-    if (u.name && deletedNames.has(u.name)) return false;
+  const approverUsers = [];
+  const seenNip = new Set();
+  const seenName = new Set();
+
+  users.forEach(u => {
+    if (!u) return;
+    const kujangK = (u.kujangId || '').trim().toLowerCase();
+    const nipK = (u.nip || '').trim().toLowerCase();
+    const nameK = (u.name || '').trim().toLowerCase();
+
+    if (kujangK && deletedKujangIds.has(kujangK)) return;
+    if (nipK && deletedNips.has(nipK)) return;
+    if (nameK && deletedNames.has(nameK)) return;
 
     const isApproverRole = u.roleKey === 'approver' || u.roleKey === 'approver2' ||
       (u.role && (u.role.toLowerCase().includes('atasan') || u.role.toLowerCase().includes('manager') || u.role.toLowerCase().includes('supervisor')));
-    return isApproverRole;
+    if (!isApproverRole) return;
+
+    if (nipK && seenNip.has(nipK)) return;
+    if (nameK && seenName.has(nameK)) return;
+    if (nipK) seenNip.add(nipK);
+    if (nameK) seenName.add(nameK);
+
+    approverUsers.push(u);
   });
 
   const avatarPalettes = [

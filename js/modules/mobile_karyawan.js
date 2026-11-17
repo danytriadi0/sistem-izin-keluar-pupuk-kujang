@@ -1501,102 +1501,118 @@
       return '<p style="font-size: 0.75rem; color: #64748b; margin: 0;">Tidak ada kronologi izin berjalan.</p>';
     }
 
-    if (t.timeline && t.timeline.length > 0) {
-      return t.timeline.map((item, idx) => {
-        let photoUrl = item.photoDataUrl || '';
-        let historyIdx = -1;
-        const evLower = (item.event || '').toLowerCase();
-        if (evLower.includes('foto bukti') || evLower.includes('bukti kedatangan')) {
-          const roundMatch = (item.event || '').match(/Putaran\s*#?(\d+)/i);
-          const roundNum = roundMatch ? parseInt(roundMatch[1], 10) : 1;
-          if (!photoUrl && Array.isArray(t.arrivalVerificationHistory)) {
-            const hIndex = t.arrivalVerificationHistory.findIndex(h => h.round === roundNum && h.photoDataUrl);
-            if (hIndex >= 0) {
-              photoUrl = t.arrivalVerificationHistory[hIndex].photoDataUrl;
-              historyIdx = hIndex;
-            }
-          }
-          if (!photoUrl && t.arrivalProofPhoto) {
-            photoUrl = t.arrivalProofPhoto;
-          }
-        }
+    const isPending = (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Otorisasi Darurat');
+    const isApproved = (t.status === 'Disetujui');
+    const isOutside = (t.status === 'Sedang di Luar' || t.status === 'Terlambat');
+    const isWaitingVerify = (t.status === 'Menunggu Verifikasi Atasan');
+    const isWaitingProof = (t.status === 'Menunggu Bukti Kedatangan');
 
-        return `
-          <div class="mobile-timeline-item">
-            <div class="mobile-timeline-track">
-              <div class="mobile-timeline-dot ${idx === 0 ? 'active' : 'done'}"></div>
-              ${idx < t.timeline.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
-            </div>
-            <div class="mobile-timeline-content">
-              <div class="mobile-timeline-time">${item.time || '-'}</div>
-              <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                <span>${item.event || item.status || 'Pengajuan Dibuat'}</span>
-                ${photoUrl ? `
-                  <span style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; background: #ffffff;" onclick="event.stopPropagation(); if(typeof window.viewArrivalProofPhoto==='function') window.viewArrivalProofPhoto('${t.id}', ${historyIdx >= 0 ? historyIdx : "''"})" title="Klik untuk lihat foto bukti">
-                    <img src="${photoUrl}" alt="Foto Bukti" style="width: 24px; height: 18px; border-radius: 2px; object-fit: cover; vertical-align: middle;">
-                    <span style="font-size: 0.68rem; color: #2563eb; font-weight: 700;">Lihat Foto</span>
-                  </span>
-                ` : ''}
-              </div>
-              <div class="mobile-timeline-desc">${item.desc || item.keterangan || (item.by || item.actor ? 'Oleh ' + (item.by || item.actor) : '')}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
+    let ongoingItem = null;
+    if (isPending) {
+      ongoingItem = {
+        event: (t.isEmergency || (t.id && t.id.startsWith('TK-EMG'))) ? 'Menunggu Otorisasi Darurat' : 'Menunggu Persetujuan Atasan',
+        time: 'Sedang berlangsung',
+        desc: `Menunggu tinjauan & keputusan dari ${t.approverName || 'Atasan Langsung'}`,
+        state: 'active_pending'
+      };
+    } else if (isApproved && !t.scanOutTime) {
+      ongoingItem = {
+        event: 'Siap Scan Out di Pos 1 Gerbang Utama',
+        time: t.plannedExit ? (window.formatDisplayDate ? window.formatDisplayDate(t.plannedExit) : t.plannedExit) : 'Siap Keluar',
+        desc: 'Tunjukkan QR Code digital kepada petugas satpam di pos jaga',
+        state: 'active_ready'
+      };
+    } else if (isOutside) {
+      ongoingItem = {
+        event: t.status === 'Terlambat' ? 'Tap In Terlambat (Segera ke Pos 1)' : 'Sedang Berada di Luar Area',
+        time: t.status === 'Terlambat' ? '⚠️ Melewati batas estimasi' : 'Tap In Kartu di Pos 1',
+        desc: t.status === 'Terlambat' ? 'Segera lakukan Tap In Kartu Akses di Pos 1 Gerbang Utama!' : `Batas kembali: ${t.estimatedReturn ? (window.formatDisplayDate ? window.formatDisplayDate(t.estimatedReturn) : t.estimatedReturn) : '-'}`,
+        state: t.status === 'Terlambat' ? 'active_overdue' : 'active_outside'
+      };
+    } else if (isWaitingProof) {
+      ongoingItem = {
+        event: 'Menunggu Unggah Foto Bukti',
+        time: 'Sedang berlangsung',
+        desc: 'Verifikasi kedatangan ditolak. Wajib unggah foto bukti berstempel waktu.',
+        state: 'active_overdue'
+      };
+    } else if (isWaitingVerify) {
+      ongoingItem = {
+        event: 'Menunggu Verifikasi Fisik Atasan',
+        time: 'Sedang berlangsung',
+        desc: `Jam kepulangan dikunci (${t.tapInTime || 'Tercatat'}). Menunggu verifikasi fisik oleh Atasan.`,
+        state: 'active_pending'
+      };
     }
 
-    const isApproved = t.status === 'Disetujui' || t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat';
-    const isScanOut = t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat';
-    const isScanIn = t.status === 'Selesai';
+    let itemsToRender = [];
+    if (t.timeline && t.timeline.length > 0) {
+      // Reverse timeline array to have newest at TOP (Shopee & mobile style)
+      const reversedTimeline = [...t.timeline].reverse();
+      itemsToRender = ongoingItem ? [ongoingItem, ...reversedTimeline] : reversedTimeline;
+    } else {
+      const fallbackList = [];
+      if (t.status === 'Selesai') {
+        fallbackList.push({ event: 'Tap In Tercatat', time: t.scanInTime ? (typeof formatTimeOnly === 'function' ? formatTimeOnly(t.scanInTime) : t.scanInTime) : 'Tercatat', desc: (t.scanInGate || 'Pos 1') + ' • Karyawan telah kembali ke pabrik.' });
+      }
+      if (t.status === 'Sedang di Luar' || t.status === 'Terlambat' || t.status === 'Selesai' || t.scanOutTime) {
+        fallbackList.push({ event: 'Scan Out Tercatat', time: t.scanOutTime ? (typeof formatTimeOnly === 'function' ? formatTimeOnly(t.scanOutTime) : t.scanOutTime) : 'Tercatat', desc: (t.scanOutGate || 'Pos 1') + ' • Karyawan meninggalkan area.' });
+      }
+      if (t.status === 'Disetujui' || t.status === 'Sedang di Luar' || t.status === 'Terlambat' || t.status === 'Selesai') {
+        fallbackList.push({ event: 'Disetujui oleh Atasan', time: t.approvedAt ? (typeof formatTimeOnly === 'function' ? formatTimeOnly(t.approvedAt) : t.approvedAt) : 'Telah Disetujui', desc: 'Disetujui • ' + (t.approverName || 'Ir. Hendra Gunawan, M.T.') });
+      }
+      fallbackList.push({ event: 'Pengajuan Dibuat', time: t.createdAt ? (typeof formatTimeOnly === 'function' ? formatTimeOnly(t.createdAt) : t.createdAt) : 'Tercatat', desc: `${t.category || 'Dinas Kantor'} • ${t.returnType || 'Kembali ke Area'}` });
 
-    return `
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot done"></div>
-          <div class="mobile-timeline-line"></div>
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${t.createdAt ? formatTimeOnly(t.createdAt) : '09.20 WIB'}</div>
-          <div class="mobile-timeline-title">Pengajuan Dibuat</div>
-          <div class="mobile-timeline-desc">${t.category} • ${t.returnType || 'Kembali ke Area'}</div>
-        </div>
-      </div>
+      itemsToRender = ongoingItem ? [ongoingItem, ...fallbackList] : fallbackList;
+    }
 
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot ${isApproved ? 'done' : 'active'}"></div>
-          <div class="mobile-timeline-line"></div>
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${isApproved ? 'Telah Disetujui' : 'Menunggu'}</div>
-          <div class="mobile-timeline-title">${isApproved ? 'Disetujui oleh Atasan' : 'Menunggu Persetujuan Atasan'}</div>
-          <div class="mobile-timeline-desc">${isApproved ? 'Disetujui • ' + (t.approverName || 'Ir. Hendra Gunawan, M.T.') : 'Menunggu tinjauan atasan'}</div>
-        </div>
-      </div>
+    return itemsToRender.map((item, idx) => {
+      let photoUrl = item.photoDataUrl || '';
+      let historyIdx = -1;
+      const evLower = (item.event || '').toLowerCase();
+      if (evLower.includes('foto bukti') || evLower.includes('bukti kedatangan')) {
+        const roundMatch = (item.event || '').match(/Putaran\s*#?(\d+)/i);
+        const roundNum = roundMatch ? parseInt(roundMatch[1], 10) : 1;
+        if (!photoUrl && Array.isArray(t.arrivalVerificationHistory)) {
+          const hIndex = t.arrivalVerificationHistory.findIndex(h => h.round === roundNum && h.photoDataUrl);
+          if (hIndex >= 0) {
+            photoUrl = t.arrivalVerificationHistory[hIndex].photoDataUrl;
+            historyIdx = hIndex;
+          }
+        }
+        if (!photoUrl && t.arrivalProofPhoto) {
+          photoUrl = t.arrivalProofPhoto;
+        }
+      }
 
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot ${isScanOut ? 'done' : (isApproved ? 'active' : '')}"></div>
-          <div class="mobile-timeline-line"></div>
-        </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${t.scanOutTime ? formatTimeOnly(t.scanOutTime) : 'Menunggu Keluar'}</div>
-          <div class="mobile-timeline-title">${isScanOut ? 'Scan Out Tercatat' : 'Verifikasi Gerbang Keluar'}</div>
-          <div class="mobile-timeline-desc">${isScanOut ? (t.scanOutGate || 'Pos 1') + ' • Karyawan meninggalkan area' : 'Tunjukkan QR di pos jaga'}</div>
-        </div>
-      </div>
+      const isTop = (idx === 0);
+      let dotClass = isTop ? 'active' : 'done';
+      if (item.state === 'active_pending') dotClass = 'active';
+      else if (item.state === 'active_overdue') dotClass = 'danger';
 
-      <div class="mobile-timeline-item">
-        <div class="mobile-timeline-track">
-          <div class="mobile-timeline-dot ${isScanIn ? 'done' : ''}"></div>
+      return `
+        <div class="mobile-timeline-item">
+          <div class="mobile-timeline-track">
+            <div class="mobile-timeline-dot ${dotClass}"></div>
+            ${idx < itemsToRender.length - 1 ? '<div class="mobile-timeline-line"></div>' : ''}
+          </div>
+          <div class="mobile-timeline-content">
+            <div class="mobile-timeline-time">${item.time || '-'}</div>
+            <div class="mobile-timeline-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+              <span style="${isTop ? 'font-weight: 800; color: #0f172a;' : ''}">${item.event || item.status || 'Pengajuan Dibuat'}</span>
+              ${isTop ? '<span style="font-size: 0.65rem; font-weight: 800; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 1px 6px; border-radius: 9999px;">Terbaru</span>' : ''}
+              ${photoUrl ? `
+                <span style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; background: #ffffff;" onclick="event.stopPropagation(); if(typeof window.viewArrivalProofPhoto==='function') window.viewArrivalProofPhoto('${t.id}', ${historyIdx >= 0 ? historyIdx : "''"})" title="Klik untuk lihat foto bukti">
+                  <img src="${photoUrl}" alt="Foto Bukti" style="width: 24px; height: 18px; border-radius: 2px; object-fit: cover; vertical-align: middle;">
+                  <span style="font-size: 0.68rem; color: #2563eb; font-weight: 700;">Lihat Foto</span>
+                </span>
+              ` : ''}
+            </div>
+            <div class="mobile-timeline-desc">${item.desc || item.keterangan || (item.by || item.actor ? 'Oleh ' + (item.by || item.actor) : '')}</div>
+          </div>
         </div>
-        <div class="mobile-timeline-content">
-          <div class="mobile-timeline-time">${t.scanInTime ? formatTimeOnly(t.scanInTime) : 'Menunggu Kembali'}</div>
-          <div class="mobile-timeline-title">${isScanIn ? 'Tap In Tercatat' : 'Verifikasi Gerbang Kembali'}</div>
-          <div class="mobile-timeline-desc">${isScanIn ? (t.scanInGate || 'Pos 1') + ' • Karyawan telah kembali. Tiket Selesai.' : 'Belum kembali ke area pabrik'}</div>
-        </div>
-      </div>
-    `;
+      `;
+    }).join('');
   }
 
   // -------------------------------------------------------------------

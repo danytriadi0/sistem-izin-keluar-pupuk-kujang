@@ -28,9 +28,21 @@ function getCurrentApproverActor() {
   } catch(e) {}
   const ACTORS = window.ACTORS || {};
   const isApprover2 = (window.currentActor === 'approver2');
-  return isApprover2 
-    ? (ACTORS.approver2 || { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)', nip: 'PK-2012-0845' })
-    : (ACTORS.approver || { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manager Rekayasa & Pemeliharaan', nip: 'PK-2015-1002' });
+  if (isApprover2 && ACTORS.approver2 && ACTORS.approver2.name) return ACTORS.approver2;
+  if (!isApprover2 && ACTORS.approver && ACTORS.approver.name) return ACTORS.approver;
+
+  const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+  const activeApps = users.filter(u => (u.roleKey === 'approver' || u.roleKey === 'approver2') && u.status === 'Aktif');
+  if (isApprover2) {
+    const app2 = activeApps.find(u => u.roleKey === 'approver2') || activeApps[1] || activeApps[0];
+    if (app2) return app2;
+  } else {
+    const app1 = activeApps.find(u => u.roleKey === 'approver') || activeApps[0];
+    if (app1) return app1;
+  }
+  return isApprover2
+    ? { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)', nip: 'PK-2012-0845' }
+    : { name: 'Dr. Ahmad Subagja, M.M.', title: 'Manager Produksi Amonia-1A', nip: 'PK-2012-0543' };
 }
 
 function isTicketAssignedToCurrentApprover(ticket) {
@@ -253,7 +265,10 @@ function renderApproverDashboard() {
   const approverProfilePill = document.getElementById('approverProfilePill');
   const ACTORS = window.ACTORS || {};
   const isApprover2 = (window.currentActor === 'approver2');
-  const currentApproverActor = isApprover2 ? (ACTORS.approver2 || { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)' }) : (ACTORS.approver || { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manager Rekayasa & Pemeliharaan' });
+  const activeUser = (typeof window.getKujangCurrentUser === 'function' ? window.getKujangCurrentUser() : null) || window.activeApproverUser;
+  const currentApproverActor = (activeUser && (activeUser.roleKey === (isApprover2 ? 'approver2' : 'approver') || activeUser.role === (isApprover2 ? 'approver2' : 'approver')))
+    ? activeUser
+    : (isApprover2 ? (ACTORS.approver2 || { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)' }) : (ACTORS.approver || { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manager Rekayasa & Pemeliharaan' }));
 
   const appHeroGreeting = document.getElementById('appHeroGreeting');
   if (appHeroGreeting) {
@@ -1728,11 +1743,9 @@ function confirmApproveDecision() {
   const pad = (n) => String(n).padStart(2, '0');
   const nowFormatted = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}, ${pad(now.getHours())}:${pad(now.getMinutes())} WIB`;
 
-  const ACTORS = window.ACTORS || {};
-  const isApprover2 = (window.currentActor === 'approver2');
-  const approverActor = isApprover2 ? (ACTORS.approver2 || { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)' }) : (ACTORS.approver || { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manager Rekayasa & Pemeliharaan' });
+  const approverActor = getCurrentApproverActor();
   const approverName = approverActor.name;
-  const approverTitle = approverActor.title || 'Atasan Peninjau';
+  const approverTitle = approverActor.title || approverActor.role || 'Atasan Peninjau';
 
   ticket.status = 'Disetujui';
   ticket.emergencyLocked = false;
@@ -1913,11 +1926,9 @@ function confirmRejectDecision() {
   const pad = (n) => String(n).padStart(2, '0');
   const nowFormatted = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}, ${pad(now.getHours())}:${pad(now.getMinutes())} WIB`;
 
-  const ACTORS = window.ACTORS || {};
-  const isApprover2 = (window.currentActor === 'approver2');
-  const approverActor = isApprover2 ? (ACTORS.approver2 || { name: 'Dewi Sartika, S.T., M.M.', title: 'Supervisor Operasional Lapangan (Plt. Manager)' }) : (ACTORS.approver || { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manager Rekayasa & Pemeliharaan' });
+  const approverActor = getCurrentApproverActor();
   const approverName = approverActor.name;
-  const approverTitle = approverActor.title || 'Atasan Peninjau';
+  const approverTitle = approverActor.title || approverActor.role || 'Atasan Peninjau';
 
   ticket.status = 'Ditolak';
   ticket.emergencyLocked = true;
@@ -2172,8 +2183,8 @@ function rejectExtensionRequest(ticketId, reason) {
   }
 
   const rejectReason = reason || 'Karyawan diminta segera kembali sesuai jadwal semula.';
-  const ACTORS = window.ACTORS || {};
-  const approverName = ACTORS.approver ? ACTORS.approver.name : 'Ir. Hendra Gunawan, M.T.';
+  const approverActor = getCurrentApproverActor();
+  const approverName = approverActor ? approverActor.name : 'Atasan Peninjau';
   const now = new Date();
   const pad = (n) => String(n).padStart(2, '0');
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -2256,7 +2267,7 @@ function deleteApproverTicket(ticketId) {
         window.saveTickets(tickets);
       }
       if (typeof window.showToast === 'function') {
-        const who = currentApprover ? currentApprover.name : (isApprover2 ? 'Atasan 2 (Dewi Sartika)' : 'Atasan 1 (Ir. Hendra Gunawan)');
+        const who = currentApprover ? currentApprover.name : (isApprover2 ? 'Atasan 2' : 'Atasan 1');
         window.showToast(`Catatan izin #${ticketId} berhasil dihapus dari riwayat ${who}.`, 'info');
       }
       renderApproverView();

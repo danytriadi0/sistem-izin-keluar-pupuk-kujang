@@ -144,6 +144,22 @@ window.KUJANG_ACCOUNTS = [
     avatar: '🛡️',
     badgeColor: '#7c3aed',
     roleLabel: 'Administrator Pengamanan & K3'
+  },
+  {
+    id: 'mgr_02',
+    role: 'approver',
+    approverLevel: 1,
+    username: 'ahmad',
+    email: 'ahmad.subagja@pupuk-kujang.co.id',
+    nip: 'PK-2012-0543',
+    name: 'Dr. Ahmad Subagja, M.M.',
+    title: 'Manager Produksi Amonia-1A',
+    department: 'Departemen Produksi Amonia-1A',
+    phone: '0813-1122-0099',
+    password: '123',
+    avatar: '👔',
+    badgeColor: '#0f766e',
+    roleLabel: 'Atasan 1 (Manager)'
   }
 ];
 
@@ -153,9 +169,75 @@ window.KUJANG_ACCOUNTS = [
 window.findKujangAccount = function(identifier) {
   if (!identifier) return null;
   const q = String(identifier).trim().toLowerCase();
-  return window.KUJANG_ACCOUNTS.find(acc => 
+
+  // 1. Cek apakah akun terdaftar di riwayat penghapusan oleh Admin
+  let deletedList = [];
+  try {
+    deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+  } catch (e) {}
+  const isDeleted = deletedList.find(d =>
+    (d.nip && d.nip.toLowerCase() === q) ||
+    (d.kujangId && d.kujangId.toLowerCase() === q) ||
+    (d.name && d.name.toLowerCase() === q) ||
+    (q === 'hendra' && (d.nip === 'PK-2015-1002' || (d.name && d.name.toLowerCase().includes('hendra'))))
+  );
+  if (isDeleted) {
+    return {
+      id: isDeleted.kujangId || 'deleted_user',
+      kujangId: isDeleted.kujangId || '',
+      role: isDeleted.role || 'karyawan',
+      roleKey: isDeleted.roleKey || isDeleted.role || 'karyawan',
+      username: q,
+      email: isDeleted.email || '',
+      nip: isDeleted.nip || '',
+      name: isDeleted.name || 'Pengguna',
+      status: 'Dihapus',
+      isDeleted: true
+    };
+  }
+
+  const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+  const foundUser = users.find(u =>
+    (u.nip && u.nip.toLowerCase() === q) ||
+    (u.email && u.email.toLowerCase() === q) ||
+    (u.kujangId && u.kujangId.toLowerCase() === q) ||
+    (u.name && u.name.toLowerCase() === q)
+  );
+  if (foundUser) {
+    const rawAccount = (window.KUJANG_ACCOUNTS || []).find(a => a.nip === foundUser.nip || a.username === q);
+    return {
+      id: rawAccount ? rawAccount.id : foundUser.kujangId,
+      kujangId: foundUser.kujangId,
+      role: foundUser.roleKey || (rawAccount ? rawAccount.role : 'karyawan'),
+      roleKey: foundUser.roleKey || (rawAccount ? rawAccount.roleKey : 'karyawan'),
+      username: rawAccount ? rawAccount.username : (foundUser.nip ? foundUser.nip.toLowerCase() : q),
+      email: foundUser.email,
+      nip: foundUser.nip,
+      name: foundUser.name,
+      title: foundUser.role || (rawAccount ? rawAccount.title : 'Karyawan'),
+      department: foundUser.department,
+      phone: rawAccount ? rawAccount.phone : '0812-3456-7890',
+      password: rawAccount ? rawAccount.password : '123',
+      status: foundUser.status || 'Aktif',
+      roleLabel: foundUser.role || (rawAccount ? rawAccount.roleLabel : 'Karyawan'),
+      directSupervisor: foundUser.directSupervisor || foundUser.supervisor
+    };
+  }
+  const rawFallback = (window.KUJANG_ACCOUNTS || []).find(acc => 
     acc.username.toLowerCase() === q ||
     acc.email.toLowerCase() === q ||
     acc.nip.toLowerCase() === q
-  ) || null;
+  );
+  if (rawFallback) {
+    const isRawDeleted = deletedList.find(d => d.nip === rawFallback.nip || d.kujangId === rawFallback.id || (d.name && d.name.toLowerCase() === rawFallback.name.toLowerCase()));
+    if (isRawDeleted) {
+      return {
+        ...rawFallback,
+        status: 'Dihapus',
+        isDeleted: true
+      };
+    }
+    return rawFallback;
+  }
+  return null;
 };

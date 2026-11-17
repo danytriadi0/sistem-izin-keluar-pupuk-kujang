@@ -4123,8 +4123,9 @@ body.modal-open {
 #modalConfirmSummary,
 #modalActiveBlocked,
 #modalEmergencyUnlock,
+#modalNoticeAlert,
 #modalLogoutConfirm {
-  z-index: 10050 !important;
+  z-index: 1000050 !important;
 }
 
 .modal-card {

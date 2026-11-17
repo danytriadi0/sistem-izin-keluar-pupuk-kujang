@@ -22,7 +22,37 @@
     try {
       // Ambil user login aktif dari sessionStorage tab ini atau fallback ke localStorage agar bertahan saat refresh
       const stored = sessionStorage.getItem('kujang_current_user') || localStorage.getItem('kujang_current_user');
-      return stored ? JSON.parse(stored) : null;
+      if (!stored) return null;
+      const u = JSON.parse(stored);
+      if (!u) return null;
+
+      // Cek apakah akun ini telah dihapus oleh Administrator
+      let deletedList = [];
+      try {
+        deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+      } catch (e) {}
+      const isDel = deletedList.some(d =>
+        (u.nip && d.nip && d.nip.toLowerCase() === u.nip.toLowerCase()) ||
+        (u.kujangId && d.kujangId && d.kujangId.toLowerCase() === u.kujangId.toLowerCase()) ||
+        (u.id && d.kujangId && d.kujangId.toLowerCase() === u.id.toLowerCase()) ||
+        (u.name && d.name && d.name.toLowerCase() === u.name.toLowerCase())
+      );
+      if (isDel) {
+        sessionStorage.removeItem('kujang_current_user');
+        try { localStorage.removeItem('kujang_current_user'); } catch (e) {}
+        return null;
+      }
+
+      // Cek apakah status akun ini telah Dicabut di master MOCK_USERS
+      const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+      const inUsers = users.find(x => (u.nip && x.nip === u.nip) || (u.kujangId && x.kujangId === u.kujangId));
+      if (inUsers && (inUsers.status === 'Dicabut' || inUsers.status === 'Nonaktif')) {
+        sessionStorage.removeItem('kujang_current_user');
+        try { localStorage.removeItem('kujang_current_user'); } catch (e) {}
+        return null;
+      }
+
+      return u;
     } catch (e) {
       return null;
     }
@@ -124,12 +154,91 @@
       posjaga: 'security'
     };
     const targetRole = roleMap[roleKey] || roleKey;
-    const acc = (window.KUJANG_ACCOUNTS || []).find(a => 
+    const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+    let deletedList = [];
+    try {
+      deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+    } catch (e) {}
+
+    // 1. Cari target user dinamis dari master MOCK_USERS
+    let targetUser = null;
+    if (roleKey === 'atasan1' || targetRole === 'approver') {
+      targetUser = users.find(u => u.roleKey === 'approver' && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'approver');
+    } else if (roleKey === 'atasan2' || targetRole === 'approver2') {
+      targetUser = users.find(u => u.roleKey === 'approver2' && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'approver2');
+    } else if (roleKey === 'karyawan') {
+      targetUser = users.find(u => u.roleKey === 'karyawan' && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'karyawan');
+    } else if (roleKey === 'posjaga' || targetRole === 'security') {
+      targetUser = users.find(u => u.roleKey === 'security' && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'security');
+    } else if (roleKey === 'admin') {
+      targetUser = users.find(u => u.roleKey === 'admin' && u.status === 'Aktif') ||
+                   users.find(u => u.roleKey === 'admin');
+    } else {
+      targetUser = users.find(u => u.roleKey === targetRole || u.kujangId === roleKey || u.nip === roleKey);
+    }
+
+    // 2. Cek apakah akun ini ada di daftar KUJANG_DELETED_USERS (sudah dihapus oleh Admin)
+    const isDeleted = !targetUser ? deletedList.find(d =>
+      d.role === targetRole || d.roleKey === targetRole || d.kujangId === roleKey || d.nip === roleKey ||
+      (roleKey === 'atasan1' && (d.role === 'approver' || d.roleKey === 'approver' || (d.name && d.name.includes('Hendra Gunawan'))))
+    ) : deletedList.find(d => d.kujangId === targetUser.kujangId || d.nip === targetUser.nip);
+
+    if (isDeleted) {
+      const delName = isDeleted.name || targetUser?.name || 'Pengguna';
+      const delNip = isDeleted.nip || targetUser?.nip || '';
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dihapus',
+          message: `Akun <strong>${delName}</strong> ${delNip ? `(${delNip})` : ''} telah <strong>DIHAPUS</strong> oleh Administrator dari sistem PT Pupuk Kujang.<br><br>Akun ini tidak lagi memiliki hak akses dan tidak dapat digunakan untuk masuk ke dalam sistem.`,
+          buttonText: 'Batal'
+        });
+      } else {
+        alert(`[HAK AKSES DIHAPUS]\n\nAkun ${delName} telah dihapus dari sistem.`);
+      }
+      return;
+    }
+
+    // 3. Cek apakah status akun Dicabut / Nonaktif
+    if (targetUser && (targetUser.status === 'Dicabut' || targetUser.status === 'Nonaktif')) {
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dicabut',
+          message: `Hak akses untuk akun <strong>${targetUser.name}</strong> (${targetUser.role || targetUser.roleKey}) telah <strong>DICABUT</strong> oleh Administrator.<br><br>Sesuai tata kelola keamanan PT Pupuk Kujang, Anda <strong>TIDAK DAPAT MASUK</strong> ke akun ini sebelum hak akses diaktifkan kembali di Direktori Admin.`,
+          buttonText: 'Batal'
+        });
+      } else {
+        alert(`[HAK AKSES DICABUT]\n\nAkun Anda (${targetUser.name}) telah dicabut oleh Administrator.`);
+      }
+      return;
+    }
+
+    const acc = targetUser ? {
+      id: targetUser.kujangId,
+      kujangId: targetUser.kujangId,
+      role: targetUser.roleKey,
+      roleKey: targetUser.roleKey,
+      username: targetUser.nip ? targetUser.nip.toLowerCase() : roleKey,
+      email: targetUser.email,
+      nip: targetUser.nip,
+      name: targetUser.name,
+      title: targetUser.role,
+      department: targetUser.department,
+      phone: '0812-8841-0001',
+      password: '123',
+      roleLabel: targetUser.role,
+      status: targetUser.status || 'Aktif',
+      directSupervisor: targetUser.directSupervisor || targetUser.supervisor
+    } : (window.KUJANG_ACCOUNTS || []).find(a => 
       a.role === targetRole || 
       a.role === roleKey || 
       a.username === roleKey || 
       a.nip === roleKey
     );
+
     if (!acc) return;
 
     window.setKujangCurrentUser(acc);
@@ -162,6 +271,39 @@
       if (errEl) {
         errEl.textContent = 'Username atau kata sandi tidak valid. Cek petunjuk demo akun.';
         errEl.style.display = 'block';
+      }
+      return;
+    }
+
+    // Cek apakah akun telah dihapus dari direktori
+    let deletedList = [];
+    try {
+      deletedList = JSON.parse(localStorage.getItem('KUJANG_DELETED_USERS') || '[]');
+    } catch (e) {}
+    const isDeleted = deletedList.find(d => d.kujangId === acc.id || d.kujangId === acc.kujangId || d.nip === acc.nip);
+    if (isDeleted) {
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dihapus',
+          message: `Akun <strong>${acc.name}</strong> (${acc.nip}) telah <strong>DIHAPUS</strong> oleh Administrator dari sistem PT Pupuk Kujang.<br><br>Akun ini tidak lagi memiliki hak akses dan tidak dapat digunakan untuk masuk ke dalam sistem.`,
+          buttonText: 'Batal'
+        });
+      } else {
+        alert(`[HAK AKSES DIHAPUS]\n\nAkun ${acc.name} telah dihapus dari sistem.`);
+      }
+      return;
+    }
+
+    // Cek apakah hak akses akun telah dicabut oleh Administrator
+    if (acc.status === 'Dicabut' || acc.status === 'Nonaktif') {
+      if (typeof window.openNoticeModal === 'function') {
+        window.openNoticeModal({
+          title: 'Hak Akses Anda Telah Dicabut',
+          message: `Hak akses untuk akun <strong>${acc.name}</strong> (${acc.roleLabel || acc.role}) telah <strong>DICABUT</strong> oleh Administrator.<br><br>Sesuai tata kelola keamanan PT Pupuk Kujang, Anda <strong>TIDAK DAPAT MASUK</strong> ke akun ini sebelum hak akses diaktifkan kembali di Direktori Admin.`,
+          buttonText: 'Batal'
+        });
+      } else {
+        alert(`[HAK AKSES DICABUT]\n\nAkun Anda (${acc.name}) telah dicabut oleh Administrator.`);
       }
       return;
     }
