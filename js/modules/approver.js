@@ -1432,9 +1432,13 @@ function renderApproverView() {
     const filterAppStatus = document.getElementById('filterApproverStatus');
     const statusVal = filterAppStatus ? filterAppStatus.value : 'all';
     if (statusVal === 'emergency') {
-      list = list.filter(t => t.isEmergency || (t.id && t.id.startsWith('TK-EMG')));
+      list = list.filter(t => t.isEmergency || (t.id && (t.id.startsWith('TK-EMG') || t.id.includes('-EMG-'))));
     } else if (statusVal === 'outside') {
       list = list.filter(t => t.status === 'Sedang di Luar' || t.status === 'Terlambat');
+    } else if (statusVal === 'Sedang di Luar') {
+      list = list.filter(t => t.status === 'Sedang di Luar' && !t.isLate);
+    } else if (statusVal === 'Terlambat') {
+      list = list.filter(t => t.status === 'Terlambat' || t.isLate);
     } else if (statusVal !== 'all') {
       list = list.filter(t => t.status === statusVal);
     }
@@ -1553,7 +1557,11 @@ function renderApproverView() {
     const filterRiwayatStatus = document.getElementById('filterApproverRiwayatStatus');
     const statusVal = filterRiwayatStatus ? filterRiwayatStatus.value : 'all';
     if (statusVal === 'emergency') {
-      list = list.filter(t => t.isEmergency || (t.id && t.id.startsWith('TK-EMG')));
+      list = list.filter(t => t.isEmergency || (t.id && (t.id.startsWith('TK-EMG') || t.id.includes('-EMG-'))));
+    } else if (statusVal === 'Selesai') {
+      list = list.filter(t => t.status === 'Selesai' || t.status === 'Selesai (Terlambat)');
+    } else if (statusVal === 'Kedaluwarsa') {
+      list = list.filter(t => t.status === 'Kedaluwarsa' || t.status === 'Kadaluwarsa');
     } else if (statusVal !== 'all') {
       list = list.filter(t => t.status === statusVal);
     }

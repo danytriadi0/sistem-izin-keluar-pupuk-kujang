@@ -565,6 +565,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Ir. Hendra Gunawan, M.T.',
     supervisor: 'Ir. Hendra Gunawan, M.T.',
     status: 'Aktif',
+    registeredAt: '2026-10-15T08:00:00',
+    createdAt: '2026-10-15T08:00:00',
+    updatedAt: '2026-10-15T08:00:00',
     lastLogin: 'Hari ini, 08:12 WIB'
   },
   {
@@ -579,6 +582,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Ir. Hendra Gunawan, M.T.',
     supervisor: 'Ir. Hendra Gunawan, M.T.',
     status: 'Aktif',
+    registeredAt: '2026-10-20T08:00:00',
+    createdAt: '2026-10-20T08:00:00',
+    updatedAt: '2026-10-20T08:00:00',
     lastLogin: 'Hari ini, 08:30 WIB'
   },
   {
@@ -593,6 +599,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Ir. Hendra Gunawan, M.T.',
     supervisor: 'Ir. Hendra Gunawan, M.T.',
     status: 'Aktif',
+    registeredAt: '2026-10-28T08:00:00',
+    createdAt: '2026-10-28T08:00:00',
+    updatedAt: '2026-10-28T08:00:00',
     lastLogin: 'Hari ini, 08:15 WIB'
   },
   {
@@ -607,6 +616,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Dewi Sartika, S.T., M.M.',
     supervisor: 'Dewi Sartika, S.T., M.M.',
     status: 'Aktif',
+    registeredAt: '2026-11-02T08:00:00',
+    createdAt: '2026-11-02T08:00:00',
+    updatedAt: '2026-11-02T08:00:00',
     lastLogin: 'Hari ini, 08:20 WIB'
   },
   {
@@ -621,6 +633,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Dewi Sartika, S.T., M.M.',
     supervisor: 'Dewi Sartika, S.T., M.M.',
     status: 'Aktif',
+    registeredAt: '2026-11-08T08:00:00',
+    createdAt: '2026-11-08T08:00:00',
+    updatedAt: '2026-11-08T08:00:00',
     lastLogin: 'Hari ini, 08:25 WIB'
   },
   {
@@ -632,6 +647,9 @@ const DEFAULT_USERS = [
     role: 'Atasan 1 (Manager)',
     roleKey: 'approver',
     status: 'Aktif',
+    registeredAt: '2026-09-01T08:00:00',
+    createdAt: '2026-09-01T08:00:00',
+    updatedAt: '2026-09-01T08:00:00',
     lastLogin: 'Hari ini, 07:45 WIB'
   },
   {
@@ -643,6 +661,9 @@ const DEFAULT_USERS = [
     role: 'Atasan 2 (Supervisor / Plt)',
     roleKey: 'approver2',
     status: 'Aktif',
+    registeredAt: '2026-09-15T08:00:00',
+    createdAt: '2026-09-15T08:00:00',
+    updatedAt: '2026-09-15T08:00:00',
     lastLogin: 'Hari ini, 08:05 WIB'
   },
   {
@@ -654,6 +675,9 @@ const DEFAULT_USERS = [
     role: 'Petugas Pengamanan (Pos 1)',
     roleKey: 'security',
     status: 'Aktif',
+    registeredAt: '2026-10-05T08:00:00',
+    createdAt: '2026-10-05T08:00:00',
+    updatedAt: '2026-10-05T08:00:00',
     lastLogin: 'Hari ini, 06:00 WIB'
   },
   {
@@ -665,6 +689,9 @@ const DEFAULT_USERS = [
     role: 'Petugas Pengamanan (Pos 2)',
     roleKey: 'security',
     status: 'Aktif',
+    registeredAt: '2026-10-06T08:00:00',
+    createdAt: '2026-10-06T08:00:00',
+    updatedAt: '2026-10-06T08:00:00',
     lastLogin: 'Kemarin, 22:00 WIB'
   },
   {
@@ -676,6 +703,9 @@ const DEFAULT_USERS = [
     role: 'Petugas Pengamanan (Pos 3)',
     roleKey: 'security',
     status: 'Aktif',
+    registeredAt: '2026-10-07T08:00:00',
+    createdAt: '2026-10-07T08:00:00',
+    updatedAt: '2026-10-07T08:00:00',
     lastLogin: 'Hari ini, 07:00 WIB'
   },
   {
@@ -687,6 +717,9 @@ const DEFAULT_USERS = [
     role: 'Administrator Pengamanan & K3',
     roleKey: 'admin',
     status: 'Aktif',
+    registeredAt: '2026-10-01T08:00:00',
+    createdAt: '2026-10-01T08:00:00',
+    updatedAt: '2026-10-01T08:00:00',
     lastLogin: 'Hari ini, 08:00 WIB'
   },
   {
@@ -702,6 +735,9 @@ const DEFAULT_USERS = [
     directSupervisor: 'Dr. Ahmad Subagja, M.M.',
     supervisor: 'Dr. Ahmad Subagja, M.M.',
     status: 'Aktif',
+    registeredAt: '2026-11-12T08:00:00',
+    createdAt: '2026-11-12T08:00:00',
+    updatedAt: '2026-11-12T08:00:00',
     lastLogin: 'Kemarin, 14:15 WIB'
   },
   {
@@ -713,6 +749,9 @@ const DEFAULT_USERS = [
     role: 'Atasan 1 (Manager)',
     roleKey: 'approver',
     status: 'Aktif',
+    registeredAt: '2026-09-20T08:00:00',
+    createdAt: '2026-09-20T08:00:00',
+    updatedAt: '2026-09-20T08:00:00',
     lastLogin: 'Hari ini, 08:30 WIB'
   }
 ];
@@ -753,6 +792,12 @@ function loadUsers() {
       }
       const defU = DEFAULT_USERS.find(d => d.kujangId === u.kujangId || d.nip === u.nip);
       if (defU) {
+        if (!u.registeredAt && defU.registeredAt) {
+          u.registeredAt = defU.registeredAt;
+          u.createdAt = defU.createdAt || defU.registeredAt;
+          u.updatedAt = defU.updatedAt || defU.registeredAt;
+          changed = true;
+        }
         if (!u.directSupervisor && defU.directSupervisor) {
           u.directSupervisor = defU.directSupervisor;
           u.supervisor = defU.supervisor || defU.directSupervisor;

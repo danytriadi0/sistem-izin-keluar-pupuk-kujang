@@ -52,8 +52,9 @@ window.autoCancelTicketsForRevokedUser = autoCancelTicketsForRevokedUser;
 
 let adminAuditSearchTerm = '';
 let adminAuditEventFilter = 'all';
+let adminAuditPeriodFilter = 'all';
 
-let adminReportDateFilter = 'today';
+let adminReportDateFilter = 'all';
 let adminReportStatusFilter = 'all';
 let adminReportCategoryFilter = 'all';
 
@@ -515,7 +516,13 @@ function renderAdminAudit() {
       matchesEvent = item.event.toLowerCase().includes(adminAuditEventFilter.toLowerCase());
     }
 
-    return matchesSearch && matchesEvent;
+    let matchesPeriod = true;
+    if (adminAuditPeriodFilter !== 'all') {
+      const auditObj = { plannedExit: item.time, createdAt: item.time, id: item.ticketId };
+      matchesPeriod = typeof window.matchesPeriodFilter === 'function' ? window.matchesPeriodFilter(auditObj, adminAuditPeriodFilter) : true;
+    }
+
+    return matchesSearch && matchesEvent && matchesPeriod;
   });
 
   if (countBadge) {
@@ -780,24 +787,64 @@ function filterAdminReportTickets() {
   const tickets = window.ticketsList || [];
   const statusEl = document.getElementById('adminReportStatusFilter');
   const catEl = document.getElementById('adminReportCategoryFilter');
+  const dateEl = document.getElementById('adminReportDateFilter');
+  const sortEl = document.getElementById('sortAdminReport');
+
   const activeStatus = (statusEl && statusEl.value) ? statusEl.value : adminReportStatusFilter;
   const activeCat = (catEl && catEl.value) ? catEl.value : adminReportCategoryFilter;
+  const activeDate = (dateEl && dateEl.value) ? dateEl.value : adminReportDateFilter;
+  const sortOrder = (sortEl && sortEl.value) ? sortEl.value : 'desc';
 
-  return tickets.filter(ticket => {
-    if (activeStatus !== 'all' && ticket.status !== activeStatus) {
-      return false;
+  let list = tickets.filter(ticket => {
+    // 1. Status Filter
+    if (activeStatus !== 'all') {
+      if (activeStatus === 'Selesai') {
+        if (ticket.status !== 'Selesai' && ticket.status !== 'Selesai (Terlambat)') return false;
+      } else if (activeStatus === 'Kedaluwarsa') {
+        if (ticket.status !== 'Kedaluwarsa' && ticket.status !== 'Kadaluwarsa') return false;
+      } else if (ticket.status !== activeStatus) {
+        return false;
+      }
     }
+
+    // 2. Category Filter
     if (activeCat !== 'all') {
-      const isDinas = (ticket.category || 'Dinas Kantor') === 'Dinas Kantor';
-      if (activeCat === 'Dinas Kantor' && !isDinas) return false;
-      if (activeCat === 'Keperluan Pribadi' && isDinas) return false;
+      if (activeCat === 'Dinas Kantor') {
+        if (ticket.category !== 'Dinas Kantor') return false;
+      } else if (activeCat === 'Keperluan Pribadi' || activeCat === 'Urusan Pribadi') {
+        if (ticket.category !== 'Keperluan Pribadi' && ticket.category !== 'Urusan Pribadi') return false;
+      } else if (ticket.category !== activeCat) {
+        return false;
+      }
     }
+
+    // 3. Date / Period Filter
+    if (activeDate !== 'all' && typeof window.matchesPeriodFilter === 'function') {
+      if (!window.matchesPeriodFilter(ticket, activeDate)) return false;
+    }
+
     return true;
   });
+
+  // 4. Sorting
+  list = [...list];
+  list.sort((a, b) => {
+    const parseTime = (t) => {
+      const raw = t.approvedAt || t.rejectedAt || t.createdAt || t.plannedExit || 0;
+      const d = (typeof window.parseTicketDateTime === 'function') ? window.parseTicketDateTime(raw) : new Date(raw);
+      return (d && !isNaN(d.getTime())) ? d.getTime() : 0;
+    };
+    const tA = parseTime(a);
+    const tB = parseTime(b);
+    return sortOrder === 'asc' ? tA - tB : tB - tA;
+  });
+
+  return list;
 }
-window.setAdminReportFilters = (status, cat) => {
+window.setAdminReportFilters = (status, cat, date) => {
   if (status !== undefined) adminReportStatusFilter = status;
   if (cat !== undefined) adminReportCategoryFilter = cat;
+  if (date !== undefined) adminReportDateFilter = date;
 };
 window.filterAdminReportTickets = filterAdminReportTickets;
 
@@ -2089,6 +2136,7 @@ function saveAdminUserAccess(event) {
       alert(`KUJANG ID ${kujangId} sudah terdaftar dalam sistem.`);
       return;
     }
+    const nowIso = new Date().toISOString();
     const newUser = {
       kujangId,
       nip,
@@ -2100,7 +2148,10 @@ function saveAdminUserAccess(event) {
       status,
       directSupervisor: directSupervisor,
       supervisor: directSupervisor,
-      lastLogin: 'Baru saja didaftarkan'
+      registeredAt: nowIso,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      lastLogin: 'Belum pernah login'
     };
     users.unshift(newUser);
     idx = 0;
@@ -2117,7 +2168,8 @@ function saveAdminUserAccess(event) {
         roleKey,
         status,
         directSupervisor: directSupervisor,
-        supervisor: directSupervisor
+        supervisor: directSupervisor,
+        updatedAt: new Date().toISOString()
       };
 
       // Sinkronisasi atasan langsung ke state aktif karyawan
@@ -2190,6 +2242,7 @@ function toggleUserAccess(kujangId) {
 
   const executeToggle = () => {
     user.status = willRevoke ? 'Dicabut' : 'Aktif';
+    user.updatedAt = new Date().toISOString();
     if (user.status === 'Dicabut') {
       autoCancelTicketsForRevokedUser(user);
     } else {
@@ -2422,12 +2475,70 @@ function renderAdminUsers() {
     return true;
   });
 
+  const formatUserRegistrationDisplay = (user) => {
+    const raw = user.registeredAt || user.createdAt;
+    if (!raw) return '-';
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return String(raw);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
   const sortUsersEl = document.getElementById('sortAdminUsers');
-  const sortUsersOrder = sortUsersEl ? sortUsersEl.value : 'desc';
+  const sortUsersOrder = sortUsersEl ? sortUsersEl.value : 'created_desc';
+
   filtered.sort((a, b) => {
-    const idA = a.kujangId || '';
-    const idB = b.kujangId || '';
-    return sortUsersOrder === 'asc' ? idA.localeCompare(idB) : idB.localeCompare(idA);
+    if (sortUsersOrder === 'name_asc') {
+      return (a.name || '').localeCompare(b.name || '');
+    }
+
+    if (sortUsersOrder === 'login_desc') {
+      const parseLogin = (u) => {
+        const str = u.lastLogin || '';
+        if (!str || str.includes('Belum') || str.includes('Baru')) return 0;
+        const now = new Date();
+        const isToday = str.toLowerCase().includes('hari ini');
+        const isYesterday = str.toLowerCase().includes('kemarin');
+        const timeMatch = str.match(/(\d{1,2})[:.](\d{2})/);
+        if (timeMatch) {
+          const h = parseInt(timeMatch[1], 10);
+          const m = parseInt(timeMatch[2], 10);
+          const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+          if (isYesterday) d.setDate(d.getDate() - 1);
+          return d.getTime();
+        }
+        const d = new Date(str);
+        return isNaN(d.getTime()) ? 0 : d.getTime();
+      };
+      return parseLogin(b) - parseLogin(a);
+    }
+
+    if (sortUsersOrder === 'updated_desc') {
+      const parseUpdate = (u) => {
+        const raw = u.updatedAt || u.registeredAt || u.createdAt;
+        if (!raw) return 0;
+        const d = new Date(raw);
+        return isNaN(d.getTime()) ? 0 : d.getTime();
+      };
+      return parseUpdate(b) - parseUpdate(a);
+    }
+
+    // Default: Pendaftaran Terbaru ('created_desc' / 'desc') vs Pendaftaran Terlama ('created_asc' / 'asc')
+    const parseReg = (u) => {
+      const raw = u.registeredAt || u.createdAt || u.updatedAt;
+      if (!raw) return 0;
+      const d = new Date(raw);
+      return isNaN(d.getTime()) ? 0 : d.getTime();
+    };
+    const tA = parseReg(a);
+    const tB = parseReg(b);
+    if (sortUsersOrder === 'created_asc' || sortUsersOrder === 'asc') {
+      return tA - tB;
+    }
+    return tB - tA;
   });
 
   if (countEl) countEl.textContent = `${filtered.length} Akun Terdaftar`;
@@ -2504,9 +2615,19 @@ function renderAdminUsers() {
           <span class="user-role-badge ${roleClass}">${(roleClass === 'karyawan' || (u.role && u.role.toLowerCase().includes('karyawan')) || (u.roleKey && u.roleKey.startsWith('karyawan'))) ? 'Karyawan' : (u.role || '').replace(/\s*pemohon/gi, '')}</span>
           ${(!u.roleKey || u.roleKey.startsWith('karyawan')) ? `<div style="font-size: 0.685rem; color: var(--sky-text, #0284c7); font-weight: 600; margin-top: 4px; display: inline-flex; align-items: center; gap: 3px;"><span style="color:#64748b;">Atasan:</span> <strong style="color: var(--sky-text, #0284c7);">${u.directSupervisor || u.supervisor || (typeof window.getPrimaryApprover === 'function' ? window.getPrimaryApprover(u.name)?.name : 'Ir. Hendra Gunawan, M.T.')}</strong></div>` : ''}
         </td>
-        <td>
-          ${statusBadge}
-          <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">${u.lastLogin || '-'}</div>
+        <td style="min-width: 185px; white-space: nowrap; vertical-align: middle;">
+          <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 4px;">
+            ${statusBadge}
+            <span style="font-size: 0.725rem; color: var(--text-secondary); white-space: nowrap;" title="Tanggal Pendaftaran Akun">
+              <span style="color: #64748b; font-weight: 500;">Daftar:</span>
+              <strong style="color: var(--text-primary); font-weight: 600; margin-left: 2px;">${formatUserRegistrationDisplay(u)}</strong>
+            </span>
+          </div>
+          <div style="font-size: 0.69rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;" title="Waktu Terakhir Masuk Aplikasi">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.6; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span style="color: #94a3b8; font-weight: 500;">Login:</span>
+            <span style="color: var(--text-secondary); font-weight: 500;">${u.lastLogin || 'Belum pernah'}</span>
+          </div>
         </td>
         <td style="text-align: right; white-space: nowrap;">
           <div class="admin-action-btn-group">
@@ -2760,6 +2881,7 @@ function renderAdminView() {
 document.addEventListener('DOMContentLoaded', () => {
   const auditSearch = document.getElementById('adminAuditSearchInput');
   const auditFilter = document.getElementById('adminAuditEventFilter');
+  const auditPeriod = document.getElementById('adminAuditPeriodFilter');
   if (auditSearch) {
     auditSearch.addEventListener('input', (e) => {
       adminAuditSearchTerm = e.target.value;
@@ -2774,8 +2896,16 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAdminAudit();
     });
   }
+  if (auditPeriod) {
+    auditPeriod.addEventListener('change', (e) => {
+      adminAuditPeriodFilter = e.target.value;
+      window.adminAuditCurrentPage = 1;
+      renderAdminAudit();
+    });
+  }
 
   const reportDate = document.getElementById('adminReportDateFilter');
+  const reportSort = document.getElementById('sortAdminReport');
   const reportStatus = document.getElementById('adminReportStatusFilter');
   const reportCategory = document.getElementById('adminReportCategoryFilter');
   const btnExportExcel = document.getElementById('btnAdminExportExcel');
@@ -2784,6 +2914,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (reportDate) {
     reportDate.addEventListener('change', (e) => {
       adminReportDateFilter = e.target.value;
+      window.adminReportCurrentPage = 1;
+      renderAdminReports();
+    });
+  }
+  if (reportSort) {
+    reportSort.addEventListener('change', () => {
       window.adminReportCurrentPage = 1;
       renderAdminReports();
     });

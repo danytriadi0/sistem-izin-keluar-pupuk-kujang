@@ -190,24 +190,32 @@ window.getStatusPill = getStatusPill;
 function matchesPeriodFilter(ticket, period) {
   if (!period || period === 'all') return true;
   let d = null;
-  if (ticket.plannedExit) {
-    const pd = new Date(ticket.plannedExit);
-    if (!isNaN(pd.getTime())) d = pd;
-  }
-  if (!d && ticket.createdAt) {
-    const cd = new Date(ticket.createdAt);
-    if (!isNaN(cd.getTime())) {
-      d = cd;
-    } else {
-      const months = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5, 'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11 };
-      const m = ticket.createdAt.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-      if (m && months[m[2]] !== undefined) {
-        d = new Date(parseInt(m[3], 10), months[m[2]], parseInt(m[1], 10));
-      }
+  const parseFn = (typeof window !== 'undefined' && typeof window.parseTicketDateTime === 'function') 
+    ? window.parseTicketDateTime 
+    : (typeof parseTicketDateTime === 'function' ? parseTicketDateTime : null);
+
+  const rawDate = ticket.plannedExit || ticket.createdAt || ticket.approvedAt || ticket.scanOutTime;
+  if (rawDate) {
+    if (parseFn) {
+      const parsed = parseFn(rawDate);
+      if (parsed && !isNaN(parsed.getTime())) d = parsed;
+    }
+    if (!d) {
+      const pd = new Date(rawDate);
+      if (!isNaN(pd.getTime())) d = pd;
     }
   }
+
+  if (!d && ticket.createdAt) {
+    const months = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5, 'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11 };
+    const m = String(ticket.createdAt).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+    if (m && months[m[2]] !== undefined) {
+      d = new Date(parseInt(m[3], 10), months[m[2]], parseInt(m[1], 10));
+    }
+  }
+
   if (!d && ticket.id) {
-    const idMatch = ticket.id.match(/TK-(?:EMG-)?(\d{4})(\d{2})(\d{2})/);
+    const idMatch = ticket.id.match(/(?:TK|IZ)-(?:EMG-)?(\d{4})(\d{2})(\d{2})/);
     if (idMatch) {
       d = new Date(parseInt(idMatch[1], 10), parseInt(idMatch[2], 10) - 1, parseInt(idMatch[3], 10));
     }

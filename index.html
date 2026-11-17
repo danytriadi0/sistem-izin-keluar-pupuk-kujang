@@ -2039,29 +2039,27 @@
             <!-- Selection Bar (Muncul tepat di bawah Button Pilih) -->
             <div class="riwayat-selection-bar" id="approverRiwayatSelectionBar" style="display: none; margin-bottom: 0.75rem;"></div>
 
-            <div class="content-section" style="margin-top: 1.5rem;">
-              <div id="containerApproverRiwayatRequests">
-                <!-- Rendered via JS -->
-              </div>
+            <div id="containerApproverRiwayatRequests">
+              <!-- Rendered via JS -->
+            </div>
 
-              <!-- Paginasi Riwayat Atasan (Gambar 1) -->
-              <div class="figma-pagination-bar" id="figmaApproverRiwayatPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color, #e2e8f0); flex-wrap: wrap; gap: 0.75rem;">
-                <div class="figma-pagination-meta" id="figmaApproverRiwayatMeta" style="font-size: 0.8rem; color: var(--text-secondary, #64748b);">Menampilkan 0 dari 0 data</div>
-                <div class="figma-pagination-btns" id="figmaApproverRiwayatBtns" style="display: flex; gap: 0.35rem; align-items: center;"></div>
-              </div>
+            <!-- Paginasi Riwayat Atasan (Gambar 1) -->
+            <div class="figma-pagination-bar" id="figmaApproverRiwayatPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color, #e2e8f0); flex-wrap: wrap; gap: 0.75rem;">
+              <div class="figma-pagination-meta" id="figmaApproverRiwayatMeta" style="font-size: 0.8rem; color: var(--text-secondary, #64748b);">Menampilkan 0 dari 0 data</div>
+              <div class="figma-pagination-btns" id="figmaApproverRiwayatBtns" style="display: flex; gap: 0.35rem; align-items: center;"></div>
+            </div>
 
-              <div class="empty-box" id="emptyApproverRiwayatBox" style="display: none;">
-                <div class="empty-icon-circle">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
-                  Belum Ada Riwayat Perizinan</h3>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
-                  Belum ada permohonan izin bawahan yang telah selesai atau final sesuai filter ini.
-                </p>
+            <div class="empty-box" id="emptyApproverRiwayatBox" style="display: none;">
+              <div class="empty-icon-circle">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
               </div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
+                Belum Ada Riwayat Perizinan</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
+                Belum ada permohonan izin bawahan yang telah selesai atau final sesuai filter ini.
+              </p>
             </div>
           </div>
 
@@ -2536,123 +2534,123 @@
 
 
 
-            <div class="content-section" style="margin-top: 0.75rem;">
-              <!-- Toolbar Smart Riwayat Pemindaian Pos Jaga -->
-              <div class="smart-toolbar" style="margin-bottom: 1.25rem;">
-                <div class="toolbar-search">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <!-- Toolbar Smart Riwayat Pemindaian Pos Jaga -->
+            <div class="smart-toolbar" style="margin-top: 0.75rem; margin-bottom: 0.5rem;">
+              <div class="toolbar-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="searchSecurityLogInput" class="search-input"
+                  placeholder="Cari nomor tiket, pemohon, NIP, atau tujuan...">
+              </div>
+
+              <div class="filters-group">
+                <select id="filterSecurityLogGate" class="filter-select" title="Pilih Gerbang Pos">
+                  <option value="all">Semua Gerbang Pos</option>
+                  <option value="Pos 1 Gerbang Utama">Pos 1 Gerbang Utama</option>
+                  <option value="Pos 2 Gerbang Barat">Pos 2 Gerbang Barat</option>
+                  <option value="Pos 3 Gerbang Timur">Pos 3 Gerbang Timur</option>
+                </select>
+
+                <select id="filterSecurityLogPeriod" class="filter-select" title="Filter Periode Waktu">
+                  <option value="all">Semua Waktu</option>
+                  <option value="today">Hari Ini</option>
+                  <option value="week">Minggu Ini</option>
+                  <option value="month">Bulan Ini</option>
+                  <option value="year">Tahun Ini</option>
+                </select>
+
+                <select id="sortSecurityLog" class="filter-select" title="Urutkan Waktu">
+                  <option value="desc">Terbaru</option>
+                  <option value="asc">Terlama</option>
+                </select>
+
+                <select id="filterSecurityLogCategory" class="filter-select">
+                  <option value="all">Semua Kategori</option>
+                  <option value="Dinas Kantor">Dinas Kantor</option>
+                  <option value="Urusan Pribadi">Urusan Pribadi</option>
+                </select>
+
+                <select id="filterSecurityLogStatus" class="filter-select">
+                  <option value="all">Semua Status</option>
+                  <option value="Selesai">Selesai (Kembali/Pulang)</option>
+                  <option value="Terlambat">Terlambat</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Results Subbar Pos Jaga (Button Pilih + Card / List Switcher + Ekspor CSV) -->
+            <div class="figma-results-bar" style="display: flex; justify-content: space-between; align-items: center; margin: 0.75rem 0 0.5rem 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" class="btn-select-history" id="btnSelectSecurityRiwayat" onclick="window.toggleRiwayatSelectMode('security')" title="Pilih beberapa riwayat untuk dihapus">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                   </svg>
-                  <input type="text" id="searchSecurityLogInput" class="search-input"
-                    placeholder="Cari nomor tiket, pemohon, NIP, atau tujuan...">
-                </div>
+                  <span>Pilih</span>
+                </button>
+              </div>
 
-                <div class="filters-group">
-                  <select id="filterSecurityLogGate" class="filter-select" title="Pilih Gerbang Pos">
-                    <option value="all">Semua Gerbang Pos</option>
-                    <option value="Pos 1 Gerbang Utama">Pos 1 Gerbang Utama</option>
-                    <option value="Pos 2 Gerbang Barat">Pos 2 Gerbang Barat</option>
-                    <option value="Pos 3 Gerbang Timur">Pos 3 Gerbang Timur</option>
-                  </select>
-
-                  <select id="filterSecurityLogPeriod" class="filter-select" title="Filter Periode Waktu">
-                    <option value="all">Semua Waktu</option>
-                    <option value="today">Hari Ini</option>
-                    <option value="week">Minggu Ini</option>
-                    <option value="month">Bulan Ini</option>
-                    <option value="year">Tahun Ini</option>
-                  </select>
-
-                  <select id="sortSecurityLog" class="filter-select" title="Urutkan Waktu">
-                    <option value="desc">Terbaru</option>
-                    <option value="asc">Terlama</option>
-                  </select>
-
-                  <select id="filterSecurityLogCategory" class="filter-select">
-                    <option value="all">Semua Kategori</option>
-                    <option value="Dinas Kantor">Dinas Kantor</option>
-                    <option value="Urusan Pribadi">Urusan Pribadi</option>
-                  </select>
-
-                  <select id="filterSecurityLogStatus" class="filter-select">
-                    <option value="all">Semua Status</option>
-                    <option value="Selesai">Selesai (Kembali/Pulang)</option>
-                    <option value="Terlambat">Terlambat</option>
-                  </select>
-
-                  <div class="view-mode-group">
-                    <button class="btn-view-mode active" id="btnSecurityLogViewCard" title="Tampilan Kartu">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                      </svg>
-                    </button>
-                    <button class="btn-view-mode" id="btnSecurityLogViewTable" title="Tampilan Tabel">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                      </svg>
-                    </button>
-                  </div>
-
-                  <button class="btn-secondary" id="btnSecurityLogExport" style="font-size: 0.775rem;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="figma-view-switcher">
+                  <button type="button" class="btn-figma-toggle active" id="btnSecurityLogViewCard" title="Tampilan Kartu">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
-                    <span>Ekspor CSV</span>
+                    <span>Card</span>
+                  </button>
+                  <button type="button" class="btn-figma-toggle" id="btnSecurityLogViewTable" title="Tampilan List / Tabel">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="8" y1="6" x2="21" y2="6"></line>
+                      <line x1="8" y1="12" x2="21" y2="12"></line>
+                      <line x1="8" y1="18" x2="21" y2="18"></line>
+                      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    <span>List</span>
                   </button>
                 </div>
-              </div>
 
-              <!-- Results Subbar Pos Jaga (Button Pilih) -->
-              <div class="figma-results-bar" style="display: flex; justify-content: flex-start; align-items: center; margin: 0.75rem 0 0.5rem 0;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <button type="button" class="btn-select-history" id="btnSelectSecurityRiwayat" onclick="window.toggleRiwayatSelectMode('security')" title="Pilih beberapa riwayat untuk dihapus">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 11 12 14 22 4"></polyline>
-                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                    </svg>
-                    <span>Pilih</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Selection Bar (Muncul tepat di bawah Button Pilih) -->
-              <div class="riwayat-selection-bar" id="securityRiwayatSelectionBar" style="display: none; margin-bottom: 0.75rem;"></div>
-
-              <div id="containerSecurityLog">
-                <!-- Rendered via JS -->
-              </div>
-
-              <!-- Paginasi Riwayat Pos Jaga (Gambar 1) -->
-              <div class="figma-pagination-bar" id="figmaSecurityRiwayatPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color, #e2e8f0); flex-wrap: wrap; gap: 0.75rem;">
-                <div class="figma-pagination-meta" id="figmaSecurityRiwayatMeta" style="font-size: 0.8rem; color: var(--text-secondary, #64748b);">Menampilkan 0 dari 0 data</div>
-                <div class="figma-pagination-btns" id="figmaSecurityRiwayatBtns" style="display: flex; gap: 0.35rem; align-items: center;"></div>
-              </div>
-              <div class="empty-box" id="emptySecurityLogBox" style="display: none;">
-                <div class="empty-icon-circle">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
+                <button class="btn-secondary" id="btnSecurityLogExport" style="font-size: 0.775rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                </div>
-                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
-                  Belum Ada Riwayat Gerbang</h3>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
-                  Belum ada catatan pemindaian keluar atau masuk yang tercatat pada sesi hari ini.
-                </p>
+                  <span>Ekspor CSV</span>
+                </button>
               </div>
+            </div>
+
+            <!-- Selection Bar (Muncul tepat di bawah Button Pilih) -->
+            <div class="riwayat-selection-bar" id="securityRiwayatSelectionBar" style="display: none; margin-bottom: 0.75rem;"></div>
+
+            <div id="containerSecurityLog">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Paginasi Riwayat Pos Jaga (Gambar 1) -->
+            <div class="figma-pagination-bar" id="figmaSecurityRiwayatPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color, #e2e8f0); flex-wrap: wrap; gap: 0.75rem;">
+              <div class="figma-pagination-meta" id="figmaSecurityRiwayatMeta" style="font-size: 0.8rem; color: var(--text-secondary, #64748b);">Menampilkan 0 dari 0 data</div>
+              <div class="figma-pagination-btns" id="figmaSecurityRiwayatBtns" style="display: flex; gap: 0.35rem; align-items: center;"></div>
+            </div>
+            <div class="empty-box" id="emptySecurityLogBox" style="display: none;">
+              <div class="empty-icon-circle">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
+                Belum Ada Riwayat Gerbang</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); max-width: 400px;">
+                Belum ada catatan pemindaian keluar atau masuk yang tercatat pada sesi hari ini.
+              </p>
             </div>
           </div>
 
@@ -3047,10 +3045,10 @@
             <div class="admin-filter-toolbar no-print" style="margin-top: 1rem;">
               <div class="admin-filter-group">
                 <select id="adminReportDateFilter" class="admin-select-filter" title="Filter Periode Waktu">
+                  <option value="all" selected>Periode: Semua Riwayat</option>
                   <option value="today">Periode: Hari Ini</option>
                   <option value="week">Periode: 7 Hari Terakhir</option>
                   <option value="month">Periode: Bulan Ini</option>
-                  <option value="all">Periode: Semua Riwayat</option>
                 </select>
                 <select id="sortAdminReport" class="admin-select-filter" title="Urutkan Waktu">
                   <option value="desc">Terbaru</option>
@@ -3068,7 +3066,7 @@
                 <select id="adminReportCategoryFilter" class="admin-select-filter">
                   <option value="all">Semua Keperluan</option>
                   <option value="Dinas Kantor">Dinas Kantor</option>
-                  <option value="Keperluan Pribadi">Keperluan Pribadi</option>
+                  <option value="Urusan Pribadi">Urusan Pribadi</option>
                 </select>
               </div>
               <div>
@@ -3181,8 +3179,11 @@
                   <option value="admin">Administrator K3</option>
                 </select>
                 <select id="sortAdminUsers" class="admin-select-filter">
-                  <option value="desc">Pendaftaran Terbaru</option>
-                  <option value="asc">Pendaftaran Terlama</option>
+                  <option value="created_desc" selected>Pendaftaran Terbaru</option>
+                  <option value="updated_desc">Terakhir Diperbarui (Edit / Baru)</option>
+                  <option value="login_desc">Aktivitas Login Terakhir</option>
+                  <option value="created_asc">Pendaftaran Terlama</option>
+                  <option value="name_asc">Nama (A - Z)</option>
                 </select>
               </div>
               <div>
@@ -3198,13 +3199,13 @@
                 <table class="report-data-table">
                   <thead>
                     <tr>
-                      <th style="width: 120px; white-space: nowrap;">KUJANG ID</th>
-                      <th style="min-width: 170px;">Nama & NIP</th>
-                      <th>Email Perusahaan</th>
-                      <th>Departemen</th>
+                      <th style="width: 125px; white-space: nowrap;">KUJANG ID</th>
+                      <th style="min-width: 175px;">Nama & NIP</th>
+                      <th style="min-width: 160px;">Email Perusahaan</th>
+                      <th style="min-width: 180px;">Departemen</th>
                       <th style="min-width: 170px; white-space: nowrap;">Peran Sistem</th>
-                      <th>Status</th>
-                      <th style="text-align: right;">Aksi</th>
+                      <th style="min-width: 185px; white-space: nowrap;">Status & Aktivitas</th>
+                      <th style="width: 220px; text-align: right; white-space: nowrap;">Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="adminUsersTableBody">

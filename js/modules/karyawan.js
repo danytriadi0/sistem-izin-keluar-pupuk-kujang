@@ -1056,12 +1056,12 @@ function filterEmpTickets() {
 
     // Status Filter:
     if (status !== 'all') {
+      const isLateTicket = Boolean(t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]')) || (t.approverNote && t.approverNote.toLowerCase().includes('terlambat')) || (t.lateMinutes > 0));
       if (status === 'Darurat') {
         const isEmergency = Boolean(t.isEmergency || (t.id && (t.id.startsWith('TK-EMG') || t.id.includes('-EMG-'))) || t.category === 'Izin Darurat' || t.category === 'Darurat' || (t.type && t.type.toLowerCase().includes('darurat')));
         if (!isEmergency) return false;
       } else if (status === 'Terlambat') {
-        const isLate = tStatusNorm === 'selesai' && (!!t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]')) || (t.approverNote && t.approverNote.toLowerCase().includes('terlambat')) || (t.lateMinutes > 0));
-        if (!isLate) return false;
+        if (tStatusNorm !== 'selesai' || !isLateTicket) return false;
       } else if (status === 'Kedaluwarsa') {
         if (tStatusNorm !== 'kedaluwarsa' && tStatusNorm !== 'kadaluwarsa') return false;
       } else if (status === 'Ditolak') {
@@ -1069,7 +1069,7 @@ function filterEmpTickets() {
       } else if (status === 'Dibatalkan') {
         if (!tStatusNorm.includes('batal')) return false;
       } else if (status === 'Selesai') {
-        if (tStatusNorm !== 'selesai' || t.isLate) return false;
+        if (tStatusNorm !== 'selesai' || isLateTicket) return false;
       } else {
         if (t.status !== status) return false;
       }

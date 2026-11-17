@@ -846,11 +846,11 @@ function renderSecurityView() {
 
     let list = outsideTickets;
     if (queueMode === 'outside') {
-      list = outsideTickets.filter(t => t.status === 'Sedang di Luar');
+      list = outsideTickets.filter(t => t.status === 'Sedang di Luar' && !t.isLate);
     } else if (queueMode === 'overdue') {
-      list = outsideTickets.filter(t => t.status === 'Terlambat');
+      list = outsideTickets.filter(t => t.status === 'Terlambat' || t.isLate);
     } else if (queueMode === 'emergency') {
-      list = outsideTickets.filter(t => t.isEmergency || (t.id && t.id.startsWith('TK-EMG')));
+      list = outsideTickets.filter(t => t.isEmergency || (t.id && (t.id.startsWith('TK-EMG') || t.id.includes('-EMG-'))));
     } else {
       list = outsideTickets;
     }
@@ -1036,7 +1036,7 @@ function filterSecurityLogTickets() {
         const isLate = t.status === 'Terlambat' || t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]'));
         if (!isLate) return false;
       } else if (status === 'Selesai') {
-        if (t.status !== 'Selesai') return false;
+        if (t.status !== 'Selesai' && t.status !== 'Selesai (Terlambat)') return false;
       } else if (t.status !== status) {
         return false;
       }
