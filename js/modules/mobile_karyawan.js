@@ -589,6 +589,69 @@
   // -------------------------------------------------------------------
   // 4. RIWAYAT PENGAJUAN (Hal 3, 5, 6 - Card & List View Toggle, Live Search, Dynamic Pagination)
   // -------------------------------------------------------------------
+  function buildMobilePaginationHtml(currentPage, totalPages, totalItems, startIndex, pageSize) {
+    if (totalPages <= 1) return '';
+    const isFirst = currentPage <= 1;
+    const isLast = currentPage >= totalPages;
+
+    let pageNumbers = [];
+    if (totalPages <= 4) {
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+    } else {
+      pageNumbers.push(1);
+      if (currentPage > 3) pageNumbers.push('...');
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+      if (currentPage <= 2) end = Math.min(totalPages - 1, 3);
+      if (currentPage >= totalPages - 1) start = Math.max(2, totalPages - 2);
+      for (let i = start; i <= end; i++) {
+        if (!pageNumbers.includes(i)) pageNumbers.push(i);
+      }
+      if (currentPage < totalPages - 2) pageNumbers.push('...');
+      if (!pageNumbers.includes(totalPages)) pageNumbers.push(totalPages);
+    }
+
+    let pageBtns = '';
+    // Previous Arrow Button
+    pageBtns += `
+      <button type="button" aria-label="Halaman Sebelumnya" style="min-width: 34px; height: 34px; padding: 0 6px; border-radius: 8px; border: 1px solid ${isFirst ? '#e2e8f0' : '#cbd5e1'}; background: ${isFirst ? '#f8fafc' : '#ffffff'}; color: ${isFirst ? '#94a3b8' : '#334155'}; font-size: 0.85rem; font-weight: 800; cursor: ${isFirst ? 'not-allowed' : 'pointer'}; display: inline-flex; align-items: center; justify-content: center; opacity: ${isFirst ? '0.5' : '1'}; transition: all 0.15s ease;" ${isFirst ? 'disabled' : `onclick="window.mobileSetRiwayatPage(${currentPage - 1})"`}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+    `;
+
+    // Number Buttons
+    pageNumbers.forEach(p => {
+      if (p === '...') {
+        pageBtns += `<span style="padding: 0 3px; color: #94a3b8; font-weight: 700; font-size: 0.8rem; user-select: none;">…</span>`;
+      } else {
+        const isActive = (p === currentPage);
+        pageBtns += `
+          <button type="button" style="min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; border: 1px solid ${isActive ? '#2563eb' : '#cbd5e1'}; background: ${isActive ? '#2563eb' : '#ffffff'}; color: ${isActive ? '#ffffff' : '#334155'}; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: ${isActive ? '0 1px 3px rgba(37, 99, 235, 0.3)' : 'none'};" onclick="window.mobileSetRiwayatPage(${p})">
+            ${p}
+          </button>
+        `;
+      }
+    });
+
+    // Next Arrow Button
+    pageBtns += `
+      <button type="button" aria-label="Halaman Berikutnya" style="min-width: 34px; height: 34px; padding: 0 6px; border-radius: 8px; border: 1px solid ${isLast ? '#e2e8f0' : '#cbd5e1'}; background: ${isLast ? '#f8fafc' : '#ffffff'}; color: ${isLast ? '#94a3b8' : '#334155'}; font-size: 0.85rem; font-weight: 800; cursor: ${isLast ? 'not-allowed' : 'pointer'}; display: inline-flex; align-items: center; justify-content: center; opacity: ${isLast ? '0.5' : '1'}; transition: all 0.15s ease;" ${isLast ? 'disabled' : `onclick="window.mobileSetRiwayatPage(${currentPage + 1})"`}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    `;
+
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin: 18px 0 8px 0; gap: 8px;">
+        <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">
+          Menampilkan ${startIndex + 1}–${Math.min(startIndex + pageSize, totalItems)} dari ${totalItems} tiket
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px; margin-left: auto;">
+          ${pageBtns}
+        </div>
+      </div>
+    `;
+  }
+
   function renderRiwayat(container) {
     const emp = getActiveEmp();
     let allEmpTickets = getEmpTickets().filter(t => {
@@ -804,29 +867,8 @@
       </div>
     `;
 
-    // Dynamic Pagination Buttons
-    let paginationHtml = '';
-    if (totalPages > 1) {
-      let pageBtns = '';
-      for (let p = 1; p <= totalPages; p++) {
-        const isActive = (p === currentRiwayatPage);
-        pageBtns += `
-          <button type="button" style="min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px; border: 1px solid ${isActive ? '#2563eb' : '#cbd5e1'}; background: ${isActive ? '#2563eb' : '#ffffff'}; color: ${isActive ? '#ffffff' : '#334155'}; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileSetRiwayatPage(${p})">
-            ${p}
-          </button>
-        `;
-      }
-      paginationHtml = `
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin: 18px 0 8px 0; gap: 8px;">
-          <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">
-            Menampilkan ${startIndex + 1}–${Math.min(startIndex + riwayatPageSize, totalItems)} dari ${totalItems} tiket
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
-            ${pageBtns}
-          </div>
-        </div>
-      `;
-    }
+    // Dynamic Pagination with Arrows and Smart Window
+    const paginationHtml = buildMobilePaginationHtml(currentRiwayatPage, totalPages, totalItems, startIndex, riwayatPageSize);
 
     container.innerHTML = `
       <!-- 1. Search Bar (Point 11.c) -->
@@ -1067,28 +1109,8 @@
       `;
     }).join('');
 
-    let paginationHtml = '';
-    if (totalPages > 1) {
-      let pageBtns = '';
-      for (let p = 1; p <= totalPages; p++) {
-        const isActive = (p === currentRiwayatPage);
-        pageBtns += `
-          <button type="button" style="min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px; border: 1px solid ${isActive ? '#2563eb' : '#cbd5e1'}; background: ${isActive ? '#2563eb' : '#ffffff'}; color: ${isActive ? '#ffffff' : '#334155'}; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileSetRiwayatPage(${p})">
-            ${p}
-          </button>
-        `;
-      }
-      paginationHtml = `
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin: 18px 0 8px 0; gap: 8px;">
-          <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">
-            Menampilkan ${startIndex + 1}–${Math.min(startIndex + riwayatPageSize, totalItems)} dari ${totalItems} tiket
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
-            ${pageBtns}
-          </div>
-        </div>
-      `;
-    }
+    // Dynamic Pagination with Arrows and Smart Window
+    const paginationHtml = buildMobilePaginationHtml(currentRiwayatPage, totalPages, totalItems, startIndex, riwayatPageSize);
 
     if (countContainer) {
       countContainer.innerText = `${totalItems} tiket riwayat`;
@@ -1726,14 +1748,14 @@
     const isEditing = Boolean(window.editingTicketId);
     const now = new Date();
     const formatForInput = (val, defaultMinutes) => {
-      if (!val) return formatDateTimeLocal(new Date(now.getTime() + defaultMinutes * 60000));
+      if (!val) return '';
       if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(val)) return val;
       const d = (typeof window.parseTicketDateTime === 'function') ? window.parseTicketDateTime(val) : new Date(val);
       if (d && !isNaN(d.getTime())) return formatDateTimeLocal(d);
-      return formatDateTimeLocal(new Date(now.getTime() + defaultMinutes * 60000));
+      return '';
     };
-    const defaultExit = formatForInput(prefillData?.plannedExit, 5);
-    const defaultReturn = formatForInput(prefillData?.estimatedReturn, 120);
+    const defaultExit = isEditing ? formatForInput(prefillData?.plannedExit, 5) : '';
+    const defaultReturn = isEditing ? formatForInput(prefillData?.estimatedReturn, 120) : '';
 
     // Approver resolution
     const approvers = getMobileApprovers();
@@ -1746,13 +1768,13 @@
       selectedApproverData = null; // Kosongkan saat membuat pengajuan baru
     }
 
-    window._selectedGroupMembersMobile = (prefillData && Array.isArray(prefillData.members)) ? [...prefillData.members] : [];
-    window._currentSuratPerintahMobile = (prefillData && prefillData.suratPerintah) ? { ...prefillData.suratPerintah } : null;
+    window._selectedGroupMembersMobile = (isEditing && prefillData && Array.isArray(prefillData.members)) ? [...prefillData.members] : [];
+    window._currentSuratPerintahMobile = (isEditing && prefillData && prefillData.suratPerintah) ? { ...prefillData.suratPerintah } : null;
 
-    const initialCat = prefillData?.category || '';
-    const initialType = prefillData?.type || prefillData?.returnType || '';
-    const initialDest = prefillData?.destination || '';
-    const initialReason = prefillData?.reason || '';
+    const initialCat = isEditing ? (prefillData?.category || '') : '';
+    const initialType = isEditing ? (prefillData?.type || prefillData?.returnType || '') : '';
+    const initialDest = isEditing ? (prefillData?.destination || '') : '';
+    const initialReason = isEditing ? (prefillData?.reason || '') : '';
 
     const activeStep = window.currentMobileFormStep || 1;
 
@@ -1859,29 +1881,28 @@
               </div>
             </div>
 
-            <!-- 2. Kategori Keperluan & Tipe Kepulangan (Side-by-side Dropdowns) -->
-            <div class="mobile-form-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-              <div class="mobile-form-group" style="margin: 0;">
-                <label class="mobile-form-label">Kategori Keperluan <span class="req">*</span></label>
-                <select class="mobile-select" id="mFormCategory" required onchange="window.mobileHandleCategoryChange(this.value)">
-                  <option value="">-- Pilih Kategori --</option>
-                  <option value="Dinas Kantor" ${initialCat === 'Dinas Kantor' || !initialCat ? 'selected' : ''}>Dinas Kantor</option>
-                  <option value="Urusan Pribadi" ${initialCat === 'Urusan Pribadi' ? 'selected' : ''}>Urusan Pribadi</option>
-                </select>
-              </div>
+            <!-- 2. Kategori Keperluan (Tampil Awal di Tahap 1) -->
+            <div class="mobile-form-group" style="margin-bottom: 12px;">
+              <label class="mobile-form-label">Kategori Keperluan <span class="req">*</span></label>
+              <select class="mobile-select" id="mFormCategory" required onchange="window.mobileHandleCategoryChange(this.value)">
+                <option value="" ${!initialCat ? 'selected' : ''}>-- Pilih Kategori --</option>
+                <option value="Dinas Kantor" ${initialCat === 'Dinas Kantor' ? 'selected' : ''}>Dinas Kantor</option>
+                <option value="Urusan Pribadi" ${initialCat === 'Urusan Pribadi' ? 'selected' : ''}>Urusan Pribadi</option>
+              </select>
+            </div>
 
-              <div class="mobile-form-group" style="margin: 0;">
-                <label class="mobile-form-label">Tipe Kepulangan <span class="req">*</span></label>
-                <select class="mobile-select" id="mFormReturnType" required onchange="window.mobileToggleReturnType(this.value)">
-                  <option value="">-- Pilih Tipe Kepulangan --</option>
-                  <option value="Kembali ke Area" ${initialType === 'Kembali ke Area' || !initialType ? 'selected' : ''}>Kembali ke Area</option>
-                  <option value="Pulang Mendahului" ${initialType === 'Pulang Mendahului' ? 'selected' : ''}>Pulang Lebih Awal</option>
-                </select>
-              </div>
+            <!-- 2A. Tipe Kepulangan (Hanya muncul setelah Kategori dipilih) -->
+            <div class="mobile-form-group" id="mWrapReturnType" style="display: ${initialCat ? 'block' : 'none'}; margin-bottom: 12px;">
+              <label class="mobile-form-label">Tipe Kepulangan <span class="req">*</span></label>
+              <select class="mobile-select" id="mFormReturnType" required onchange="window.mobileToggleReturnType(this.value)">
+                <option value="" ${!initialType ? 'selected' : ''}>-- Pilih Tipe Kepulangan --</option>
+                <option value="Kembali ke Area" ${initialType === 'Kembali ke Area' ? 'selected' : ''}>Kembali ke Area</option>
+                <option value="Pulang Mendahului" ${initialType === 'Pulang Mendahului' ? 'selected' : ''}>Pulang Lebih Awal</option>
+              </select>
             </div>
 
             <!-- 2B. Anggota Rombongan Tim (Khusus Dinas Kantor) -->
-            <div class="mobile-form-group" id="mGroupDinasWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
+            <div class="mobile-form-group" id="mGroupDinasWrapper" style="display: ${initialCat === 'Dinas Kantor' ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
                 <label class="mobile-form-label" style="margin: 0; color: #0f172a; font-weight: 700; font-size: 0.775rem;">Tambahkan Anggota Tim (Dinas Bersama)</label>
                 <span style="font-size: 0.625rem; font-weight: 500; color: #94a3b8; white-space: nowrap; margin-left: 6px;">Opsional (Maks. 5 Orang)</span>
@@ -1899,7 +1920,7 @@
             </div>
 
             <!-- 2C. Unggah Surat Perintah / Surat Tugas (Khusus Dinas Kantor) -->
-            <div class="mobile-form-group" id="mSuratPerintahWrapper" style="display: ${initialCat === 'Dinas Kantor' || !initialCat ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
+            <div class="mobile-form-group" id="mSuratPerintahWrapper" style="display: ${initialCat === 'Dinas Kantor' ? 'block' : 'none'}; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;">
               <label class="mobile-form-label" style="margin: 0 0 4px 0; color: #0f172a; font-weight: 700;">
                 Unggah Surat Perintah / Surat Tugas Dinas
               </label>
@@ -2464,14 +2485,24 @@
   window.mobileHandleCategoryChange = function (val) {
     const exitInput = document.getElementById('mFormPlannedExit');
     const retInput = document.getElementById('mFormEstimatedReturn');
+    const wrapReturnType = document.getElementById('mWrapReturnType');
+    const groupWrap = document.getElementById('mGroupDinasWrapper');
+    const suratWrap = document.getElementById('mSuratPerintahWrapper');
+
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
     const maxHourStr = (now.getDay() === 5) ? '16:30' : '16:00';
     const todayEnd = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${maxHourStr}`;
     const nowLocal = formatDateTimeLocal(now);
 
-    const groupWrap = document.getElementById('mGroupDinasWrapper');
-    const suratWrap = document.getElementById('mSuratPerintahWrapper');
+    // Progressive Disclosure: Dropdown Tipe Kepulangan hanya muncul jika Kategori sudah dipilih
+    if (wrapReturnType) {
+      wrapReturnType.style.display = val ? 'block' : 'none';
+      if (!val) {
+        const retSelect = document.getElementById('mFormReturnType');
+        if (retSelect) retSelect.value = '';
+      }
+    }
 
     if (val === 'Urusan Pribadi') {
       if (exitInput) {
@@ -2499,7 +2530,7 @@
       if (suratWrap) suratWrap.style.display = 'none';
       window._selectedGroupMembersMobile = [];
       window._currentSuratPerintahMobile = null;
-    } else {
+    } else if (val === 'Dinas Kantor') {
       if (exitInput) {
         exitInput.min = nowLocal;
         exitInput.removeAttribute('max');
@@ -2513,6 +2544,12 @@
       }
       if (groupWrap) groupWrap.style.display = 'block';
       if (suratWrap) suratWrap.style.display = 'block';
+    } else {
+      // Nilai kosong / -- Pilih Kategori --
+      if (groupWrap) groupWrap.style.display = 'none';
+      if (suratWrap) suratWrap.style.display = 'none';
+      window._selectedGroupMembersMobile = [];
+      window._currentSuratPerintahMobile = null;
     }
     if (typeof window.mobileRenderSelectedGroupMembers === 'function') window.mobileRenderSelectedGroupMembers();
     if (typeof window.mobileRenderSuratPerintahPreview === 'function') window.mobileRenderSuratPerintahPreview();

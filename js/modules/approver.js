@@ -2604,6 +2604,7 @@ window.submitRejectArrivalReason = function() {
   executeRejectArrivalByApprover(ticketId, reason);
 };
 
+window.executeRejectArrivalByApprover = executeRejectArrivalByApprover;
 function executeRejectArrivalByApprover(ticketId, reason) {
   const ticketsList = window.ticketsList || [];
   const t = ticketsList.find(x => x.id === ticketId);

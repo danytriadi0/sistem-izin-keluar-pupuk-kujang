@@ -1821,6 +1821,122 @@ body.theme-dark .mobile-summary-value {
   color: #f8fafc !important;
 }
 
+/* ===================================================================
+   DARK MODE VISIBILITY: KRONOLOGI TERCATAT, TIMELINE & TEXT CONTRAST (ALL ACTORS)
+   =================================================================== */
+body.theme-dark .mobile-timeline-title,
+.theme-dark .mobile-timeline-title {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .mobile-timeline-desc,
+.theme-dark .mobile-timeline-desc {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .mobile-timeline-time,
+.theme-dark .mobile-timeline-time {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .mobile-timeline-dot,
+.theme-dark .mobile-timeline-dot {
+  background: #475569 !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 0 0 1px #475569 !important;
+}
+
+body.theme-dark .mobile-timeline-dot.active,
+.theme-dark .mobile-timeline-dot.active,
+body.theme-dark .mobile-timeline-dot.done,
+.theme-dark .mobile-timeline-dot.done {
+  background: #10b981 !important;
+  box-shadow: 0 0 0 2px #065f46 !important;
+  border-color: #0f172a !important;
+}
+
+body.theme-dark .mobile-timeline-line,
+.theme-dark .mobile-timeline-line {
+  background: #334155 !important;
+}
+
+body.theme-dark .mobile-timeline p,
+.theme-dark .mobile-timeline p,
+body.theme-dark .mobile-card p,
+.theme-dark .mobile-card p,
+body.theme-dark .mobile-bottom-sheet p,
+.theme-dark .mobile-bottom-sheet p {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .mobile-card-title,
+.theme-dark .mobile-card-title,
+body.theme-dark .mobile-card h2,
+.theme-dark .mobile-card h2,
+body.theme-dark .mobile-card h3,
+.theme-dark .mobile-card h3,
+body.theme-dark .mobile-card h4,
+.theme-dark .mobile-card h4 {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .mobile-meta-sub,
+.theme-dark .mobile-meta-sub {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .mobile-meta-val,
+.theme-dark .mobile-meta-val {
+  color: #f8fafc !important;
+}
+
+/* Explicit high-contrast white overrides for dark mode across all inline text */
+body.theme-dark #mobileAppContainer [style*="color: #0f172a"],
+body.theme-dark #mobileAppContainer [style*="color:#0f172a"],
+.theme-dark #mobileAppContainer [style*="color: #0f172a"],
+.theme-dark #mobileAppContainer [style*="color:#0f172a"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #0f172a"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#0f172a"],
+.theme-dark .mobile-bottom-sheet [style*="color: #0f172a"],
+.theme-dark .mobile-bottom-sheet [style*="color:#0f172a"],
+body.theme-dark #mobileAppContainer [style*="color: #1e293b"],
+body.theme-dark #mobileAppContainer [style*="color:#1e293b"],
+.theme-dark #mobileAppContainer [style*="color: #1e293b"],
+.theme-dark #mobileAppContainer [style*="color:#1e293b"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #1e293b"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#1e293b"],
+.theme-dark .mobile-bottom-sheet [style*="color: #1e293b"],
+.theme-dark .mobile-bottom-sheet [style*="color:#1e293b"],
+body.theme-dark #mobileAppContainer [style*="color: #334155"],
+body.theme-dark #mobileAppContainer [style*="color:#334155"],
+.theme-dark #mobileAppContainer [style*="color: #334155"],
+.theme-dark #mobileAppContainer [style*="color:#334155"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #334155"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#334155"],
+.theme-dark .mobile-bottom-sheet [style*="color: #334155"],
+.theme-dark .mobile-bottom-sheet [style*="color:#334155"] {
+  color: #f8fafc !important;
+}
+
+body.theme-dark #mobileAppContainer [style*="color: #475569"],
+body.theme-dark #mobileAppContainer [style*="color:#475569"],
+.theme-dark #mobileAppContainer [style*="color: #475569"],
+.theme-dark #mobileAppContainer [style*="color:#475569"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #475569"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#475569"],
+.theme-dark .mobile-bottom-sheet [style*="color: #475569"],
+.theme-dark .mobile-bottom-sheet [style*="color:#475569"],
+body.theme-dark #mobileAppContainer [style*="color: #64748b"],
+body.theme-dark #mobileAppContainer [style*="color:#64748b"],
+.theme-dark #mobileAppContainer [style*="color: #64748b"],
+.theme-dark #mobileAppContainer [style*="color:#64748b"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #64748b"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#64748b"],
+.theme-dark .mobile-bottom-sheet [style*="color: #64748b"],
+.theme-dark .mobile-bottom-sheet [style*="color:#64748b"] {
+  color: #cbd5e1 !important;
+}
+
 @media (max-width: 390px) {
   .mobile-form-grid-2col {
     grid-template-columns: 1fr !important;
@@ -3389,6 +3505,122 @@ body.theme-dark .mobile-summary-label {
 
 body.theme-dark .mobile-summary-value {
   color: #f8fafc !important;
+}
+
+/* ===================================================================
+   DARK MODE VISIBILITY: KRONOLOGI TERCATAT, TIMELINE & TEXT CONTRAST (ALL ACTORS)
+   =================================================================== */
+body.theme-dark .mobile-timeline-title,
+.theme-dark .mobile-timeline-title {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .mobile-timeline-desc,
+.theme-dark .mobile-timeline-desc {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .mobile-timeline-time,
+.theme-dark .mobile-timeline-time {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .mobile-timeline-dot,
+.theme-dark .mobile-timeline-dot {
+  background: #475569 !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 0 0 1px #475569 !important;
+}
+
+body.theme-dark .mobile-timeline-dot.active,
+.theme-dark .mobile-timeline-dot.active,
+body.theme-dark .mobile-timeline-dot.done,
+.theme-dark .mobile-timeline-dot.done {
+  background: #10b981 !important;
+  box-shadow: 0 0 0 2px #065f46 !important;
+  border-color: #0f172a !important;
+}
+
+body.theme-dark .mobile-timeline-line,
+.theme-dark .mobile-timeline-line {
+  background: #334155 !important;
+}
+
+body.theme-dark .mobile-timeline p,
+.theme-dark .mobile-timeline p,
+body.theme-dark .mobile-card p,
+.theme-dark .mobile-card p,
+body.theme-dark .mobile-bottom-sheet p,
+.theme-dark .mobile-bottom-sheet p {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .mobile-card-title,
+.theme-dark .mobile-card-title,
+body.theme-dark .mobile-card h2,
+.theme-dark .mobile-card h2,
+body.theme-dark .mobile-card h3,
+.theme-dark .mobile-card h3,
+body.theme-dark .mobile-card h4,
+.theme-dark .mobile-card h4 {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .mobile-meta-sub,
+.theme-dark .mobile-meta-sub {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .mobile-meta-val,
+.theme-dark .mobile-meta-val {
+  color: #f8fafc !important;
+}
+
+/* Explicit high-contrast white overrides for dark mode across all inline text */
+body.theme-dark #mobileAppContainer [style*="color: #0f172a"],
+body.theme-dark #mobileAppContainer [style*="color:#0f172a"],
+.theme-dark #mobileAppContainer [style*="color: #0f172a"],
+.theme-dark #mobileAppContainer [style*="color:#0f172a"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #0f172a"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#0f172a"],
+.theme-dark .mobile-bottom-sheet [style*="color: #0f172a"],
+.theme-dark .mobile-bottom-sheet [style*="color:#0f172a"],
+body.theme-dark #mobileAppContainer [style*="color: #1e293b"],
+body.theme-dark #mobileAppContainer [style*="color:#1e293b"],
+.theme-dark #mobileAppContainer [style*="color: #1e293b"],
+.theme-dark #mobileAppContainer [style*="color:#1e293b"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #1e293b"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#1e293b"],
+.theme-dark .mobile-bottom-sheet [style*="color: #1e293b"],
+.theme-dark .mobile-bottom-sheet [style*="color:#1e293b"],
+body.theme-dark #mobileAppContainer [style*="color: #334155"],
+body.theme-dark #mobileAppContainer [style*="color:#334155"],
+.theme-dark #mobileAppContainer [style*="color: #334155"],
+.theme-dark #mobileAppContainer [style*="color:#334155"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #334155"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#334155"],
+.theme-dark .mobile-bottom-sheet [style*="color: #334155"],
+.theme-dark .mobile-bottom-sheet [style*="color:#334155"] {
+  color: #f8fafc !important;
+}
+
+body.theme-dark #mobileAppContainer [style*="color: #475569"],
+body.theme-dark #mobileAppContainer [style*="color:#475569"],
+.theme-dark #mobileAppContainer [style*="color: #475569"],
+.theme-dark #mobileAppContainer [style*="color:#475569"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #475569"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#475569"],
+.theme-dark .mobile-bottom-sheet [style*="color: #475569"],
+.theme-dark .mobile-bottom-sheet [style*="color:#475569"],
+body.theme-dark #mobileAppContainer [style*="color: #64748b"],
+body.theme-dark #mobileAppContainer [style*="color:#64748b"],
+.theme-dark #mobileAppContainer [style*="color: #64748b"],
+.theme-dark #mobileAppContainer [style*="color:#64748b"],
+body.theme-dark .mobile-bottom-sheet [style*="color: #64748b"],
+body.theme-dark .mobile-bottom-sheet [style*="color:#64748b"],
+.theme-dark .mobile-bottom-sheet [style*="color: #64748b"],
+.theme-dark .mobile-bottom-sheet [style*="color:#64748b"] {
+  color: #cbd5e1 !important;
 }
 
 

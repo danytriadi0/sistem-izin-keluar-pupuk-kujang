@@ -234,12 +234,15 @@
 
   function formatTimeOnly(timeStr) {
     if (!timeStr) return '';
-    if (timeStr.includes('T')) {
-      const m = timeStr.split('T')[1].match(/^(\d{1,2})[:.](\d{2})/);
-      if (m) return `${m[1]}.${m[2]} WIB`;
+    let clean = String(timeStr).replace(/\s*WIB/gi, '').trim();
+    if (clean.includes('T')) {
+      const parts = clean.split('T');
+      const timePart = parts[1] || '';
+      const m = timePart.match(/^(\d{1,2})[:.](\d{2})/);
+      if (m) return `${m[1].padStart(2, '0')}.${m[2]} WIB`;
     }
-    const match = timeStr.match(/(\d{1,2})[:.](\d{2})/);
-    return match ? `${match[1].padStart(2, '0')}.${match[2]} WIB` : timeStr.replace(':', '.');
+    const match = clean.match(/(\d{1,2})[:.](\d{2})/);
+    return match ? `${match[1].padStart(2, '0')}.${match[2]} WIB` : (clean + ' WIB');
   }
 
   function formatDisplayDate(dateStr) {
@@ -662,7 +665,7 @@
     if (pendingExt.length > 0) {
       pendingExtHtml = pendingExt.map(t => {
         const semula = formatTimeOnly(getTReturnTime(t)) || '11.15 WIB';
-        const usulan = t.extensionRequestedTime ? t.extensionRequestedTime + ' WIB' : '12.00 WIB';
+        const usulan = formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB';
         return `
           <div class="mobile-ticket-item" style="border: 1px solid #ddd6fe; border-radius: 10px; padding: 12px; margin-bottom: 0; background: #faf5ff;">
             <div class="mobile-ticket-item-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
@@ -1120,7 +1123,7 @@
       } else {
         itemsHtml = activeList.map(t => {
           const semula = formatTimeOnly(getTReturnTime(t)) || '11.15 WIB';
-          const usulan = t.extensionRequestedTime ? t.extensionRequestedTime + ' WIB' : '12.00 WIB';
+          const usulan = formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB';
           return `
             <div class="mobile-ticket-item" style="border: 1px solid #e2e8f0;">
               <div class="mobile-ticket-item-header">
@@ -1431,44 +1434,44 @@
 
         <!-- Card 4: Tim Dinas Bersama (Identik Layout Karyawan) -->
         ${(t.isGroupDinas && Array.isArray(t.members) && t.members.length > 0) ? `
-          <div style="margin-bottom: 12px; padding: 4px 2px;">
+          <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-              <span style="font-size: 0.75rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px;">
-                Tim Dinas Bersama
+              <span style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                TIM DINAS BERSAMA
               </span>
-              <span style="font-size: 0.72rem; color: #2563eb; font-weight: 700;">
+              <span style="font-size: 0.72rem; color: #2563eb; font-weight: 700; background: #eff6ff; padding: 2px 8px; border-radius: 999px; border: 1px solid #bfdbfe;">
                 ${(t.initiatorCancelled ? 0 : 1) + t.members.filter(m => m.status !== 'batal').length} Karyawan Aktif
               </span>
             </div>
-            <div style="display: flex; flex-direction: column;">
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; gap: 12px;">
                 <div style="flex: 1; min-width: 0;">
-                  <div style="font-size: 0.8rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                  <div style="font-size: 0.775rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
                     <strong>${escapeHtml(t.applicantName || 'Inisiator')}</strong>
-                    <span style="font-size: 0.7rem; font-weight: 700; color: #d97706;">(Inisiator)</span>
+                    <span style="font-size: 0.675rem; font-weight: 700; color: #d97706; background: #fef3c7; padding: 1px 6px; border-radius: 4px;">Inisiator</span>
                   </div>
-                  <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                  <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">
                     NIP: ${t.applicantNip || 'PK-2024-8841'}
                   </div>
                 </div>
                 <div style="flex-shrink: 0; text-align: right;">
-                  <span style="font-size: 0.75rem; font-weight: 700; color: ${t.initiatorCancelled ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
+                  <span style="font-size: 0.725rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; ${t.initiatorCancelled ? 'background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;' : 'background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;'} white-space: nowrap;">
                     ${t.initiatorCancelled ? 'Batal' : 'Aktif Ikut'}
                   </span>
                 </div>
               </div>
               ${t.members.map(m => `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; gap: 12px;">
                   <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 0.8rem; color: ${(m.status === 'batal' || m.status === 'cancelled') ? '#94a3b8' : '#0f172a'}; line-height: 1.35; ${(m.status === 'batal' || m.status === 'cancelled') ? 'text-decoration: line-through;' : ''}">
+                    <div style="font-size: 0.775rem; color: ${(m.status === 'batal' || m.status === 'cancelled') ? '#94a3b8' : '#0f172a'}; line-height: 1.35; ${(m.status === 'batal' || m.status === 'cancelled') ? 'text-decoration: line-through;' : ''}">
                       <strong>${escapeHtml(m.name)}</strong>
                     </div>
-                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">
                       NIP: ${m.nip}
                     </div>
                   </div>
                   <div style="flex-shrink: 0; text-align: right;">
-                    <span style="font-size: 0.75rem; font-weight: 700; color: ${(m.status === 'batal' || m.status === 'cancelled') ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
+                    <span style="font-size: 0.725rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; ${(m.status === 'batal' || m.status === 'cancelled') ? 'background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;' : 'background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;'} white-space: nowrap;">
                       ${(m.status === 'batal' || m.status === 'cancelled') ? 'Batal' : 'Aktif Ikut'}
                     </span>
                   </div>
@@ -1875,7 +1878,7 @@
 
           ${t.hasExtensionPending && t.status !== 'Menunggu Verifikasi Atasan' && t.status !== 'Selesai' ? `
             <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 6px 10px; font-size: 0.7rem; color: #92400e; margin-bottom: 6px;">
-              <strong>Estimasi yang diminta:</strong> ${t.extensionRequestedTime || '12.00'} WIB (belum disetujui)
+              <strong>Estimasi yang diminta:</strong> ${formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB'} (belum disetujui)
             </div>
           ` : ''}
 
@@ -2377,7 +2380,7 @@
     if (!t) return;
 
     const semula = formatTimeOnly(getTReturnTime(t)) || '11.15 WIB';
-    const usulan = t.extensionRequestedTime ? t.extensionRequestedTime + ' WIB' : '12.00 WIB';
+    const usulan = formatTimeOnly(t.extensionRequestedTime) || '12.00 WIB';
 
     sheet.innerHTML = `
       <div class="mobile-sheet-handle-bar"></div>
@@ -2707,45 +2710,45 @@
 
           <!-- Card 4: Tim Dinas Bersama -->
           ${(t.isGroupDinas && Array.isArray(t.members) && t.members.length > 0) ? `
-            <div style="margin-bottom: 12px; padding: 4px 2px;">
+            <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px;">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="font-size: 0.75rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px;">
-                  Tim Dinas Bersama
+                <span style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                  TIM DINAS BERSAMA
                 </span>
-                <span style="font-size: 0.72rem; color: #2563eb; font-weight: 700;">
+                <span style="font-size: 0.72rem; color: #2563eb; font-weight: 700; background: #eff6ff; padding: 2px 8px; border-radius: 999px; border: 1px solid #bfdbfe;">
                   ${(t.initiatorCancelled ? 0 : 1) + t.members.filter(m => m.status !== 'batal').length} Karyawan Aktif
                 </span>
               </div>
-              <div style="display: flex; flex-direction: column;">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; gap: 12px;">
                   <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 0.8rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <div style="font-size: 0.775rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
                       <strong>${escapeHtml(t.applicantName || 'Inisiator')}</strong>
-                      <span style="font-size: 0.7rem; font-weight: 700; color: #d97706;">(Inisiator)</span>
+                      <span style="font-size: 0.675rem; font-weight: 700; color: #d97706; background: #fef3c7; padding: 1px 6px; border-radius: 4px;">Inisiator</span>
                     </div>
-                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">
                       NIP: ${t.applicantNip || 'PK-2024-8841'}
                     </div>
                   </div>
                   <div style="flex-shrink: 0; text-align: right;">
-                    <span style="font-size: 0.75rem; font-weight: 700; color: ${t.initiatorCancelled ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
+                    <span style="font-size: 0.725rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; ${t.initiatorCancelled ? 'background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;' : 'background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;'} white-space: nowrap;">
                       ${t.initiatorCancelled ? 'Batal' : 'Aktif Ikut'}
                     </span>
                   </div>
                 </div>
                 ${t.members.map(m => `
-                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; gap: 12px;">
                     <div style="flex: 1; min-width: 0;">
-                      <div style="font-size: 0.8rem; color: #0f172a; line-height: 1.35; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                      <div style="font-size: 0.775rem; color: ${(m.status === 'batal' || m.status === 'cancelled') ? '#94a3b8' : '#0f172a'}; line-height: 1.35; ${(m.status === 'batal' || m.status === 'cancelled') ? 'text-decoration: line-through;' : ''}">
                         <strong>${escapeHtml(m.name)}</strong>
                       </div>
-                      <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">
+                      <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">
                         NIP: ${m.nip}
                       </div>
                     </div>
                     <div style="flex-shrink: 0; text-align: right;">
-                      <span style="font-size: 0.75rem; font-weight: 700; color: ${m.status === 'batal' ? '#dc2626' : '#16a34a'}; white-space: nowrap;">
-                        ${m.status === 'batal' ? 'Batal' : 'Aktif Ikut'}
+                      <span style="font-size: 0.725rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; ${(m.status === 'batal' || m.status === 'cancelled') ? 'background: #fee2e2; color: #dc2626; border: 1px solid #fecaca;' : 'background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0;'} white-space: nowrap;">
+                        ${(m.status === 'batal' || m.status === 'cancelled') ? 'Batal' : 'Aktif Ikut'}
                       </span>
                     </div>
                   </div>
@@ -3713,67 +3716,145 @@
   window.mobileOpenAtasanClearModal = window.mobileAtasanClearAllFinished;
   window.getTeamTickets = getTeamTickets;
   window.getActiveApprover = getActiveApprover;
-
-})();
+  window.renderMobileAtasan = renderMobileAtasan;
 
   // Mobile Atasan Return / Arrival verification handlers
   window.mobileAtasanConfirmArrival = function (ticketId) {
-    if (typeof closeMobileSheet === 'function') closeMobileSheet();
+    if (window._isConfirmingArrivalMobile) return;
+    window._isConfirmingArrivalMobile = true;
+    setTimeout(() => { window._isConfirmingArrivalMobile = false; }, 1000);
+
+    if (typeof window.mobileCloseSheet === 'function') {
+      window.mobileCloseSheet();
+    }
     if (typeof window.confirmArrivalByApprover === 'function') {
       window.confirmArrivalByApprover(ticketId);
+    } else {
+      const tickets = (typeof MOCK_TICKETS !== 'undefined') ? MOCK_TICKETS : [];
+      const t = tickets.find(x => x.id === ticketId);
+      if (t) {
+        const approver = getActiveApprover();
+        const arrivalTime = t.arrivalReportedAt || (typeof formatNow === 'function' ? formatNow() : new Date().toISOString());
+        t.status = 'Selesai';
+        t.scanInTime = arrivalTime;
+        if (!Array.isArray(t.timeline)) t.timeline = [];
+        t.timeline.push({
+          status: 'Selesai',
+          time: (typeof formatNow === 'function') ? formatNow() : new Date().toISOString(),
+          actor: approver.name,
+          actorRole: approver.role || 'Atasan Peninjau',
+          desc: 'Atasan telah mengonfirmasi kedatangan fisik karyawan di kantor/ruangan. Izin selesai resmi.'
+        });
+        if (typeof window.saveTickets === 'function') {
+          window.saveTickets(tickets);
+        } else {
+          localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
+        }
+        if (typeof window.showToast === 'function') {
+          window.showToast('Kedatangan karyawan berhasil dikonfirmasi. Status: Selesai.', 'success');
+        }
+      }
+    }
+    if (typeof renderMobileAtasan === 'function') {
+      renderMobileAtasan(null, currentAtasanTab);
+    }
+  };
+
+  window.mobileOpenRejectArrivalSheet = function (ticketId) {
+    const list = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
+    const t = list.find(x => x.id === ticketId);
+    const sheet = document.getElementById('mobileActionSheet');
+    const backdrop = document.getElementById('mobileModalBackdrop');
+    if (!sheet || !backdrop || !t) return;
+
+    const defaultReason = 'Personel belum terlihat di meja kerja, silakan kirim foto bukti real-time.';
+
+    sheet.innerHTML = `
+      <div class="mobile-sheet-handle-bar"></div>
+      <div class="mobile-sheet-header" style="border-bottom: 1px solid #f1f5f9; padding: 12px 16px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h3 style="font-size: 1.05rem; font-weight: 800; color: #dc2626; margin: 0;">Konfirmasi Belum Tiba</h3>
+          <p style="font-size: 0.725rem; color: #64748b; margin: 2px 0 0 0;">Tiket #${t.id} • ${getTName(t)}</p>
+        </div>
+        <button type="button" class="mobile-sheet-close" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; border: none; border-radius: 50%; font-size: 1.1rem; color: #64748b; cursor: pointer;" onclick="window.mobileCloseSheet()">✕</button>
+      </div>
+      
+      <div class="mobile-sheet-body" style="padding: 14px 16px;">
+        <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="font-size: 0.775rem; font-weight: 700; color: #991b1b; margin-bottom: 2px;">📷 Minta Bukti Foto Real-Time</div>
+          <div style="font-size: 0.7rem; color: #7f1d1d; line-height: 1.35;">
+            Personel telah tap in di gerbang (${t.tapInTime || 'Terkunci'}), namun belum berada di ruangan. Masukkan instruksi penolakan untuk mewajibkan karyawan mengunggah foto bukti real-time.
+          </div>
+        </div>
+
+        <form onsubmit="event.preventDefault(); window.mobileSubmitRejectArrival('${t.id}');">
+          <div class="mobile-form-group">
+            <label class="mobile-form-label" style="font-weight: 700;">Alasan Penolakan Kedatangan <span class="req" style="color: #dc2626;">*</span></label>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;">
+              <button type="button" class="mobile-chip-btn" style="font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; cursor: pointer;" onclick="document.getElementById('mRejectArrivalInput').value='Personel belum terlihat di area kerja/ruangan.';">Belum di ruangan</button>
+              <button type="button" class="mobile-chip-btn" style="font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; cursor: pointer;" onclick="document.getElementById('mRejectArrivalInput').value='Meja kerja masih kosong, mohon kirim foto bukti.';">Meja masih kosong</button>
+              <button type="button" class="mobile-chip-btn" style="font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; cursor: pointer;" onclick="document.getElementById('mRejectArrivalInput').value='Mohon kirimkan foto selfie di ruangan kerja.';">Foto di ruangan</button>
+            </div>
+            <textarea class="mobile-textarea" id="mRejectArrivalInput" placeholder="Tuliskan alasan penolakan..." required style="min-height: 80px; font-size: 0.8125rem;">${defaultReason}</textarea>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+            <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 42px;" onclick="window.mobileCloseSheet()">Batal</button>
+            <button type="submit" id="mBtnSubmitRejectArrival" class="mobile-btn-danger" style="flex: 1.5; min-height: 42px; background: #dc2626; border: 1.5px solid #dc2626; color: #ffffff; font-weight: 800; cursor: pointer;">
+              Kirim Permintaan Foto
+            </button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    backdrop.classList.add('open');
+    sheet.classList.add('open');
+  };
+
+  window.mobileSubmitRejectArrival = function (ticketId) {
+    const input = document.getElementById('mRejectArrivalInput');
+    const reason = input ? input.value.trim() : '';
+    if (!reason) {
+      if (typeof window.showToast === 'function') {
+        window.showToast('Alasan wajib diisi!', 'warning');
+      }
       return;
     }
-    const tickets = (typeof MOCK_TICKETS !== 'undefined') ? MOCK_TICKETS : [];
-    const t = tickets.find(x => x.id === ticketId);
-    if (!t) return;
-    const approver = getActiveApprover();
-    const arrivalTime = t.arrivalReportedAt || (typeof formatNow === 'function' ? formatNow() : new Date().toISOString());
-    t.status = 'Selesai';
-    t.scanInTime = arrivalTime;
-    if (!Array.isArray(t.timeline)) t.timeline = [];
-    t.timeline.push({
-      status: 'Selesai',
-      time: (typeof formatNow === 'function') ? formatNow() : new Date().toISOString(),
-      actor: approver.name,
-      actorRole: approver.role || 'Atasan Peninjau',
-      desc: 'Atasan telah mengonfirmasi kedatangan fisik karyawan di kantor/ruangan. Izin selesai resmi.'
-    });
-    if (typeof window.saveTickets === 'function') {
-      window.saveTickets(tickets);
+
+    if (typeof window.mobileCloseSheet === 'function') {
+      window.mobileCloseSheet();
+    }
+
+    if (typeof window.executeRejectArrivalByApprover === 'function') {
+      window.executeRejectArrivalByApprover(ticketId, reason);
     } else {
-      localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
+      const tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
+      const t = tickets.find(x => x.id === ticketId);
+      if (t) {
+        const approver = getActiveApprover();
+        t.status = 'Menunggu Bukti Kedatangan';
+        t.timeFrozen = true;
+        t.arrivalRejectReason = reason;
+        t.arrivalRejectBy = approver.name;
+        if (!Array.isArray(t.timeline)) t.timeline = [];
+        t.timeline.push({
+          event: 'Konfirmasi Belum Tiba',
+          time: (typeof formatNow === 'function') ? formatNow() : new Date().toISOString(),
+          by: approver.name,
+          desc: `Atasan menandai personel belum tiba: "${reason}". Meminta foto bukti kedatangan.`
+        });
+        if (typeof window.saveTickets === 'function') window.saveTickets(tickets);
+      }
     }
-    if (typeof showMobileToast === 'function') {
-      showMobileToast('Kedatangan karyawan berhasil dikonfirmasi. Status: Selesai.', 'success');
+
+    if (typeof renderMobileAtasan === 'function') {
+      renderMobileAtasan(null, currentAtasanTab);
     }
-    renderMobileAtasan(null);
   };
 
   window.mobileAtasanRejectArrival = function (ticketId) {
-    if (typeof closeMobileSheet === 'function') closeMobileSheet();
-    if (typeof window.rejectArrivalByApprover === 'function') {
-      window.rejectArrivalByApprover(ticketId);
-      return;
-    }
-    const tickets = (typeof window.getTickets === 'function') ? window.getTickets() : (window.ticketsList || []);
-    const t = tickets.find(x => x.id === ticketId);
-    if (!t) return;
-    const approver = getActiveApprover();
-    t.status = 'Menunggu Bukti Kedatangan';
-    t.timeFrozen = true;
-    if (!Array.isArray(t.timeline)) t.timeline = [];
-    t.timeline.push({
-      event: 'Konfirmasi Belum Tiba',
-      time: (typeof formatNow === 'function') ? formatNow() : new Date().toISOString(),
-      by: approver.name,
-      desc: 'Atasan menandai personel belum tiba & meminta foto bukti kedatangan real-time.'
-    });
-    if (typeof window.saveTickets === 'function') {
-      window.saveTickets(tickets);
-    } else {
-      localStorage.setItem(window.STORAGE_KEY || 'KUJANG_GATEPASS_TICKETS_V9', JSON.stringify(tickets));
-    }
-    renderMobileAtasan(null);
+    window.mobileOpenRejectArrivalSheet(ticketId);
   };
 
   window.mobileAtasanTapIn = function (ticketId) {
@@ -3800,5 +3881,7 @@
     if (typeof showMobileToast === 'function') {
       showMobileToast('Tap In atasan berhasil. Tiket resmi Selesai.', 'success');
     }
-    renderMobileAtasan(null);
+    renderMobileAtasan(null, currentAtasanTab);
   };
+
+})();
