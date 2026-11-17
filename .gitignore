@@ -11,6 +11,7 @@ Desktop.ini
 # Scratch & Temporary
 scratch/
 *.log
+.playwright-mcp/
 
 node_modules/
 package-lock.json
