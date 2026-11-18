@@ -1652,6 +1652,14 @@ function renderKaryawanDonutChart() {
  * Menghubungkan 100% sistem asli: Search Atasan dinamis, Otorisasi QR Darurat, validasi SOP, konfirmasi ringkasan
  */
 window.switchFullPermitTab = function(tab) {
+  // Cegah perpindahan tipe izin saat dalam mode edit pengajuan
+  if (window.editingTicketId || window.editingEmergencyTicketId) {
+    if (typeof window.showToast === 'function') {
+      window.showToast('Tipe perizinan tidak dapat diubah saat mode edit pengajuan. Batalkan pengajuan terlebih dahulu jika ingin mengganti jenis izin.', 'warning');
+    }
+    return;
+  }
+
   const btnRegular = document.getElementById('btnFullTypeRegular');
   const btnEmergency = document.getElementById('btnFullTypeEmergency');
   const panelRegular = document.getElementById('panelFullRegular');
@@ -1685,6 +1693,20 @@ window.handleCancelFullForm = function() {
   window.editingTicketId = null;
   window.editingEmergencyTicketId = null;
   window.pendingFormData = null;
+
+  // Pulihkan status tombol tab perizinan
+  const btnRegular = document.getElementById('btnFullTypeRegular');
+  const btnEmergency = document.getElementById('btnFullTypeEmergency');
+  if (btnRegular) {
+    btnRegular.style.opacity = '';
+    btnRegular.style.cursor = '';
+    btnRegular.removeAttribute('title');
+  }
+  if (btnEmergency) {
+    btnEmergency.style.opacity = '';
+    btnEmergency.style.cursor = '';
+    btnEmergency.removeAttribute('title');
+  }
 
   const karyawanFullFormContainer = document.getElementById('karyawanFullFormContainer');
   const karyawanActiveTicketWrapper = document.getElementById('karyawanActiveTicketWrapper');
@@ -2173,9 +2195,15 @@ function getCleanEmpStatus(status, ticket) {
     color = '#059669';
     statusKey = 'approved';
   } else if (status === 'Menunggu Persetujuan') {
-    label = 'Menunggu Persetujuan';
-    color = '#d97706';
-    statusKey = 'pending';
+    if (ticket && ticket.reassignedStatusLabel) {
+      label = ticket.reassignedStatusLabel;
+      color = '#0284c7';
+      statusKey = 'reassigned-back';
+    } else {
+      label = 'Menunggu Persetujuan';
+      color = '#d97706';
+      statusKey = 'pending';
+    }
   } else if (status === 'Menunggu Verifikasi Atasan') {
     label = 'Menunggu Verifikasi Atasan';
     color = '#2563eb';
@@ -2185,9 +2213,15 @@ function getCleanEmpStatus(status, ticket) {
     color = '#b45309';
     statusKey = 'waiting-proof';
   } else if (status === 'Menunggu Otorisasi Darurat' || status === 'Darurat Terkunci') {
-    label = 'Menunggu Otorisasi Darurat';
-    color = '#be123c';
-    statusKey = 'emergency';
+    if (ticket && ticket.reassignedStatusLabel) {
+      label = ticket.reassignedStatusLabel;
+      color = '#dc2626';
+      statusKey = 'reassigned-back-emg';
+    } else {
+      label = 'Menunggu Otorisasi Darurat';
+      color = '#be123c';
+      statusKey = 'emergency';
+    }
   } else if (status === 'Ditolak') {
     label = 'Ditolak';
     color = '#dc2626';

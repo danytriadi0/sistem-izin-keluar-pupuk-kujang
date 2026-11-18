@@ -371,8 +371,18 @@ function openEditNormalModal(ticket) {
     const btnEmergency = document.getElementById('btnFullTypeEmergency');
     const panelRegular = document.getElementById('panelFullRegular');
     const panelEmergency = document.getElementById('panelFullEmergency');
-    if (btnRegular) btnRegular.classList.add('active');
-    if (btnEmergency) btnEmergency.classList.remove('active', 'emergency');
+    if (btnRegular) {
+      btnRegular.classList.add('active');
+      btnRegular.style.opacity = '1';
+      btnRegular.style.cursor = 'default';
+      btnRegular.removeAttribute('title');
+    }
+    if (btnEmergency) {
+      btnEmergency.classList.remove('active', 'emergency');
+      btnEmergency.style.opacity = '0.4';
+      btnEmergency.style.cursor = 'not-allowed';
+      btnEmergency.setAttribute('title', 'Tipe perizinan tidak dapat diubah saat mode edit. Batalkan pengajuan terlebih dahulu jika ingin mengganti ke izin darurat.');
+    }
     if (panelRegular) panelRegular.style.display = 'block';
     if (panelEmergency) panelEmergency.style.display = 'none';
   }
@@ -461,8 +471,18 @@ function openEditEmergencyModal(ticket) {
     const btnEmergency = document.getElementById('btnFullTypeEmergency');
     const panelRegular = document.getElementById('panelFullRegular');
     const panelEmergency = document.getElementById('panelFullEmergency');
-    if (btnEmergency) btnEmergency.classList.add('active', 'emergency');
-    if (btnRegular) btnRegular.classList.remove('active');
+    if (btnEmergency) {
+      btnEmergency.classList.add('active', 'emergency');
+      btnEmergency.style.opacity = '1';
+      btnEmergency.style.cursor = 'default';
+      btnEmergency.removeAttribute('title');
+    }
+    if (btnRegular) {
+      btnRegular.classList.remove('active');
+      btnRegular.style.opacity = '0.4';
+      btnRegular.style.cursor = 'not-allowed';
+      btnRegular.setAttribute('title', 'Tipe perizinan tidak dapat diubah saat mode edit. Batalkan pengajuan terlebih dahulu jika ingin mengganti ke izin biasa.');
+    }
     if (panelRegular) panelRegular.style.display = 'none';
     if (panelEmergency) panelEmergency.style.display = 'block';
   }
@@ -1999,6 +2019,50 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   const infoLateNoticeBox = document.getElementById('infoLateNoticeBox');
   if (infoLateNoticeBox) {
     infoLateNoticeBox.style.display = 'none';
+  }
+
+  // Catatan yang dikirim atasan di atas "Jadwal Keluar & Kembali"
+  const secCatatanAtasan = document.getElementById('sectionCatatanAtasanDetail');
+  const txtCatatanAtasan = document.getElementById('detailCatatanAtasanText');
+  const badgeCatatanAtasan = document.getElementById('detailCatatanAtasanBadge');
+  const boxCatatanAtasan = document.getElementById('detailCatatanAtasanBox');
+
+  const rawApproverNote = ticket.approverNote || ticket.approvalNote || '';
+  const rawRejectionReason = ticket.rejectionReason || ticket.rejectReason || '';
+  const hasApproverNote = Boolean(rawApproverNote && rawApproverNote.trim());
+  const hasRejection = Boolean(rawRejectionReason && rawRejectionReason.trim()) || ticket.status === 'Ditolak';
+
+  if (secCatatanAtasan && txtCatatanAtasan) {
+    if (hasRejection && rawRejectionReason) {
+      secCatatanAtasan.style.display = 'block';
+      txtCatatanAtasan.textContent = rawRejectionReason;
+      if (badgeCatatanAtasan) {
+        badgeCatatanAtasan.textContent = 'Alasan Penolakan';
+        badgeCatatanAtasan.style.color = '#dc2626';
+        badgeCatatanAtasan.style.background = '#fee2e2';
+        badgeCatatanAtasan.style.borderColor = '#fecdd3';
+      }
+      if (boxCatatanAtasan) {
+        boxCatatanAtasan.style.background = '#fff1f2';
+        boxCatatanAtasan.style.borderColor = '#fecdd3';
+      }
+    } else if (hasApproverNote) {
+      secCatatanAtasan.style.display = 'block';
+      txtCatatanAtasan.textContent = rawApproverNote;
+      if (badgeCatatanAtasan) {
+        const isApproved = (ticket.status === 'Disetujui' || ticket.status === 'Sedang di Luar' || ticket.status === 'Selesai' || ticket.status === 'Terlambat');
+        badgeCatatanAtasan.textContent = isApproved ? 'Catatan Persetujuan' : 'Catatan Atasan';
+        badgeCatatanAtasan.style.color = isApproved ? '#15803d' : '#0284c7';
+        badgeCatatanAtasan.style.background = isApproved ? '#dcfce7' : '#e0f2fe';
+        badgeCatatanAtasan.style.borderColor = isApproved ? '#bbf7d0' : '#bae6fd';
+      }
+      if (boxCatatanAtasan) {
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+      }
+    } else {
+      secCatatanAtasan.style.display = 'none';
+    }
   }
 
   const approverName = ticket.approverName || 'Arthur Morgan, S.Tr.T.';
@@ -3659,6 +3723,10 @@ document.addEventListener('DOMContentLoaded', () => {
           window.pendingFormData = null;
           const editedId = window.editingTicketId;
           window.editingTicketId = null;
+          const bReg = document.getElementById('btnFullTypeRegular');
+          const bEmg = document.getElementById('btnFullTypeEmergency');
+          if (bReg) { bReg.style.opacity = ''; bReg.style.cursor = ''; bReg.removeAttribute('title'); }
+          if (bEmg) { bEmg.style.opacity = ''; bEmg.style.cursor = ''; bEmg.removeAttribute('title'); }
 
           if (typeof window.showToast === 'function') {
             if (isApproverChanged) {
@@ -4221,6 +4289,10 @@ document.addEventListener('DOMContentLoaded', () => {
           modalEmergency.classList.remove('open');
           const editedEmergId = window.editingEmergencyTicketId;
           window.editingEmergencyTicketId = null;
+          const bRegEmerg = document.getElementById('btnFullTypeRegular');
+          const bEmgEmerg = document.getElementById('btnFullTypeEmergency');
+          if (bRegEmerg) { bRegEmerg.style.opacity = ''; bRegEmerg.style.cursor = ''; bRegEmerg.removeAttribute('title'); }
+          if (bEmgEmerg) { bEmgEmerg.style.opacity = ''; bEmgEmerg.style.cursor = ''; bEmgEmerg.removeAttribute('title'); }
 
           if (typeof window.showToast === 'function') {
             if (isApproverChanged) {

@@ -4067,6 +4067,34 @@
             </div>
           </div>
 
+          ${(() => {
+            const mRawNote = t.approverNote || t.approvalNote || '';
+            const mRawRej = t.rejectionReason || t.rejectReason || '';
+            if (mRawRej) {
+              return `
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #fff1f2; border: 1px solid #fecdd3;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div style="font-size: 0.725rem; color: #be123c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 1px 6px; border-radius: 9999px;">Alasan Penolakan</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #9f1239; font-weight: 600; line-height: 1.45; word-break: break-word;">${mRawRej}</div>
+                </div>
+              `;
+            } else if (mRawNote) {
+              const isAppr = (t.status === 'Disetujui' || t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat');
+              return `
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: ${isAppr ? '#f0fdf4' : '#f8fafc'}; border: 1px solid ${isAppr ? '#bbf7d0' : '#e2e8f0'};">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: ${isAppr ? '#15803d' : '#0284c7'}; background: ${isAppr ? '#dcfce7' : '#e0f2fe'}; padding: 1px 6px; border-radius: 9999px;">${isAppr ? 'Catatan Persetujuan' : 'Catatan Atasan'}</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${mRawNote}</div>
+                </div>
+              `;
+            }
+            return '';
+          })()}
+
           <div class="mobile-card" style="margin-bottom: 8px;">
             <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">${isPulang ? 'WAKTU KELUAR' : 'WAKTU KELUAR & KEMBALI'}</div>
             <div class="mobile-ticket-grid-meta" style="margin: 4px 0 0 0;">

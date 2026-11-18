@@ -2377,6 +2377,9 @@ function saveAdminUserAccess(event) {
 
   if (status === 'Dicabut') {
     autoCancelTicketsForRevokedUser((idx >= 0 ? users[idx] : null) || { name, nip, kujangId });
+  } else if (status === 'Aktif' && (roleKey === 'approver' || roleKey === 'approver2')) {
+    const savedApproverUser = (idx >= 0 ? users[idx] : null) || { name, nip, kujangId, roleKey, department };
+    reconcilePendingTicketsOnApproverReturn(savedApproverUser, users);
   }
   if (typeof window.saveUsers === 'function') {
     window.saveUsers(users);
@@ -2400,6 +2403,88 @@ function saveAdminUserAccess(event) {
     window.showToast(`Hak akses untuk ${name} (${kujangId}) berhasil disimpan.`, 'success');
   }
 }
+
+// ===================================================================
+// APPROVER QUEUE RECONCILIATION ON RETURN
+// Mengalihkan kembali seluruh antrean tiket pending di bawah naungan atasan saat akun diaktifkan/ditambahkan kembali
+// ===================================================================
+function reconcilePendingTicketsOnApproverReturn(approverUser, allUsers) {
+  if (!approverUser || (approverUser.roleKey !== 'approver' && approverUser.roleKey !== 'approver2')) return;
+  const allTickets = (typeof window.loadTickets === 'function' ? window.loadTickets() : window.ticketsList) || [];
+  const users = allUsers || (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
+  let count = 0;
+  const nowTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+  const cleanApprName = typeof window.cleanPersonName === 'function' ? window.cleanPersonName(approverUser.name) : (approverUser.name || '').toLowerCase().trim();
+
+  // Cari bawahan dari user ini di master data
+  const subordinateNips = new Set(
+    users.filter(u => {
+      const uDir = typeof window.cleanPersonName === 'function' ? window.cleanPersonName(u.directSupervisor || u.supervisor || '') : (u.directSupervisor || u.supervisor || '').toLowerCase().trim();
+      return (uDir && cleanApprName && uDir === cleanApprName) || (u.directSupervisorNip && approverUser.nip && u.directSupervisorNip === approverUser.nip);
+    }).map(u => u.nip)
+  );
+
+  allTickets.forEach(t => {
+    // Hanya tiket pending / berjalan sebelum disetujui (Menunggu Persetujuan atau Menunggu Otorisasi Darurat)
+    const isPending = (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Otorisasi Darurat');
+    if (!isPending) return;
+
+    const tFrom = typeof window.cleanPersonName === 'function' ? window.cleanPersonName(t.reassignedFrom || '') : (t.reassignedFrom || '').toLowerCase().trim();
+    const tDir = typeof window.cleanPersonName === 'function' ? window.cleanPersonName(t.directSupervisor || '') : (t.directSupervisor || '').toLowerCase().trim();
+
+    const isPreviouslyReassignedFromThisApprover = (
+      (tFrom && cleanApprName && (tFrom === cleanApprName || tFrom.includes(cleanApprName) || cleanApprName.includes(tFrom))) ||
+      (t.reassignedFromNip && approverUser.nip && t.reassignedFromNip === approverUser.nip) ||
+      (t.originalApproverName && t.originalApproverName === approverUser.name)
+    );
+    const isDirectSubordinateTicket = (
+      (tDir && cleanApprName && (tDir === cleanApprName || tDir.includes(cleanApprName) || cleanApprName.includes(tDir))) ||
+      (t.directSupervisorNip && approverUser.nip && t.directSupervisorNip === approverUser.nip) ||
+      (t.applicantNip && subordinateNips.has(t.applicantNip))
+    );
+
+    if (isPreviouslyReassignedFromThisApprover || isDirectSubordinateTicket) {
+      const prevApprover = t.approverName;
+      t.approverName = approverUser.name;
+      t.approverNip = approverUser.nip;
+      t.reassignedTo = approverUser.name;
+      t.reassignedToNip = approverUser.nip;
+      t.reassignedBackTo = approverUser.name;
+      t.reassignedStatusLabel = `Dialihkan kembali ke ${approverUser.name}`;
+      if (!t.timeline) t.timeline = [];
+      t.timeline.unshift({
+        event: `Persetujuan Dialihkan Kembali ke ${approverUser.name}`,
+        time: nowTimeStr,
+        by: 'Sistem Administrasi KUJANG ID',
+        desc: `Akun atasan (${approverUser.name}) telah aktif kembali. Antrean persetujuan dialihkan kembali ke ${approverUser.name}${prevApprover && prevApprover !== approverUser.name ? ` dari ${prevApprover}` : ''}.`
+      });
+      count++;
+
+      if (typeof window.createNotification === 'function' && approverUser.nip) {
+        window.createNotification({
+          recipientRole: 'approver',
+          recipientNip: approverUser.nip,
+          recipientName: approverUser.name,
+          title: 'Antrean Dialihkan Kembali ke Anda',
+          message: `Tiket ${t.id} (${t.applicantName}) dialihkan kembali ke antrean persetujuan Anda karena akun Anda telah aktif kembali.`,
+          ticketId: t.id,
+          priority: 'high',
+          type: 'info'
+        });
+      }
+    }
+  });
+
+  if (count > 0) {
+    if (typeof window.saveTickets === 'function') {
+      window.saveTickets(allTickets);
+    }
+    if (typeof window.renderApproverView === 'function') {
+      window.renderApproverView();
+    }
+  }
+}
+window.reconcilePendingTicketsOnApproverReturn = reconcilePendingTicketsOnApproverReturn;
 
 function toggleUserAccess(kujangId, skipConfirm = false) {
   let users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
@@ -2487,6 +2572,42 @@ function toggleUserAccess(kujangId, skipConfirm = false) {
             window.showToast(`Jabatan ${roleDef.jabatan} di ${user.department} dialihkan ke ${user.name}. Hak akses ${existingOccupant.name} dicabut.`, 'info');
           }
         }
+      }
+
+      // Jika diaktifkan kembali dan merupakan Atasan: pulihkan hubungan bawahan & alihkan kembali tiket pending
+      if (user.roleKey === 'approver' || user.roleKey === 'approver2') {
+        users.forEach(u => {
+          if ((!u.directSupervisor || !u.supervisor) && u.department && user.department && u.department.trim().toLowerCase() === user.department.trim().toLowerCase()) {
+            if (u.roleKey && u.roleKey.startsWith('karyawan')) {
+              u.directSupervisor = user.name;
+              u.supervisor = user.name;
+              u.directSupervisorNip = user.nip;
+            }
+          }
+        });
+        if (window.ACTORS) {
+          if (user.roleKey === 'approver') {
+            window.ACTORS.approver = {
+              nip: user.nip,
+              name: user.name,
+              title: user.role || 'Manager',
+              department: user.department,
+              roleLabel: 'Atasan 1 (Manager)'
+            };
+          } else if (user.roleKey === 'approver2') {
+            window.ACTORS.approver2 = {
+              nip: user.nip,
+              name: user.name,
+              title: user.role || 'Supervisor / Plt',
+              department: user.department,
+              roleLabel: 'Atasan 2 (Supervisor / Plt)'
+            };
+          }
+          if (window.ACTORS.karyawan && !window.ACTORS.karyawan.approverName) {
+            window.ACTORS.karyawan.approverName = user.name;
+          }
+        }
+        reconcilePendingTicketsOnApproverReturn(user, users);
       }
     }
 

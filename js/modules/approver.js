@@ -84,6 +84,10 @@ function isTicketAssignedToCurrentApprover(ticket) {
 
 function isTicketReassignedFromCurrentApprover(ticket) {
   if (!ticket) return false;
+  // Jika tiket saat ini sedang ditujukan/dialihkan ke atasan ini (termasuk dialihkan kembali), maka bukan reassigned away
+  if (isTicketAssignedToCurrentApprover(ticket)) {
+    return false;
+  }
   const currentActor = getCurrentApproverActor();
   const aName = (currentActor.name || '').trim();
   const aNip = (currentActor.nip || '').trim();
@@ -758,9 +762,9 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                 <span>↳ <strong>Status:</strong> Pengajuan ini dialihkan oleh pemohon ke <strong>${t.approverName}</strong></span>
                 <span style="font-size: 0.7rem; opacity: 0.85;">${t.reassignedAt || ''}</span>
               </div>
-            ` : (isTicketAssignedToCurrentApprover(t) && t.reassignedFrom ? `
+            ` : (isTicketAssignedToCurrentApprover(t) && (t.reassignedFrom || t.reassignedStatusLabel || t.reassignedBackTo) ? `
               <div class="approver-alert-banner reassign-to" style="border-radius: 6px; padding: 0.45rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-                <span>↳ <strong>Status:</strong> Pengajuan ini dialihkan dari <strong>${t.reassignedFrom}</strong> ke Anda</span>
+                <span>↳ <strong>Status:</strong> ${t.reassignedStatusLabel ? `<strong>${t.reassignedStatusLabel}</strong>` : `Pengajuan ini dialihkan dari <strong>${t.reassignedFrom}</strong> ke Anda`}</span>
                 <span style="font-size: 0.7rem; opacity: 0.85;">${t.reassignedAt || ''}</span>
               </div>
             ` : (() => {
@@ -1052,6 +1056,8 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
               catatanHtml = `<span style="color: var(--text-primary); font-size: 0.75rem; font-style: normal;" title="${(t.approverNote || '').replace(/"/g, '&quot;')}">"${noteText}"</span>`;
             } else if (t.rejectionReason) {
               catatanHtml = `<span style="color: #ef4444; font-size: 0.75rem;" title="${(t.rejectionReason || '').replace(/"/g, '&quot;')}">${t.rejectionReason}</span>`;
+            } else if (t.reassignedStatusLabel) {
+              catatanHtml = `<span style="color: #0284c7; font-size: 0.725rem; font-weight: 700;">${t.reassignedStatusLabel}</span>`;
             } else if (t.reassignedTo) {
               catatanHtml = `<span style="color: #f59e0b; font-size: 0.725rem;">Dialihkan ke ${t.reassignedTo}</span>`;
             }

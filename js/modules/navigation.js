@@ -1157,25 +1157,7 @@ function toggleRoleDropdown(category) {
   const wrapEl = document.getElementById(wrapId);
   if (!menuEl || !wrapEl) return;
 
-  const currentRole = window.currentActor || 'karyawan';
-  const isCategoryActive = (category === 'karyawan' && (currentRole === 'karyawan' || currentRole === 'karyawan2')) ||
-                           (category === 'approver' && (currentRole === 'approver' || currentRole === 'approver2')) ||
-                           (category === 'security' && currentRole === 'security');
-
-  // Jika tombol yang diklik adalah peran yang belum aktif saat ini, langsung alihkan ke peran tersebut di desktop web
-  if (!isCategoryActive) {
-    closeAllRoleDropdowns();
-    if (category === 'security') {
-      switchRole('security');
-    } else if (category === 'approver') {
-      switchRole('approver');
-    } else if (category === 'karyawan') {
-      switchRole('karyawan');
-    }
-    return;
-  }
-
-  // Jika sudah berada di peran tersebut, buka/tutup menu dropdown untuk memilih akun/pos spesifik
+  // Buka atau tutup menu dropdown akun saat tombol role diklik agar pengguna dapat memilih akun spesifik
   const isCurrentlyOpen = (menuEl.style.display === 'block');
   closeAllRoleDropdowns();
 
