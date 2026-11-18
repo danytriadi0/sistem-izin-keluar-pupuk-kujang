@@ -1437,27 +1437,62 @@ function renderKaryawanDashboard() {
         actionButtonsHtml = `
           ${(isKembali) ? (
             hasPendingExt ? `
-              <button class="btn-figma-secondary btn-pending-ext-notice" disabled style="opacity: 0.9; cursor: not-allowed; font-weight: 700;" title="Permohonan perpanjangan sedang ditinjau Atasan">
-                <span>Menunggu Persetujuan Perpanjangan</span>
-              </button>
+              <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                <div style="display: flex; gap: 8px; width: 100%;">
+                  <button class="btn-figma-secondary btn-pending-ext-notice" disabled style="flex: 1; opacity: 0.95; cursor: not-allowed; font-weight: 700; background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a;" title="Permohonan perpanjangan sedang ditinjau Atasan">
+                    <span>Menunggu Persetujuan Perpanjangan</span>
+                  </button>
+                  ${isGroupDinasActive ? `
+                    <button class="btn-figma-secondary" style="flex: 1; background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                      <span>💳 Simulasi Tap In Gerbang</span>
+                    </button>
+                  ` : `
+                    <button class="btn-figma-secondary" style="flex: 1; background:#059669; color:#ffffff; border-color:#059669; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                      <span>✓ Tap In Kartu Akses (Masuk)</span>
+                    </button>
+                  `}
+                </div>
+                <button type="button" class="btn-figma-danger" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
+                  <span>✕ Batalkan Perpanjangan</span>
+                </button>
+              </div>
             ` : (hasUsedExtension ? `
               <button class="btn-figma-secondary" disabled style="opacity: 0.6; cursor: not-allowed; background: #d97706;" title="Perpanjangan waktu hanya dapat diajukan maksimal 1 kali dan telah disetujui">
                 <span>Perpanjangan Telah Digunakan (Maks. 1x)</span>
               </button>
+              ${isGroupDinasActive ? `
+                <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                  <span>💳 Simulasi Tap In Gerbang</span>
+                </button>
+              ` : `
+                <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                  <span>✓ Tap In Kartu Akses (Masuk)</span>
+                </button>
+              `}
             ` : `
               <button class="btn-figma-secondary" style="font-weight: 700;" onclick="openExtendDurationModal('${activeTicket.id}')">
                 <span>Ajukan Perpanjangan</span>
               </button>
+              ${isGroupDinasActive ? `
+                <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                  <span>💳 Simulasi Tap In Gerbang</span>
+                </button>
+              ` : `
+                <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                  <span>✓ Tap In Kartu Akses (Masuk)</span>
+                </button>
+              `}
             `)
-          ) : ''}
-          ${isGroupDinasActive ? `
-            <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
-              <span>💳 Simulasi Tap In Gerbang</span>
-            </button>
-          ` : `
-            <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
-              <span>✓ Tap In Kartu Akses (Masuk)</span>
-            </button>
+          ) : `
+            ${isGroupDinasActive ? `
+              <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                <span>💳 Simulasi Tap In Gerbang</span>
+              </button>
+            ` : `
+              <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                <span>✓ Tap In Kartu Akses (Masuk)</span>
+              </button>
+            `}
           `}
         `;
       } else if (isEmergLocked) {
@@ -1824,27 +1859,62 @@ function renderPengajuanSayaView() {
       actionButtonsHtml = `
         ${(!isLateStatus && isKembali) ? (
           hasPendingExt ? `
-            <button class="btn-figma-secondary btn-pending-ext-notice" disabled style="opacity: 0.9; cursor: not-allowed; font-weight: 700;" title="Permohonan perpanjangan sedang ditinjau Atasan">
-              <span>Menunggu Persetujuan Perpanjangan</span>
-            </button>
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <button class="btn-figma-secondary btn-pending-ext-notice" disabled style="flex: 1; opacity: 0.95; cursor: not-allowed; font-weight: 700; background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a;" title="Permohonan perpanjangan sedang ditinjau Atasan">
+                  <span>Menunggu Persetujuan Perpanjangan</span>
+                </button>
+                ${isGroupDinasActive ? `
+                  <button class="btn-figma-secondary" style="flex: 1; background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                    <span>💳 Simulasi Tap In Gerbang</span>
+                  </button>
+                ` : `
+                  <button class="btn-figma-secondary" style="flex: 1; background:#059669; color:#ffffff; border-color:#059669; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                    <span>✓ Tap In Kartu Akses (Masuk)</span>
+                  </button>
+                `}
+              </div>
+              <button type="button" class="btn-figma-danger" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
+                <span>✕ Batalkan Perpanjangan</span>
+              </button>
+            </div>
           ` : (hasUsedExtension ? `
             <button class="btn-figma-secondary" disabled style="opacity: 0.6; cursor: not-allowed; background: #d97706" title="Perpanjangan waktu hanya dapat diajukan maksimal 1 kali dan telah disetujui">
               <span>Perpanjangan Telah Digunakan (Maks. 1x)</span>
             </button>
+            ${isGroupDinasActive ? `
+              <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                <span>💳 Simulasi Tap In Gerbang</span>
+              </button>
+            ` : `
+              <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                <span>✓ Tap In Kartu Akses (Masuk)</span>
+              </button>
+            `}
           ` : `
             <button class="btn-figma-secondary" style="font-weight: 700;" onclick="openExtendDurationModal('${activeTicket.id}')">
               <span>Ajukan Perpanjangan</span>
             </button>
+            ${isGroupDinasActive ? `
+              <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+                <span>💳 Simulasi Tap In Gerbang</span>
+              </button>
+            ` : `
+              <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+                <span>✓ Tap In Kartu Akses (Masuk)</span>
+              </button>
+            `}
           `)
-        ) : ''}
-        ${isGroupDinasActive ? `
-        <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
-          <span>💳 Simulasi Tap In Gerbang</span>
-        </button>
-        ` : `
-        <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
-          <span>✓ Tap In Kartu Akses (Masuk)</span>
-        </button>
+        ) : `
+          ${isGroupDinasActive ? `
+            <button class="btn-figma-secondary" style="background:#2563eb; color:#ffffff; border-color:#2563eb; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" onclick="window.openSimulasiTapInModal('${activeTicket.id}')" title="Tempelkan kartu akses gerbang masuk untuk mengunci waktu kepulangan">
+              <span>💳 Simulasi Tap In Gerbang</span>
+            </button>
+          ` : `
+            <button class="btn-figma-secondary" style="background:#059669; color:#ffffff; border-color:#059669; font-weight: 700;" onclick="executeScanIn('${activeTicket.id}')" title="Tap in kartu akses gerbang masuk">
+              <span>✓ Tap In Kartu Akses (Masuk)</span>
+            </button>
+          `}
         `}
       `;
     } else if (isEmergLocked) {

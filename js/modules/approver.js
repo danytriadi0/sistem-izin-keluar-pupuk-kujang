@@ -1736,7 +1736,7 @@ function confirmApproveDecision() {
   }
 
   const approveNoteInput = document.getElementById('approveNoteInput');
-  const note = (approveNoteInput && approveNoteInput.value.trim()) || 'Disetujui';
+  const note = (approveNoteInput && approveNoteInput.value.trim()) || 'Disetujui. Pastikan koordinasi selesai tepat waktu.';
   const now = new Date();
   const pad = (n) => String(n).padStart(2, '0');
   const nowFormatted = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][now.getMonth()]} ${now.getFullYear()}, ${pad(now.getHours())}:${pad(now.getMinutes())} WIB`;
@@ -2498,6 +2498,7 @@ window.confirmArrivalByApprover = function(ticketId) {
   t.status = 'Selesai';
   t.scanInTime = `${arrivalTime} (Dikonfirmasi Atasan: ${currentApprover.name})${wasOverdue ? ' [Terlambat]' : ''}`;
   if (wasOverdue) t.isLate = true;
+  t.arrivalConfirmNote = `Kehadiran fisik karyawan di area kerja telah diverifikasi langsung oleh Atasan (${currentApprover.name}). Izin resmi selesai.`;
 
   if (!t.timeline) t.timeline = [];
   t.timeline.push({

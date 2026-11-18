@@ -175,6 +175,23 @@
     return 'menunggu';
   }
 
+  function getMobileStatusBadge(t) {
+    if (!t) return `<span class="mobile-badge selesai">Selesai</span>`;
+    const status = t.status || 'Selesai';
+    const isLateCompleted = (status === 'Selesai') && (t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]')) || (t.lateMinutes > 0));
+
+    if (isLateCompleted) {
+      return `<span class="mobile-badge selesai-terlambat" style="background: #fef3c7; color: #b45309; border: 1.2px solid #fde68a; font-weight: 800; white-space: nowrap;">Selesai (Terlambat)</span>`;
+    }
+    if (status === 'Terlambat') {
+      return `<span class="mobile-badge terlambat" style="background: #fee2e2; color: #dc2626; border: 1.2px solid #fca5a5; font-weight: 800; white-space: nowrap;">Sedang di Luar (Terlambat)</span>`;
+    }
+    if (t.reassignedStatusLabel && (status === 'Menunggu Persetujuan' || status === 'Menunggu Otorisasi Darurat')) {
+      return `<span class="mobile-badge reassigned" style="background: #e0f2fe; color: #0284c7; border: 1.2px solid #bae6fd; font-weight: 800; white-space: nowrap;">${t.reassignedStatusLabel}</span>`;
+    }
+    return `<span class="mobile-badge ${getBadgeClass(status)}">${status}</span>`;
+  }
+
   function getMobileApprovers() {
     return [
       { name: 'Ir. Hendra Gunawan, M.T.', title: 'Manajer Rekayasa & Pemeliharaan', department: 'Departemen Rekayasa & Pemeliharaan', initials: 'HG', avatarBg: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)', nip: 'PK-2015-1002' },
@@ -353,7 +370,7 @@
     let recentHtml = recentTickets.map(t => `
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
         <div>
-          <div style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">${t.id} <span class="mobile-badge ${getBadgeClass(t.status)}" style="margin-left: 4px;">${t.status}</span></div>
+          <div style="font-size: 0.8rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;"><span>${t.id}</span> ${getMobileStatusBadge(t)}</div>
           <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">${t.category} • ${t.destination || 'Area Pabrik'}</div>
         </div>
         <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #475569; border-radius: 8px; flex-shrink: 0; cursor: pointer;  box-shadow: 0 1px 2px rgba(0,0,0,0.04);" onclick="window.mobileOpenTicketDetail('${t.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
@@ -756,7 +773,7 @@
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
             </div>
-            <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+            ${getMobileStatusBadge(t)}
           </div>
 
           <!-- Baris 2: Lokasi / Tujuan Keluar (Judul Utama - 1 Baris Ellipsis) -->
@@ -814,7 +831,7 @@
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
             </div>
-            <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+            ${getMobileStatusBadge(t)}
           </div>
 
           <div class="mobile-clamp-1" style="font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 2px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;" title="${destText.replace(/"/g, '&quot;')}">
@@ -1076,7 +1093,7 @@
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
             </div>
-            <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+            ${getMobileStatusBadge(t)}
           </div>
 
           <div class="mobile-clamp-1" style="font-size: 0.9rem; font-weight: 800; color: #0f172a; margin-bottom: 2px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;" title="${destText.replace(/"/g, '&quot;')}">
@@ -1473,7 +1490,7 @@
             </div>
             <h3 class="mobile-card-title" style="font-family: monospace; font-size: 0.95rem;">${t.id}</h3>
           </div>
-          <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+          ${getMobileStatusBadge(t)}
         </div>
 
         <div style="font-size: 0.775rem; color: #059669; font-weight: 700;">${t.category} • ${getTType(t)}</div>
@@ -1651,7 +1668,7 @@
             Anda Masih Memiliki Izin Aktif
           </h4>
           <p style="font-size: 0.8rem; color: #475569; margin: 0; line-height: 1.45;">
-            Tiket <strong>${activeTicket.id}</strong> saat ini masih berstatus <span class="mobile-badge ${getBadgeClass(activeTicket.status)}">${activeTicket.status}</span>.
+            Tiket <strong>${activeTicket.id}</strong> saat ini masih berstatus ${getMobileStatusBadge(activeTicket)}.
           </p>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-top: 14px; text-align: left; font-size: 0.75rem;">
             <strong style="color: #0f172a;">Kebijakan Sistem:</strong>
@@ -3936,7 +3953,7 @@
       <div class="mobile-sheet-body" style="text-align: center;">
         <div style="font-size: 0.8rem; color: #059669; font-weight: 700;">${t.category} • ${getTType(t)}</div>
         <div style="font-size: 1.15rem; font-weight: 800; font-family: monospace; color: #0f172a; margin: 2px 0 4px 0;">${t.id}</div>
-        <span class="mobile-badge ${getBadgeClass(t.status)}">${t.status}</span>
+        ${getMobileStatusBadge(t)}
 
         <!-- QR Box -->
         <div style="background: #ffffff; border: 2px solid #059669; border-radius: 16px; padding: 18px; margin: 16px auto; max-width: 220px; box-shadow: 0 4px 14px rgba(5,150,105,0.08);">
@@ -4070,25 +4087,55 @@
           ${(() => {
             const mRawNote = t.approverNote || t.approvalNote || '';
             const mRawRej = t.rejectionReason || t.rejectReason || '';
-            if (mRawRej) {
+            const mRawArrivalReject = t.arrivalRejectReason || '';
+            const mRawArrivalConfirm = t.arrivalConfirmNote || '';
+            const isAppr = (t.status === 'Disetujui' || t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat');
+            const isRej = t.status === 'Ditolak' || Boolean(mRawRej);
+            const isArrivalPending = t.status === 'Menunggu Bukti Kedatangan' || Boolean(mRawArrivalReject && !mRawArrivalConfirm);
+            const isArrivalDone = Boolean(mRawArrivalConfirm) || (t.status === 'Selesai' && t.scanInTime && t.scanInTime.includes('Dikonfirmasi Atasan'));
+
+            if (isRej) {
+              const text = mRawRej || (mRawNote ? mRawNote.replace(/^Ditolak:\s*/i, '') : 'Pengajuan izin tidak disetujui atasan.');
               return `
                 <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #fff1f2; border: 1px solid #fecdd3;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <div style="font-size: 0.725rem; color: #be123c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
                     <span style="font-size: 0.65rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 1px 6px; border-radius: 9999px;">Alasan Penolakan</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #9f1239; font-weight: 600; line-height: 1.45; word-break: break-word;">${mRawRej}</div>
+                  <div style="font-size: 0.75rem; color: #9f1239; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
-            } else if (mRawNote) {
-              const isAppr = (t.status === 'Disetujui' || t.status === 'Sedang di Luar' || t.status === 'Selesai' || t.status === 'Terlambat');
+            } else if (isArrivalPending) {
+              const text = mRawArrivalReject || 'Atasan menandai personel belum tiba di lokasi kerja. Silakan unggah foto bukti kehadiran.';
               return `
-                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: ${isAppr ? '#f0fdf4' : '#f8fafc'}; border: 1px solid ${isAppr ? '#bbf7d0' : '#e2e8f0'};">
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #fffbeb; border: 1px solid #fef3c7;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
-                    <span style="font-size: 0.65rem; font-weight: 700; color: ${isAppr ? '#15803d' : '#0284c7'}; background: ${isAppr ? '#dcfce7' : '#e0f2fe'}; padding: 1px 6px; border-radius: 9999px;">${isAppr ? 'Catatan Persetujuan' : 'Catatan Atasan'}</span>
+                    <div style="font-size: 0.725rem; color: #92400e; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #b45309; background: #fef3c7; padding: 1px 6px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${mRawNote}</div>
+                  <div style="font-size: 0.75rem; color: #78350f; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                </div>
+              `;
+            } else if (isArrivalDone) {
+              const text = mRawArrivalConfirm || (mRawNote && mRawNote !== 'Disetujui' ? mRawNote : 'Kehadiran fisik karyawan di area kerja telah diverifikasi langsung oleh Atasan. Izin resmi selesai.');
+              return `
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div style="font-size: 0.725rem; color: #166534; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 1px 6px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #14532d; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                </div>
+              `;
+            } else if (isAppr) {
+              const text = (mRawNote && mRawNote !== 'Disetujui' ? mRawNote : 'Disetujui. Pastikan koordinasi selesai tepat waktu.');
+              return `
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div style="font-size: 0.725rem; color: #166534; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 1px 6px; border-radius: 9999px;">Catatan Persetujuan</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #14532d; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
             }
@@ -4265,27 +4312,40 @@
                   Perpanjangan Telah Digunakan (Maks. 1x)
                 </button>
               ` : (t.hasExtensionPending || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan')) ? `
-                <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
-                  <button type="button" class="mobile-btn-secondary" disabled style="background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a; min-height: 38px; font-weight: 700; opacity: 0.95; cursor: not-allowed; border-radius: 8px; text-align: center; width: 100%;">
-                    Menunggu Persetujuan Perpanjangan
-                  </button>
-                  <button type="button" class="mobile-btn-secondary" style="background: #ffffff; color: #b91c1c; border: 1.5px solid #fca5a5; min-height: 36px; font-size: 0.75rem; font-weight: 700; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;" onclick="window.mobileCancelPendingExtension('${t.id}')">
-                    ✕ Tarik / Batalkan Pengajuan Perpanjangan
+                <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;">
+                    <button type="button" class="mobile-btn-secondary" disabled style="background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a; min-height: 40px; font-size: 0.725rem; font-weight: 700; opacity: 0.95; cursor: not-allowed; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; padding: 0 4px;">
+                      Menunggu Persetujuan
+                    </button>
+                    ${isGroupDinasActive ? `
+                      <button type="button" class="mobile-btn-primary" style="background: #2563eb; color: #ffffff; border: 1.5px solid #2563eb; min-height: 40px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 8px; padding: 0 4px;" onclick="window.mobileCloseSheet(); if(typeof window.openSimulasiTapInModal==='function') window.openSimulasiTapInModal('${t.id}'); else window.mobileExecuteTapIn('${t.id}');">
+                        💳 Tap In Gerbang
+                      </button>
+                    ` : `
+                      <button type="button" class="mobile-btn-primary" style="background: #059669; color: #ffffff; border: 1.5px solid #059669; min-height: 40px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 8px; padding: 0 4px;" onclick="window.mobileCloseSheet(); window.mobileExecuteTapIn('${t.id}');">
+                        ✓ Tap In Masuk
+                      </button>
+                    `}
+                  </div>
+                  <button type="button" class="mobile-btn-secondary" style="background: #ffffff; color: #b91c1c; border: 1.5px solid #fca5a5; min-height: 36px; font-size: 0.775rem; font-weight: 700; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;" onclick="window.mobileCancelPendingExtension('${t.id}')">
+                    ✕ Batalkan Perpanjangan
                   </button>
                 </div>
               ` : `
-                <button type="button" class="mobile-btn-secondary mobile-btn-extend-solid" style="background: #d97706; color: #ffffff; border: 1.5px solid #d97706; min-height: 40px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; width: 100%;" onclick="window.mobileCloseSheet(); window.mobileOpenPerpanjanganModal('${t.id}')">
-                  Ajukan Perpanjangan Waktu
-                </button>
-              `}
-              ${isGroupDinasActive ? `
-                <button type="button" class="mobile-btn-primary" style="background: #2563eb; color: #ffffff; border: 1.5px solid #2563eb; min-height: 40px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; width: 100%; margin-top: 4px;" onclick="window.mobileCloseSheet(); if(typeof window.openSimulasiTapInModal==='function') window.openSimulasiTapInModal('${t.id}'); else window.mobileExecuteTapIn('${t.id}');">
-                  💳 Simulasi Tap In Gerbang Masuk
-                </button>
-              ` : `
-                <button type="button" class="mobile-btn-primary" style="background: #059669; color: #ffffff; border: 1.5px solid #059669; min-height: 40px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; width: 100%; margin-top: 4px;" onclick="window.mobileCloseSheet(); window.mobileExecuteTapIn('${t.id}');">
-                  ✓ Tap In Kartu Akses (Masuk)
-                </button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;">
+                  <button type="button" class="mobile-btn-secondary mobile-btn-extend-solid" style="background: #d97706; color: #ffffff; border: 1.5px solid #d97706; min-height: 40px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; padding: 0 4px;" onclick="window.mobileCloseSheet(); window.mobileOpenPerpanjanganModal('${t.id}')">
+                    Perpanjangan
+                  </button>
+                  ${isGroupDinasActive ? `
+                    <button type="button" class="mobile-btn-primary" style="background: #2563eb; color: #ffffff; border: 1.5px solid #2563eb; min-height: 40px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 8px; padding: 0 4px;" onclick="window.mobileCloseSheet(); if(typeof window.openSimulasiTapInModal==='function') window.openSimulasiTapInModal('${t.id}'); else window.mobileExecuteTapIn('${t.id}');">
+                      💳 Tap In Gerbang
+                    </button>
+                  ` : `
+                    <button type="button" class="mobile-btn-primary" style="background: #059669; color: #ffffff; border: 1.5px solid #059669; min-height: 40px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 8px; padding: 0 4px;" onclick="window.mobileCloseSheet(); window.mobileExecuteTapIn('${t.id}');">
+                      ✓ Tap In Masuk
+                    </button>
+                  `}
+                </div>
               `}
             ` : ''}
             ${isFinished ? `

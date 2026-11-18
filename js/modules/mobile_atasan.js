@@ -3259,7 +3259,7 @@
     }
 
     isExecutingAtasanDecision = true;
-    const note = defaultNote || document.getElementById('mAtasanDetailNote')?.value || (decision === 'approve' ? 'Disetujui.' : 'Ditolak: Alasan dinas belum memadai.');
+    const note = defaultNote || document.getElementById('mAtasanDetailNote')?.value || (decision === 'approve' ? 'Disetujui. Pastikan koordinasi selesai tepat waktu.' : 'Ditolak: Alasan dinas belum memadai.');
 
     if (t) {
       const now = new Date();

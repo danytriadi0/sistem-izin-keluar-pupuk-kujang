@@ -2029,13 +2029,18 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
 
   const rawApproverNote = ticket.approverNote || ticket.approvalNote || '';
   const rawRejectionReason = ticket.rejectionReason || ticket.rejectReason || '';
-  const hasApproverNote = Boolean(rawApproverNote && rawApproverNote.trim());
-  const hasRejection = Boolean(rawRejectionReason && rawRejectionReason.trim()) || ticket.status === 'Ditolak';
+  const rawArrivalReject = ticket.arrivalRejectReason || '';
+  const rawArrivalConfirm = ticket.arrivalConfirmNote || '';
+  const isApprovedState = ['Disetujui', 'Sedang di Luar', 'Selesai', 'Terlambat'].includes(ticket.status);
+  const isRejectedState = ticket.status === 'Ditolak' || Boolean(rawRejectionReason);
+  const isArrivalPendingProof = ticket.status === 'Menunggu Bukti Kedatangan' || Boolean(rawArrivalReject && !rawArrivalConfirm);
+  const isArrivalConfirmed = Boolean(rawArrivalConfirm) || (ticket.status === 'Selesai' && ticket.scanInTime && ticket.scanInTime.includes('Dikonfirmasi Atasan'));
 
   if (secCatatanAtasan && txtCatatanAtasan) {
-    if (hasRejection && rawRejectionReason) {
+    if (isRejectedState) {
       secCatatanAtasan.style.display = 'block';
-      txtCatatanAtasan.textContent = rawRejectionReason;
+      const text = rawRejectionReason || (rawApproverNote ? rawApproverNote.replace(/^Ditolak:\s*/i, '') : 'Pengajuan izin tidak disetujui atasan.');
+      txtCatatanAtasan.textContent = text;
       if (badgeCatatanAtasan) {
         badgeCatatanAtasan.textContent = 'Alasan Penolakan';
         badgeCatatanAtasan.style.color = '#dc2626';
@@ -2046,19 +2051,47 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
         boxCatatanAtasan.style.background = '#fff1f2';
         boxCatatanAtasan.style.borderColor = '#fecdd3';
       }
-    } else if (hasApproverNote) {
+    } else if (isArrivalPendingProof) {
       secCatatanAtasan.style.display = 'block';
-      txtCatatanAtasan.textContent = rawApproverNote;
+      const text = rawArrivalReject || 'Atasan menandai personel belum tiba di lokasi kerja. Silakan unggah foto bukti kehadiran.';
+      txtCatatanAtasan.textContent = text;
       if (badgeCatatanAtasan) {
-        const isApproved = (ticket.status === 'Disetujui' || ticket.status === 'Sedang di Luar' || ticket.status === 'Selesai' || ticket.status === 'Terlambat');
-        badgeCatatanAtasan.textContent = isApproved ? 'Catatan Persetujuan' : 'Catatan Atasan';
-        badgeCatatanAtasan.style.color = isApproved ? '#15803d' : '#0284c7';
-        badgeCatatanAtasan.style.background = isApproved ? '#dcfce7' : '#e0f2fe';
-        badgeCatatanAtasan.style.borderColor = isApproved ? '#bbf7d0' : '#bae6fd';
+        badgeCatatanAtasan.textContent = 'Konfirmasi Kehadiran';
+        badgeCatatanAtasan.style.color = '#b45309';
+        badgeCatatanAtasan.style.background = '#fef3c7';
+        badgeCatatanAtasan.style.borderColor = '#fde68a';
       }
       if (boxCatatanAtasan) {
-        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
-        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.background = '#fffbeb';
+        boxCatatanAtasan.style.borderColor = '#fef3c7';
+      }
+    } else if (isArrivalConfirmed) {
+      secCatatanAtasan.style.display = 'block';
+      const text = rawArrivalConfirm || (rawApproverNote && rawApproverNote !== 'Disetujui' ? rawApproverNote : 'Kehadiran fisik karyawan di area kerja telah diverifikasi langsung oleh Atasan. Izin resmi selesai.');
+      txtCatatanAtasan.textContent = text;
+      if (badgeCatatanAtasan) {
+        badgeCatatanAtasan.textContent = 'Konfirmasi Kehadiran';
+        badgeCatatanAtasan.style.color = '#15803d';
+        badgeCatatanAtasan.style.background = '#dcfce7';
+        badgeCatatanAtasan.style.borderColor = '#bbf7d0';
+      }
+      if (boxCatatanAtasan) {
+        boxCatatanAtasan.style.background = '#f0fdf4';
+        boxCatatanAtasan.style.borderColor = '#bbf7d0';
+      }
+    } else if (isApprovedState) {
+      secCatatanAtasan.style.display = 'block';
+      const text = (rawApproverNote && rawApproverNote !== 'Disetujui' ? rawApproverNote : 'Disetujui. Pastikan koordinasi selesai tepat waktu.');
+      txtCatatanAtasan.textContent = text;
+      if (badgeCatatanAtasan) {
+        badgeCatatanAtasan.textContent = 'Catatan Persetujuan';
+        badgeCatatanAtasan.style.color = '#15803d';
+        badgeCatatanAtasan.style.background = '#dcfce7';
+        badgeCatatanAtasan.style.borderColor = '#bbf7d0';
+      }
+      if (boxCatatanAtasan) {
+        boxCatatanAtasan.style.background = '#f0fdf4';
+        boxCatatanAtasan.style.borderColor = '#bbf7d0';
       }
     } else {
       secCatatanAtasan.style.display = 'none';
@@ -4921,9 +4954,9 @@ function closePendingExtensionDetailModal() {
   if (modal) modal.classList.remove('open');
 }
 
-function executeCancelPendingExtension() {
+function executeCancelPendingExtension(targetTicketId) {
   const ticketsList = window.ticketsList || [];
-  const ticketId = window.currentPendingExtTicketId;
+  const ticketId = targetTicketId || window.currentPendingExtTicketId;
   const ticket = ticketsList.find(t => t.id === ticketId) || (typeof window.getActiveTicket === 'function' ? window.getActiveTicket() : null);
 
   if (!ticket || !ticket.pendingExtension) {
