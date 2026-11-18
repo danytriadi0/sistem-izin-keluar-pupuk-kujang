@@ -281,6 +281,22 @@ function handleOpenNewRequest() {
 // FITUR EDIT PENGAJUAN (BIASA & DARURAT SEBELUM DISETUJUI ATASAN)
 // ===================================================================
 
+function formatForDateTimeLocalInput(val) {
+  if (!val) return '';
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(val)) {
+    return val.slice(0, 16);
+  }
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(val)) {
+    return val.replace(/\s+/, 'T').slice(0, 16);
+  }
+  const d = (typeof window.parseTicketDateTime === 'function') ? window.parseTicketDateTime(val) : new Date(val);
+  if (d && !isNaN(d.getTime())) {
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  return '';
+}
+
 function openEditTicketModal(ticketId) {
   const isKaryawanActor = (window.currentActor === 'karyawan' || window.currentActor === 'karyawan2' || !window.currentActor);
   if (!isKaryawanActor) {
@@ -323,6 +339,11 @@ function openEditTicketModal(ticketId) {
       window.showToast('Tiket ini sudah disetujui / diproses dan tidak dapat diedit lagi!', 'warning');
     }
     return;
+  }
+
+  // Pastikan navigasi berada di halaman Pengajuan Saya jika dipicu dari Dashboard
+  if (typeof window.setKaryawanNav === 'function' && window.currentKaryawanNav !== 'pengajuan') {
+    window.setKaryawanNav('pengajuan');
   }
 
   // Tutup modal detail atau unlock jika sedang terbuka
@@ -381,7 +402,10 @@ function openEditNormalModal(ticket) {
   const selectReqCategory = document.getElementById('selectReqCategory');
   const selectReqType = document.getElementById('selectReqType');
   const groupEstimatedReturn = document.getElementById('groupEstimatedReturn');
-  if (selectReqCategory) selectReqCategory.value = ticket.category || 'Dinas Perusahaan';
+  if (selectReqCategory) {
+    selectReqCategory.value = (ticket.category === 'Urusan Pribadi') ? 'Urusan Pribadi' : 'Dinas Kantor';
+    selectReqCategory.dispatchEvent(new Event('change'));
+  }
   if (selectReqType) {
     selectReqType.value = ticket.type || 'Kembali ke Area';
     selectReqType.dispatchEvent(new Event('change'));
@@ -400,10 +424,10 @@ function openEditNormalModal(ticket) {
   const inputPlannedExit = document.getElementById('inputPlannedExit');
   const inputEstimatedReturn = document.getElementById('inputEstimatedReturn');
   if (inputPlannedExit && ticket.plannedExit) {
-    inputPlannedExit.value = ticket.plannedExit;
+    inputPlannedExit.value = formatForDateTimeLocalInput(ticket.plannedExit);
   }
   if (inputEstimatedReturn && ticket.estimatedReturn) {
-    inputEstimatedReturn.value = ticket.estimatedReturn;
+    inputEstimatedReturn.value = formatForDateTimeLocalInput(ticket.estimatedReturn);
   }
 
   // 7. Anggota Rombongan & Surat Perintah (Khusus Dinas Kantor)
@@ -474,7 +498,10 @@ function openEditEmergencyModal(ticket) {
   const selectEmergCategory = document.getElementById('selectEmergCategory');
   const selectEmergType = document.getElementById('selectEmergType');
   const emergGroupEstimatedReturn = document.getElementById('emergGroupEstimatedReturn');
-  if (selectEmergCategory) selectEmergCategory.value = ticket.category || 'Dinas Kantor';
+  if (selectEmergCategory) {
+    selectEmergCategory.value = (ticket.category === 'Urusan Pribadi') ? 'Urusan Pribadi' : 'Dinas Kantor';
+    selectEmergCategory.dispatchEvent(new Event('change'));
+  }
   if (selectEmergType) {
     selectEmergType.value = ticket.type || 'Kembali ke Area';
     selectEmergType.dispatchEvent(new Event('change'));
@@ -493,10 +520,10 @@ function openEditEmergencyModal(ticket) {
   const emergPlannedExit = document.getElementById('emergPlannedExit');
   const emergEstimatedReturn = document.getElementById('emergEstimatedReturn');
   if (emergPlannedExit && ticket.plannedExit) {
-    emergPlannedExit.value = ticket.plannedExit;
+    emergPlannedExit.value = formatForDateTimeLocalInput(ticket.plannedExit);
   }
   if (emergEstimatedReturn && ticket.estimatedReturn) {
-    emergEstimatedReturn.value = ticket.estimatedReturn;
+    emergEstimatedReturn.value = formatForDateTimeLocalInput(ticket.estimatedReturn);
   }
 
   // 7. Pilih Metode Otorisasi Buka Kunci QR (Tepat satu metode)

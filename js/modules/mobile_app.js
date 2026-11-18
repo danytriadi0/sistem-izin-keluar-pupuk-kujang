@@ -167,7 +167,7 @@
       avatarEl.title = 'Sertu Agus (Pos Jaga) — Klik untuk ganti peran';
     }
 
-    avatarEl.innerHTML = `<img src="${photoUrl}" alt="${initials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.onerror=null; this.parentElement.textContent='${initials}';">`;
+    avatarEl.innerHTML = `<img src="${photoUrl}" alt="${initials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.onerror=null; if(this.parentElement) this.parentElement.textContent='${initials}';">`;
   }
 
   function renderBottomNav() {
@@ -760,7 +760,7 @@
         <!-- User Info Card -->
         <div class="mobile-avatar-sheet-card">
           <div class="mobile-avatar-sheet-circle" style="background: ${profile.avatarBg}; overflow: hidden; padding: 0;">
-            <img src="${profile.photoUrl}" alt="${profile.initials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.onerror=null; this.parentElement.textContent='${profile.initials}';">
+            <img src="${profile.photoUrl}" alt="${profile.initials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" onerror="this.onerror=null; if(this.parentElement) this.parentElement.textContent='${profile.initials}';">
           </div>
           <div style="flex: 1; min-width: 0;">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">

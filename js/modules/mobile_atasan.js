@@ -556,18 +556,11 @@
               "${pendingEmergTicket.reason || 'Kondisi darurat mendadak'}"
             </div>
             
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-              <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 42px; padding: 8px 10px; font-size: 0.775rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileOpenRejectSheet('${pendingEmergTicket.id}')">
-                Tolak
-              </button>
-              <button type="button" class="mobile-btn-approve" style="flex: 1; min-height: 42px; padding: 8px 10px; font-size: 0.775rem; font-weight: 800; background: #059669; color: #ffffff; border: 1.5px solid #059669; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileAtasanApproveEmergency('${pendingEmergTicket.id}')">
-                Setujui
-              </button>
-            </div>
-
-            <!-- Tombol Detail Pengajuan di Bawah Tombol Setujui atau Tolak -->
             <div style="margin-top: 8px;">
-              <button type="button" class="mobile-btn-secondary" title="Detail Pengajuan" aria-label="Detail Pengajuan" style="width: 100%; min-height: 38px; padding: 6px 12px; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px; cursor: pointer;" onclick="window.mobileOpenAtasanDetailModal('${pendingEmergTicket.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></button>
+              <button type="button" class="mobile-btn-primary" style="width: 100%; min-height: 42px; font-weight: 700; background: #be123c; border-color: #be123c; color: #ffffff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="window.mobileOpenAtasanDetailModal('${pendingEmergTicket.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                <span>Tinjau</span>
+              </button>
             </div>
           </div>
         `;
@@ -1162,31 +1155,9 @@
                 </div>
               </div>
 
-              ${isEmg ? (isReassignedAway ? `
-                <div style="margin-top: 8px;">
-                  <button type="button" class="mobile-btn-secondary" style="width: 100%; min-height: 42px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                    <span>Pantau Rincian</span>
-                  </button>
-                </div>
-              ` : `
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                  <button type="button" class="mobile-btn-secondary" style="flex: 1; min-height: 44px; padding: 8px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; border-radius: 8px;" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                    <span>Detail</span>
-                  </button>
-                  <button type="button" class="mobile-btn-danger" style="flex: 1; min-height: 44px; padding: 8px; font-size: 0.775rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1.5px solid #dc2626; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileAtasanExecuteDecision('${t.id}', 'reject')">
-                    Tolak
-                  </button>
-                  <button type="button" class="mobile-btn-primary" style="flex: 1.2; min-height: 44px; padding: 8px; font-size: 0.775rem; font-weight: 800; background: #059669; border-color: #059669; color: #ffffff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.mobileAtasanApproveEmergency('${t.id}')">
-                    Setujui
-                  </button>
-                </div>
-              `) : `
-                <button type="button" class="mobile-btn-primary" style="margin-top: 4px; ${isReassignedAway ? 'background: #475569; border-color: #475569;' : ''}" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
-                  ${isReassignedAway ? 'Pantau Rincian' : 'Tinjau'}
-                </button>
-              `}
+              <button type="button" class="mobile-btn-primary" style="margin-top: 6px; ${isReassignedAway ? 'background: #475569; border-color: #475569;' : (isEmg ? 'background: #be123c; border-color: #be123c;' : '')}" onclick="window.mobileOpenAtasanDetailModal('${t.id}')">
+                ${isReassignedAway ? 'Pantau Rincian' : 'Tinjau'}
+              </button>
             </div>
           `;
         }).join('');

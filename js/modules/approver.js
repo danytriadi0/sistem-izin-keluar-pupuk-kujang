@@ -552,18 +552,10 @@ function renderApproverDashboard() {
                 Diajukan: ${typeof window.formatDisplayCreatedDate === 'function' ? window.formatDisplayCreatedDate(emg.createdAt) : emg.createdAt}
               </span>
               <div style="display: flex; gap: 0.35rem; align-items: center;">
-                <button class="btn-card-detail" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;" onclick="openTicketDetail('${emg.id}', 'detail')">
+                <button class="btn-approve" style="padding: 0.4rem 0.85rem; font-size: 0.75rem; background: #be123c; border: 1px solid #be123c; color: #ffffff; font-weight: 700; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="openTicketDetail('${emg.id}', 'detail')">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-                  <span>Detail Pengajuan</span>
+                  <span>Tinjau</span>
                 </button>
-                ${!isFaceScanMethod ? `
-                  <button class="btn-reject" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight: 700; background: #dc2626; color: #ffffff; border: 1px solid #dc2626; border-radius: 6px; cursor: pointer;" onclick="openRejectModal('${emg.id}')">✕ Tolak</button>
-                  <button class="btn-approve" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background: #059669; font-weight: 800; border-radius: 6px;" onclick="window.emergencyDirectApprove('${emg.id}')">⚡ Setujui</button>
-                ` : `
-                  <span style="font-size: 0.72rem; color: #7e22ce; background: #faf5ff; border: 1px solid #e9d5ff; padding: 4px 8px; border-radius: 6px; font-weight: 700;">
-                    Menunggu Scan Wajah
-                  </span>
-                `}
               </div>
             </div>
           </div>

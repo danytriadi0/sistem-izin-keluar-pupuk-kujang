@@ -1158,9 +1158,25 @@ function toggleRoleDropdown(category) {
   if (!menuEl || !wrapEl) return;
 
   const currentRole = window.currentActor || 'karyawan';
-  const isCurrentlyOpen = (menuEl.style.display === 'block');
+  const isCategoryActive = (category === 'karyawan' && (currentRole === 'karyawan' || currentRole === 'karyawan2')) ||
+                           (category === 'approver' && (currentRole === 'approver' || currentRole === 'approver2')) ||
+                           (category === 'security' && currentRole === 'security');
 
-  // Tombol hanya membuka/menutup dropdown pilihan akun tanpa langsung beralih role secara otomatis
+  // Jika tombol yang diklik adalah peran yang belum aktif saat ini, langsung alihkan ke peran tersebut di desktop web
+  if (!isCategoryActive) {
+    closeAllRoleDropdowns();
+    if (category === 'security') {
+      switchRole('security');
+    } else if (category === 'approver') {
+      switchRole('approver');
+    } else if (category === 'karyawan') {
+      switchRole('karyawan');
+    }
+    return;
+  }
+
+  // Jika sudah berada di peran tersebut, buka/tutup menu dropdown untuk memilih akun/pos spesifik
+  const isCurrentlyOpen = (menuEl.style.display === 'block');
   closeAllRoleDropdowns();
 
   if (!isCurrentlyOpen) {
@@ -1207,7 +1223,11 @@ function selectQuickSwitchAccount(category, nip) {
   const users = (typeof window.loadUsers === 'function' ? window.loadUsers() : window.MOCK_USERS) || [];
   const matchedUser = users.find(u => u.nip === nip);
 
-  if (!matchedUser) {
+  const store = typeof getQuickSwitchAccounts === 'function' ? getQuickSwitchAccounts() : {};
+  const accounts = (store && store[category]) ? store[category] : [];
+  const acc = accounts.find(a => a.nip === nip) || null;
+
+  if (!matchedUser && !acc) {
     if (typeof window.openNoticeModal === 'function') {
       window.openNoticeModal({
         title: 'Hak Akses Anda Telah Dihapus',

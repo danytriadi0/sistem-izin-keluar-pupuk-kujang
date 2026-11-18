@@ -1682,7 +1682,20 @@ window.switchFullPermitTab = function(tab) {
 window.handleCancelFullForm = function() {
   const activeTicket = typeof window.getActiveTicket === 'function' ? window.getActiveTicket() : null;
   document.body.classList.remove('modal-open');
+  window.editingTicketId = null;
+  window.editingEmergencyTicketId = null;
+  window.pendingFormData = null;
+
+  const karyawanFullFormContainer = document.getElementById('karyawanFullFormContainer');
+  const karyawanActiveTicketWrapper = document.getElementById('karyawanActiveTicketWrapper');
+  const modalNewRequest = document.getElementById('modalNewRequest');
+  const modalEmergency = document.getElementById('modalEmergency');
+  if (modalNewRequest) modalNewRequest.classList.remove('open');
+  if (modalEmergency) modalEmergency.classList.remove('open');
+
   if (activeTicket) {
+    if (karyawanFullFormContainer) karyawanFullFormContainer.style.display = 'none';
+    if (karyawanActiveTicketWrapper) karyawanActiveTicketWrapper.style.display = 'block';
     if (typeof renderPengajuanSayaView === 'function') {
       renderPengajuanSayaView();
     }
