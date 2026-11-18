@@ -2028,6 +2028,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   const boxCatatanAtasan = document.getElementById('detailCatatanAtasanBox');
 
   const rawApproverNote = ticket.approverNote || ticket.approvalNote || '';
+  const rawSystemNote = ticket.systemNote || '';
   const rawRejectionReason = ticket.rejectionReason || ticket.rejectReason || '';
   const rawArrivalReject = ticket.arrivalRejectReason || '';
   const rawArrivalConfirm = ticket.arrivalConfirmNote || '';
@@ -2035,6 +2036,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   const isRejectedState = ticket.status === 'Ditolak' || Boolean(rawRejectionReason);
   const isArrivalPendingProof = ticket.status === 'Menunggu Bukti Kedatangan' || Boolean(rawArrivalReject && !rawArrivalConfirm);
   const isArrivalConfirmed = Boolean(rawArrivalConfirm) || (ticket.status === 'Selesai' && ticket.scanInTime && ticket.scanInTime.includes('Dikonfirmasi Atasan'));
+  const hasReassignmentNote = Boolean(rawSystemNote || (rawApproverNote && (rawApproverNote.includes('bawahan dari') || rawApproverNote.includes('Hak akses'))));
 
   if (secCatatanAtasan && txtCatatanAtasan) {
     if (isRejectedState) {
@@ -2048,8 +2050,9 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
         badgeCatatanAtasan.style.borderColor = '#fecdd3';
       }
       if (boxCatatanAtasan) {
-        boxCatatanAtasan.style.background = '#fff1f2';
-        boxCatatanAtasan.style.borderColor = '#fecdd3';
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.color = 'var(--text-primary, #0f172a)';
       }
     } else if (isArrivalPendingProof) {
       secCatatanAtasan.style.display = 'block';
@@ -2062,8 +2065,9 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
         badgeCatatanAtasan.style.borderColor = '#fde68a';
       }
       if (boxCatatanAtasan) {
-        boxCatatanAtasan.style.background = '#fffbeb';
-        boxCatatanAtasan.style.borderColor = '#fef3c7';
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.color = 'var(--text-primary, #0f172a)';
       }
     } else if (isArrivalConfirmed) {
       secCatatanAtasan.style.display = 'block';
@@ -2076,8 +2080,9 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
         badgeCatatanAtasan.style.borderColor = '#bbf7d0';
       }
       if (boxCatatanAtasan) {
-        boxCatatanAtasan.style.background = '#f0fdf4';
-        boxCatatanAtasan.style.borderColor = '#bbf7d0';
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.color = 'var(--text-primary, #0f172a)';
       }
     } else if (isApprovedState) {
       secCatatanAtasan.style.display = 'block';
@@ -2090,8 +2095,24 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
         badgeCatatanAtasan.style.borderColor = '#bbf7d0';
       }
       if (boxCatatanAtasan) {
-        boxCatatanAtasan.style.background = '#f0fdf4';
-        boxCatatanAtasan.style.borderColor = '#bbf7d0';
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.color = 'var(--text-primary, #0f172a)';
+      }
+    } else if (hasReassignmentNote) {
+      secCatatanAtasan.style.display = 'block';
+      const text = rawSystemNote || rawApproverNote;
+      txtCatatanAtasan.textContent = text;
+      if (badgeCatatanAtasan) {
+        badgeCatatanAtasan.textContent = 'Catatan Pengalihan';
+        badgeCatatanAtasan.style.color = '#0369a1';
+        badgeCatatanAtasan.style.background = '#e0f2fe';
+        badgeCatatanAtasan.style.borderColor = '#bae6fd';
+      }
+      if (boxCatatanAtasan) {
+        boxCatatanAtasan.style.background = 'var(--bg-subtle, #f8fafc)';
+        boxCatatanAtasan.style.borderColor = 'var(--border-color, #e2e8f0)';
+        boxCatatanAtasan.style.color = 'var(--text-primary, #0f172a)';
       }
     } else {
       secCatatanAtasan.style.display = 'none';
@@ -2110,7 +2131,12 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
 
   const infoApproverLbl = document.getElementById('infoApproverLbl');
   if (infoApproverLbl) {
-    if (ticket.reassignedFrom) {
+    if (ticket.reassignedStatusLabel) {
+      infoApproverLbl.innerHTML = `
+        <div style="font-size:0.85rem; font-weight:800; color:var(--text-primary, #0f172a); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3;">${approverName}</div>
+        <div style="font-size:0.725rem; color:#0284c7; font-weight:700; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">↳ ${ticket.reassignedStatusLabel}</div>
+      `;
+    } else if (ticket.reassignedFrom) {
       infoApproverLbl.innerHTML = `
         <div style="font-size:0.85rem; font-weight:800; color:var(--text-primary, #0f172a); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3;">${approverName}</div>
         <div style="font-size:0.725rem; color:#b45309; font-weight:600; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">↳ Dialihkan dari ${ticket.reassignedFrom}</div>
@@ -3820,7 +3846,8 @@ document.addEventListener('DOMContentLoaded', () => {
         createdAt: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
         approverName: chosenApproverName,
         approverNip: approverNip,
-        approverNote: null,
+        approverNote: isReassignedFromStart ? `${activeEmp ? activeEmp.name : 'Budi Pratama, S.T.'} bawahan dari ${directSup} mengalihkan pengajuan kepada anda.` : null,
+        systemNote: isReassignedFromStart ? `${activeEmp ? activeEmp.name : 'Budi Pratama, S.T.'} bawahan dari ${directSup} mengalihkan pengajuan kepada anda.` : null,
         reassignedFrom: isReassignedFromStart ? directSup : null,
         reassignedFromNip: isReassignedFromStart ? directSupNip : null,
         reassignedTo: isReassignedFromStart ? chosenApproverName : null,

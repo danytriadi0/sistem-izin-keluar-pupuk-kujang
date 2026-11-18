@@ -977,7 +977,7 @@ function getQuickSwitchAccounts() {
     ],
     security: [
       { nip: 'SEC-2018-042', name: 'Sertu Agus', fullTitle: 'Pos 1 (Gerbang Utama)', roleKey: 'security', gateName: 'Pos 1 Gerbang Utama' },
-      { nip: 'SEC-2019-088', name: 'Kopda Bambang', fullTitle: 'Pos 2 (Logistik)', roleKey: 'security', gateName: 'Pos 2 Gerbang Logistik' },
+      { nip: 'SEC-2019-088', name: 'Kopral Dani', fullTitle: 'Pos 2 (Gerbang Barat)', roleKey: 'security', gateName: 'Pos 2 Gerbang Barat' },
       { nip: 'SEC-2020-105', name: 'Praka Ilham', fullTitle: 'Pos 3 (Gerbang Timur)', roleKey: 'security', gateName: 'Pos 3 Gerbang Timur' }
     ]
   };
@@ -1282,7 +1282,7 @@ function selectQuickSwitchAccount(category, nip) {
       if (nip === 'SEC-2020-105' || (secUser && secUser.role && secUser.role.includes('Pos 3'))) {
         gate = 'Pos 3 Gerbang Timur';
       } else if (nip === 'SEC-2019-088' || (secUser && secUser.role && secUser.role.includes('Pos 2'))) {
-        gate = 'Pos 2 Gerbang Logistik';
+        gate = 'Pos 2 Gerbang Barat';
       } else {
         gate = 'Pos 1 Gerbang Utama';
       }

@@ -51,7 +51,7 @@
       <div style="font-weight: 700; color: #000000; font-size: 8.5pt;">${name}</div>
       <div style="font-size: 7.5pt; color: #475569;">NIP: ${nip}</div>
       <div style="font-size: 7.5pt; color: #008444; font-weight: 700; margin-top: 2px;">
-        ${id} ${isGroup ? `<span style="font-size: 6.5pt; background: #e0f2fe; color: #0369a1; padding: 1px 4px; border-radius: 3px; font-weight: 700;">Tim (${memberCount})</span>` : ''}
+        ${id} ${isGroup ? `<span style="font-size: 6.5pt; background: #e0f2fe; color: #0369a1; padding: 1px 4px; border-radius: 3px; font-weight: 700;">👥 Tim (${memberCount})</span>` : ''}
       </div>
     `;
   }

@@ -1869,8 +1869,10 @@
             <span class="mobile-badge ${statusBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${(isSelesai && isLate) ? 'Selesai (Terlambat)' : (t.status === 'Terlambat' ? 'Sedang di Luar (Terlambat)' : (isLate ? 'Sedang di Luar (Terlambat)' : t.status))}</span>
           </div>
 
-          <div style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 2px;">
-            ${t.id}
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
+            <span style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569;">${t.id}</span>
+            ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">🚨 Darurat</span>' : ''}
+            ${(t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">👥 Tim</span>' : ''}
           </div>
           ${t.reassignedTo ? `<div style="font-size: 0.7rem; color: #b45309; font-weight: 700; margin-bottom: 2px;">↳ Dialihkan ke ${t.reassignedTo}</div>` : ''}
           <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px;">
@@ -2295,8 +2297,10 @@
             <span class="mobile-badge ${statusBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${t.status}</span>
           </div>
 
-          <div style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 2px;">
-            ${t.id}
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 2px;">
+            <span style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #475569;">${t.id}</span>
+            ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">🚨 Darurat</span>' : ''}
+            ${(t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">👥 Tim</span>' : ''}
           </div>
           ${t.reassignedTo ? `<div style="font-size: 0.7rem; color: #b45309; font-weight: 700; margin-bottom: 2px;">↳ Dialihkan ke ${t.reassignedTo}</div>` : ''}
           <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px;">
@@ -3186,7 +3190,7 @@
         <div style="background: ${isEmerg ? '#fff5f5' : '#f8fafc'}; border: 1px solid ${isEmerg ? '#fecaca' : '#e2e8f0'}; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div style="font-size: 0.825rem; font-weight: 800; color: #0f172a; margin-bottom: 2px;">${getTName(t)}</div>
-            ${isEmerg ? '<span style="font-size: 0.65rem; color: #b91c1c; background: #fee2e2; border: 1px solid #fca5a5; font-weight: 800; padding: 2px 6px; border-radius: 4px;">Darurat</span>' : ''}
+            ${isEmerg ? '<span style="font-size: 0.65rem; color: #b91c1c; background: #fee2e2; border: 1px solid #fca5a5; font-weight: 800; padding: 2px 6px; border-radius: 4px;">🚨 Darurat</span>' : ''}
           </div>
           <div style="font-size: 0.725rem; color: #64748b;">${getTNip(t)} • ${t.department || 'Departemen Rekayasa & Pemeliharaan'}</div>
           <div style="border-top: 1px dashed ${isEmerg ? '#fca5a5' : '#e2e8f0'}; margin-top: 6px; padding-top: 6px; font-size: 0.725rem; color: #334155; display: flex; flex-direction: column; gap: 2px;">

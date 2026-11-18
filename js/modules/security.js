@@ -162,6 +162,12 @@ function updateActiveSecurityGate(gateValue, notify = false) {
     figmaPelacakanCountMeta.textContent = `${officer.gateName} — PT Pupuk Kujang`;
   }
 
+  const filterSecurityLogGate = document.getElementById('filterSecurityLogGate');
+  if (filterSecurityLogGate) {
+    filterSecurityLogGate.value = officer.gateName;
+  }
+  window.activeSecurityGateFilter = officer.gateName;
+
   if (notify && typeof window.showToast === 'function') {
     window.showToast(`Beralih ke pos jaga: ${officer.gateName} (${officer.name})`, 'info');
   }
@@ -266,11 +272,14 @@ let lastScannedCode = null;
 let scanCooldownTimer = null;
 
 function updateSecurityMetrics() {
-  const ticketsList = window.ticketsList || [];
+  const ticketsList = (window.ticketsList || []).filter(t => !t.deletedBySecurity);
+  const secActor = typeof getCurrentSecurityActor === 'function' ? getCurrentSecurityActor() : (window.ACTORS && window.ACTORS.security ? window.ACTORS.security : { name: 'Sertu Agus', role: 'Petugas Pengamanan', gateName: 'Pos 1 Gerbang Utama' });
+  const myGate = secActor ? secActor.gateName : (localStorage.getItem('KUJANG_ACTIVE_GATE') || 'Pos 1 Gerbang Utama');
+
   const outsideCount = ticketsList.filter(t => t.status === 'Sedang di Luar' || t.status === 'Terlambat').length;
   const readyExitCount = ticketsList.filter(t => t.status === 'Disetujui').length;
-  const scanOutCount = ticketsList.filter(t => t.scanOutTime).length;
-  const scanInCount = ticketsList.filter(t => t.scanInTime).length;
+  const scanOutCount = ticketsList.filter(t => t.scanOutTime && (getTicketGate(t) === myGate || (t.securityOfficerOut && t.securityOfficerOut.includes(secActor.name)))).length;
+  const scanInCount = ticketsList.filter(t => t.scanInTime && ((t.scanInGate === myGate) || (t.scanInTime && t.scanInTime.includes(secActor.name)))).length;
 
   const statSecOutside = document.getElementById('statSecOutside');
   const statSecReadyExit = document.getElementById('statSecReadyExit');
@@ -308,9 +317,14 @@ function renderSecurityDashboard() {
   const readyExitTickets = ticketsList.filter(t => t.status === 'Disetujui');
   const overdueTickets = ticketsList.filter(t => t.status === 'Terlambat');
   const outsideTickets = ticketsList.filter(t => t.status === 'Sedang di Luar' || t.status === 'Terlambat');
-  const recentTransactions = ticketsList
-    .filter(t => t.scanOutTime || t.scanInTime)
-    .slice(0, 5);
+  
+  const myGateName = secActor ? secActor.gateName : (localStorage.getItem('KUJANG_ACTIVE_GATE') || 'Pos 1 Gerbang Utama');
+  const gateFiltered = ticketsList.filter(t => {
+    if (!t.scanOutTime && !t.scanInTime) return false;
+    const g = typeof getTicketGate === 'function' ? getTicketGate(t) : (t.scanOutGate || t.scanInGate);
+    return g === myGateName || (t.securityOfficerOut && secActor && t.securityOfficerOut.includes(secActor.name));
+  });
+  const recentTransactions = (gateFiltered.length > 0 ? gateFiltered : ticketsList.filter(t => t.scanOutTime || t.scanInTime)).slice(0, 5);
 
   // Update Hero Strip (Identik Gambar 1 Karyawan)
   const secHeroStripStatus = document.getElementById('secHeroStripStatus');
@@ -322,7 +336,7 @@ function renderSecurityDashboard() {
       secHeroStripStatus.textContent = `Status Gerbang: ${readyCount} Karyawan Siap Keluar (Scan Out)`;
       secHeroStripSub.textContent = `${outCount} personel sedang di luar pabrik. Terminal pemindaian aktif.`;
     } else {
-      secHeroStripStatus.textContent = `Status Gerbang: Pos 1 Gerbang Utama Operasional`;
+      secHeroStripStatus.textContent = `Status Gerbang: ${secActor ? secActor.gateName : 'Pos 1 Gerbang Utama'} Operasional`;
       secHeroStripSub.textContent = `${outCount} personel sedang di luar pabrik. Siap memverifikasi tiket perizinan.`;
     }
   }
@@ -531,7 +545,7 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
                 </div>
                 <div style="text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
                   <span class="tag-badge ${isDinas ? 'tag-dinas' : 'tag-pribadi'}" style="white-space: nowrap;">${displayCategory}</span>
-                  ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">Darurat</span>` : ''}
+                  ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">🚨 Darurat</span>` : ''}
                   ${isGroupDinas ? (() => {
                     const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
                     return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
@@ -605,7 +619,7 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
               </div>
               <div style="text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
                 <span class="tag-badge ${isDinas ? 'tag-dinas' : 'tag-pribadi'}" style="white-space: nowrap;">${displayCategory}</span>
-                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">Darurat</span>` : ''}
+                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">🚨 Darurat</span>` : ''}
                 ${isGroupDinas ? (() => {
                   const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
                   return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
@@ -635,8 +649,8 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
             </div>
 
             ${isOverdue ? `
-              <div class="sec-status-callout danger" style="border-radius:6px; padding:0.45rem 0.65rem; font-size:0.75rem; font-weight:700;">
-                Karyawan terlambat kembali! Wajib melakukan Tap In Kartu Akses saat tiba di kawasan.
+              <div class="sec-status-callout neutral" style="border-radius:6px; padding:0.45rem 0.65rem; font-size:0.75rem; font-weight:600; background: var(--bg-subtle, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); color: var(--text-secondary, #475569);">
+                Karyawan terlambat kembali. Wajib melakukan Tap In Kartu Akses saat tiba di kawasan.
               </div>
             ` : ''}
 
@@ -770,7 +784,7 @@ function renderSecurityTable(list, containerElement) {
                 <td style="vertical-align: middle;">
                   <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                     <span style="font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); font-size: 0.8rem; white-space: nowrap;">${t.id}</span>
-                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">Darurat</span>` : ''}
+                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
                     ${isGroupDinas ? (() => {
                       const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
                       return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;

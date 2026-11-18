@@ -186,9 +186,6 @@
     if (status === 'Terlambat') {
       return `<span class="mobile-badge terlambat" style="background: #fee2e2; color: #dc2626; border: 1.2px solid #fca5a5; font-weight: 800; white-space: nowrap;">Sedang di Luar (Terlambat)</span>`;
     }
-    if (t.reassignedStatusLabel && (status === 'Menunggu Persetujuan' || status === 'Menunggu Otorisasi Darurat')) {
-      return `<span class="mobile-badge reassigned" style="background: #e0f2fe; color: #0284c7; border: 1.2px solid #bae6fd; font-weight: 800; white-space: nowrap;">${t.reassignedStatusLabel}</span>`;
-    }
     return `<span class="mobile-badge ${getBadgeClass(status)}">${status}</span>`;
   }
 
@@ -768,7 +765,7 @@
             <div>
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <span style="font-family: monospace; font-size: 0.875rem; font-weight: 800; color: #0f172a;">${t.id}</span>
-                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Izin Darurat</span>' : ''}
+                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">🚨 Darurat</span>' : ''}
                 ${isGroupDinas ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1.2px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">👥 Tim</span>' : ''}
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
@@ -826,7 +823,7 @@
             <div>
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <span style="font-family: monospace; font-size: 0.85rem; font-weight: 800; color: #0f172a;">${t.id}</span>
-                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Izin Darurat</span>' : ''}
+                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">🚨 Darurat</span>' : ''}
                 ${isGroupDinas ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1.2px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">👥 Tim</span>' : ''}
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
@@ -1088,7 +1085,7 @@
             <div>
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <span style="font-family: monospace; font-size: 0.875rem; font-weight: 800; color: #0f172a;">${t.id}</span>
-                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Izin Darurat</span>' : ''}
+                ${isEmergency ? '<span class="mobile-badge darurat" style="background: #fee2e2; color: #b91c1c; border: 1.2px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">🚨 Darurat</span>' : ''}
                 ${isGroupDinas ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1.2px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;">👥 Tim</span>' : ''}
               </div>
               <div style="font-size: 0.725rem; font-weight: 600; color: #334155; margin-top: 1px;">Diajukan ${dateStr}</div>
@@ -3508,6 +3505,10 @@
         plannedReturn: data.returnType === 'Pulang Mendahului' ? null : data.estimatedReturn,
         approverName: data.approverName,
         approverNip: resolvedApproverNip,
+        approverNote: (resolvedSupervisorName && data.approverName && resolvedSupervisorName !== data.approverName) ? `${emp.name} bawahan dari ${resolvedSupervisorName} mengalihkan pengajuan kepada anda.` : null,
+        systemNote: (resolvedSupervisorName && data.approverName && resolvedSupervisorName !== data.approverName) ? `${emp.name} bawahan dari ${resolvedSupervisorName} mengalihkan pengajuan kepada anda.` : null,
+        reassignedFrom: (resolvedSupervisorName && data.approverName && resolvedSupervisorName !== data.approverName) ? resolvedSupervisorName : null,
+        reassignedTo: (resolvedSupervisorName && data.approverName && resolvedSupervisorName !== data.approverName) ? data.approverName : null,
         directSupervisor: resolvedSupervisorName,
         directSupervisorNip: resolvedSupervisorNip,
         status: data.isEmergency ? 'Menunggu Otorisasi Darurat' : 'Menunggu Persetujuan',
@@ -4066,7 +4067,7 @@
               <strong>Nama:</strong> ${getTName(t)}<br>
               <strong>NIP:</strong> ${getTNip(t)}<br>
               <strong>Departemen:</strong> ${t.department || 'Departemen Rekayasa & Pemeliharaan'}<br>
-              <strong>Atasan:</strong> ${t.approverName || 'Ir. Hendra Gunawan, M.T.'}${t.reassignedFrom ? ` <span style="font-size: 0.675rem; color: #b45309; font-weight: 700;">(Dialihkan dari ${t.reassignedFrom})</span>` : ''}
+              <strong>Atasan:</strong> ${t.approverName || 'Ir. Hendra Gunawan, M.T.'}${t.reassignedStatusLabel ? ` <span style="font-size: 0.675rem; color: #0284c7; font-weight: 700;">(↳ ${t.reassignedStatusLabel})</span>` : (t.reassignedFrom ? ` <span style="font-size: 0.675rem; color: #b45309; font-weight: 700;">(Dialihkan dari ${t.reassignedFrom})</span>` : '')}
             </div>
           </div>
 
@@ -4086,6 +4087,7 @@
 
           ${(() => {
             const mRawNote = t.approverNote || t.approvalNote || '';
+            const mRawSystemNote = t.systemNote || '';
             const mRawRej = t.rejectionReason || t.rejectReason || '';
             const mRawArrivalReject = t.arrivalRejectReason || '';
             const mRawArrivalConfirm = t.arrivalConfirmNote || '';
@@ -4093,49 +4095,61 @@
             const isRej = t.status === 'Ditolak' || Boolean(mRawRej);
             const isArrivalPending = t.status === 'Menunggu Bukti Kedatangan' || Boolean(mRawArrivalReject && !mRawArrivalConfirm);
             const isArrivalDone = Boolean(mRawArrivalConfirm) || (t.status === 'Selesai' && t.scanInTime && t.scanInTime.includes('Dikonfirmasi Atasan'));
+            const hasReassignNote = Boolean(mRawSystemNote || (mRawNote && (mRawNote.includes('bawahan dari') || mRawNote.includes('Hak akses'))));
 
             if (isRej) {
               const text = mRawRej || (mRawNote ? mRawNote.replace(/^Ditolak:\s*/i, '') : 'Pengajuan izin tidak disetujui atasan.');
               return `
-                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #fff1f2; border: 1px solid #fecdd3;">
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="font-size: 0.725rem; color: #be123c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
-                    <span style="font-size: 0.65rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 1px 6px; border-radius: 9999px;">Alasan Penolakan</span>
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #dc2626; background: #fee2e2; border: 1px solid #fecdd3; padding: 2px 8px; border-radius: 9999px;">Alasan Penolakan</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #9f1239; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
             } else if (isArrivalPending) {
               const text = mRawArrivalReject || 'Atasan menandai personel belum tiba di lokasi kerja. Silakan unggah foto bukti kehadiran.';
               return `
-                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #fffbeb; border: 1px solid #fef3c7;">
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="font-size: 0.725rem; color: #92400e; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
-                    <span style="font-size: 0.65rem; font-weight: 700; color: #b45309; background: #fef3c7; padding: 1px 6px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #78350f; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
             } else if (isArrivalDone) {
               const text = mRawArrivalConfirm || (mRawNote && mRawNote !== 'Disetujui' ? mRawNote : 'Kehadiran fisik karyawan di area kerja telah diverifikasi langsung oleh Atasan. Izin resmi selesai.');
               return `
-                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="font-size: 0.725rem; color: #166534; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
-                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 1px 6px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 9999px;">Konfirmasi Kehadiran</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #14532d; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
             } else if (isAppr) {
               const text = (mRawNote && mRawNote !== 'Disetujui' ? mRawNote : 'Disetujui. Pastikan koordinasi selesai tepat waktu.');
               return `
-                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <div style="font-size: 0.725rem; color: #166534; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
-                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 1px 6px; border-radius: 9999px;">Catatan Persetujuan</span>
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 9999px;">Catatan Persetujuan</span>
                   </div>
-                  <div style="font-size: 0.75rem; color: #14532d; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
+                </div>
+              `;
+            } else if (hasReassignNote) {
+              const text = mRawSystemNote || mRawNote;
+              return `
+                <div class="mobile-card" style="margin-bottom: 8px; padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <div style="font-size: 0.725rem; color: #0f172a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">CATATAN DARI ATASAN</div>
+                    <span style="font-size: 0.65rem; font-weight: 700; color: #0369a1; background: #e0f2fe; border: 1px solid #bae6fd; padding: 2px 8px; border-radius: 9999px;">Catatan Pengalihan</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #0f172a; font-weight: 600; line-height: 1.45; word-break: break-word;">${text}</div>
                 </div>
               `;
             }

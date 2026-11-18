@@ -11920,29 +11920,18 @@ body.theme-dark #adminTableMusterRollWrap::-webkit-scrollbar-thumb:hover {
   border: 1px solid rgba(239, 68, 68, 0.22);
 }
 
-.badge-editorial-darurat::before {
-  content: "";
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #dc2626;
-  box-shadow: 0 0 4px rgba(220, 38, 38, 0.5);
+.badge-editorial-darurat::before,
+.badge-editorial-tim::before,
+body.theme-dark .badge-editorial-darurat::before,
+body.theme-dark .badge-editorial-tim::before {
+  display: none !important;
+  content: none !important;
 }
 
 .badge-editorial-tim {
   color: #0284c7;
   background: rgba(2, 132, 199, 0.08);
   border: 1px solid rgba(2, 132, 199, 0.22);
-}
-
-.badge-editorial-tim::before {
-  content: "";
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #0284c7;
 }
 
 /* Dark Theme Support for Badges */
@@ -11952,19 +11941,10 @@ body.theme-dark .badge-editorial-darurat {
   border-color: rgba(248, 113, 113, 0.28);
 }
 
-body.theme-dark .badge-editorial-darurat::before {
-  background: #f87171;
-  box-shadow: 0 0 6px rgba(248, 113, 113, 0.6);
-}
-
 body.theme-dark .badge-editorial-tim {
   color: #38bdf8;
   background: rgba(56, 189, 248, 0.14);
   border-color: rgba(56, 189, 248, 0.28);
-}
-
-body.theme-dark .badge-editorial-tim::before {
-  background: #38bdf8;
 }
 
 body.theme-dark .badge-geser-hint {

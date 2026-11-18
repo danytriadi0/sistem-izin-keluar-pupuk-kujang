@@ -55,6 +55,30 @@
   // HELPER GETTERS & FORMATTERS
   // -------------------------------------------------------------------
   function getActiveOfficer() {
+    if (window.activeSecurityUser) {
+      const u = window.activeSecurityUser;
+      const gateShort = (u.role && u.role.includes('Pos 3')) ? 'Pos 3' : ((u.role && u.role.includes('Pos 2')) ? 'Pos 2' : 'Pos 1');
+      const gateFull = gateShort === 'Pos 3' ? 'Pos 3 Gerbang Timur' : (gateShort === 'Pos 2' ? 'Pos 2 Gerbang Barat' : 'Pos 1 Gerbang Utama');
+      return {
+        name: u.name,
+        nip: u.nip,
+        gateName: gateFull,
+        title: u.role || `Petugas Pengamanan (${gateShort})`,
+        dept: u.department || 'Departemen Pengamanan & K3'
+      };
+    }
+    if (typeof window.getCurrentSecurityActor === 'function') {
+      const a = window.getCurrentSecurityActor();
+      if (a) {
+        return {
+          name: a.name,
+          nip: a.nip,
+          gateName: a.gateName,
+          title: a.title || 'Petugas Pengamanan',
+          dept: 'Departemen Pengamanan & K3'
+        };
+      }
+    }
     if (typeof window.getActiveGateOfficer === 'function') {
       const officer = window.getActiveGateOfficer(activeGate);
       if (officer) {
@@ -907,7 +931,8 @@
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
             <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
               <span style="font-family: monospace; font-size: 0.875rem; font-weight: 800; color: #0f172a;">${t.id}</span>
-              ${isEmergencyTicket ? '<span class="mobile-badge" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">Izin Darurat</span>' : ''}
+              ${isEmergencyTicket ? '<span class="mobile-badge" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">🚨 Darurat</span>' : ''}
+              ${(t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 0.65rem; font-weight: 800; padding: 1px 5px; border-radius: 4px;">👥 Tim</span>' : ''}
             </div>
             ${(() => {
               const isLateDone = (t.status === 'Selesai' && (t.isLate || t.lateMinutes > 0 || (t.scanInTime && t.scanInTime.includes('[Terlambat]')))) || t.status === 'Terlambat';
@@ -1004,7 +1029,8 @@
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
             <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
               <span style="font-family: monospace; font-size: 0.85rem; font-weight: 800; color: #0f172a;">${t.id}</span>
-              ${isEmergencyTicket ? '<span class="mobile-badge" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.6rem; font-weight: 800; padding: 1px 4px; border-radius: 4px;">Izin Darurat</span>' : ''}
+              ${isEmergencyTicket ? '<span class="mobile-badge" style="background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 0.6rem; font-weight: 800; padding: 1px 4px; border-radius: 4px;">🚨 Darurat</span>' : ''}
+              ${(t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) ? '<span class="mobile-badge rombongan" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 0.6rem; font-weight: 800; padding: 1px 4px; border-radius: 4px;">👥 Tim</span>' : ''}
             </div>
             ${(() => {
               const isLateDone = (t.status === 'Selesai' && (t.isLate || t.lateMinutes > 0 || (t.scanInTime && t.scanInTime.includes('[Terlambat]')))) || t.status === 'Terlambat';

@@ -1550,7 +1550,7 @@ function renderKaryawanDashboard() {
           <div style="font-size: 1.05rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
             <span>${activeTicket.id}</span>
             ${isEmergency ? `<span style="font-size: 0.72rem; color: var(--text-primary); font-weight: 700; background: var(--bg-secondary); padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border-color); letter-spacing: 0.3px;">Izin Darurat</span>` : ''}
-            ${activeTicket.isGroupDinas ? `<span style="font-size: 0.75rem; color: #2563eb; font-weight: 700;">• Dinas Bersama (${activeMembers.length + (activeTicket.initiatorCancelled ? 0 : 1)} Orang)</span>` : ''}
+            ${activeTicket.isGroupDinas ? `<span style="font-size: 0.75rem; color: #2563eb; font-weight: 700;">• 👥 Dinas Bersama (${activeMembers.length + (activeTicket.initiatorCancelled ? 0 : 1)} Orang)</span>` : ''}
           </div>
           <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; font-weight: 600; line-height: 1.35;">
             <div>${activeTicket.category}</div>
@@ -1598,11 +1598,25 @@ function renderKaryawanDashboard() {
 
   // 1.3 Card: Pengajuan terbaru (Maksimal 5 riwayat selesai terbaru, tata letak 1 baris horizontal)
   if (karyawanDashboardRecentList) {
-    const completedItems = ticketsList.filter(t =>
-      (t.applicantNip === myNip || (!t.applicantNip && myNip === 'PK-2024-8841')) &&
-      !t.deletedByKaryawan &&
-      t.status === 'Selesai'
-    ).slice(0, 5);
+    const RIWAYAT_STATUSES = ['selesai', 'ditolak', 'kedaluwarsa', 'kadaluwarsa', 'dibatalkan'];
+    const myHistoryTickets = ticketsList.filter(t => {
+      if (t.deletedByKaryawan) return false;
+      const isMyTicket = t.applicantNip === myNip || (!t.applicantNip && myNip === 'PK-2024-8841') || (Array.isArray(t.members) && t.members.some(m => m.nip === myNip));
+      if (!isMyTicket) return false;
+      const normStatus = (t.status || '').toLowerCase().trim();
+      return RIWAYAT_STATUSES.includes(normStatus);
+    });
+
+    myHistoryTickets.sort((a, b) => {
+      const parseTime = (item) => {
+        const raw = item.createdAt || item.plannedExit || 0;
+        const d = (typeof window.parseTicketDateTime === 'function') ? window.parseTicketDateTime(raw) : new Date(raw);
+        return (d && !isNaN(d.getTime())) ? d.getTime() : 0;
+      };
+      return parseTime(b) - parseTime(a);
+    });
+
+    const completedItems = myHistoryTickets.slice(0, 5);
 
     if (completedItems.length === 0) {
       karyawanDashboardRecentList.innerHTML = `
@@ -1615,6 +1629,9 @@ function renderKaryawanDashboard() {
         const exitHour = t.plannedExit ? t.plannedExit.slice(11, 16) : '09:00';
         const returnHour = t.estimatedReturn ? t.estimatedReturn.slice(11, 16) : '11:00';
         const timeSpan = `${exitHour} s/d ${returnHour} WIB`;
+        const isEmergency = Boolean(t.isEmergency || (t.id && t.id.startsWith('TK-EMG')) || (t.category && t.category.toLowerCase().includes('darurat')));
+        const isGroupDinas = Boolean(t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0));
+        const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
 
         // Format tanggal secara akurat (hindari .slice(0,6) yang menghasilkan "2026-1")
         let dayMonth = 'Hari ini';
@@ -1632,7 +1649,11 @@ function renderKaryawanDashboard() {
           <div class="dashboard-recent-row" style="display: grid; grid-template-columns: minmax(130px, 1.2fr) 140px 115px auto; align-items: center; padding: 0.85rem 0; ${idx < completedItems.length - 1 ? 'border-bottom: 1px solid var(--border-color, #f1f5f9);' : ''} gap: 0.75rem;">
             <!-- Kolom 1: ID Tiket & Kategori -->
             <div style="min-width: 0; overflow: hidden;">
-              <div style="font-size: 0.875rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary, #0f172a); letter-spacing: -0.2px; white-space: nowrap;">${t.id}</div>
+              <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                <span style="font-size: 0.875rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary, #0f172a); letter-spacing: -0.2px; white-space: nowrap;">${t.id}</span>
+                ${isEmergency ? `<span style="font-size: 0.65rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 5px; border-radius: 4px; border: 1px solid #fecdd3; white-space: nowrap;">🚨 Darurat</span>` : ''}
+                ${isGroupDinas ? `<span style="font-size: 0.65rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 5px; border-radius: 4px; border: 1px solid #bae6fd; white-space: nowrap;">👥 Tim (${groupCount})</span>` : ''}
+              </div>
               <div style="font-size: 0.75rem; color: var(--text-secondary, #64748b); margin-top: 3px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${dayMonth} — ${t.category}</div>
             </div>
 
@@ -1642,7 +1663,7 @@ function renderKaryawanDashboard() {
             </div>
 
             <!-- Kolom 3: Status Pill (Dipenggal rapi dengan ellipsis sesuai Gambar 3) -->
-            <div style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${(t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]'))) ? 'Selesai (Terlambat)' : 'Selesai'}">
+            <div style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${(t.isLate || (t.scanInTime && t.scanInTime.includes('[Terlambat]'))) ? 'Selesai (Terlambat)' : (t.status || 'Selesai')}">
               ${getCleanEmpStatus(t.status || 'Selesai', t)}
             </div>
 
@@ -1974,7 +1995,7 @@ function renderPengajuanSayaView() {
           <div style="font-size: 1.05rem; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
             <span>${activeTicket.id}</span>
             ${isEmergency ? `<span style="font-size: 0.72rem; color: #be123c; font-weight: 800; background: #ffe4e6; padding: 2px 7px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.3px;">Izin Darurat</span>` : ''}
-            ${activeTicket.isGroupDinas ? `<span style="font-size: 0.75rem; color: #2563eb; font-weight: 700;">• Dinas Bersama (${activeMembers.length + (activeTicket.initiatorCancelled ? 0 : 1)} Orang)</span>` : ''}
+            ${activeTicket.isGroupDinas ? `<span style="font-size: 0.75rem; color: #2563eb; font-weight: 700;">• 👥 Dinas Bersama (${activeMembers.length + (activeTicket.initiatorCancelled ? 0 : 1)} Orang)</span>` : ''}
           </div>
           <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; font-weight: 600; line-height: 1.35;">
             <div>${activeTicket.category}</div>
@@ -2265,15 +2286,9 @@ function getCleanEmpStatus(status, ticket) {
     color = '#059669';
     statusKey = 'approved';
   } else if (status === 'Menunggu Persetujuan') {
-    if (ticket && ticket.reassignedStatusLabel) {
-      label = ticket.reassignedStatusLabel;
-      color = '#0284c7';
-      statusKey = 'reassigned-back';
-    } else {
-      label = 'Menunggu Persetujuan';
-      color = '#d97706';
-      statusKey = 'pending';
-    }
+    label = 'Menunggu Persetujuan';
+    color = '#d97706';
+    statusKey = 'pending';
   } else if (status === 'Menunggu Verifikasi Atasan') {
     label = 'Menunggu Verifikasi Atasan';
     color = '#2563eb';
@@ -2283,15 +2298,9 @@ function getCleanEmpStatus(status, ticket) {
     color = '#b45309';
     statusKey = 'waiting-proof';
   } else if (status === 'Menunggu Otorisasi Darurat' || status === 'Darurat Terkunci') {
-    if (ticket && ticket.reassignedStatusLabel) {
-      label = ticket.reassignedStatusLabel;
-      color = '#dc2626';
-      statusKey = 'reassigned-back-emg';
-    } else {
-      label = 'Menunggu Otorisasi Darurat';
-      color = '#be123c';
-      statusKey = 'emergency';
-    }
+    label = 'Menunggu Otorisasi Darurat';
+    color = '#be123c';
+    statusKey = 'emergency';
   } else if (status === 'Ditolak') {
     label = 'Ditolak';
     color = '#dc2626';
@@ -2371,7 +2380,10 @@ function renderEmpCards(list, containerElement) {
           catatanText = '⚠️ Melewati batas estimasi kembali — Belum Tap In di Pos 1';
         } else if (t.isLate || (t.approverNote && t.approverNote.toLowerCase().includes('terlambat')) || (t.status === 'Selesai' && t.scanInTime && t.scanInTime.includes('[Terlambat]'))) {
           const lateFull = typeof window.formatLateDurationFull === 'function' ? window.formatLateDurationFull(t.lateMinutes || 10) : `${t.lateMinutes || 10} menit`;
-          catatanText = `⏱️ Kembali ${t.actualReturnTime || (t.scanInTime ? t.scanInTime.slice(11, 16) + ' WIB' : '12.10 WIB')} — +${lateFull} dari estimasi`;
+          const rawReturnTime = t.actualReturnTime || t.scanInTime || '';
+          const matchTime = rawReturnTime.match(/(\d{1,2}[:.]\d{2})/);
+          const formattedReturnTime = matchTime ? `${matchTime[1].replace(':', '.')} WIB` : '12.10 WIB';
+          catatanText = `⏱️ Kembali ${formattedReturnTime} — +${lateFull} dari estimasi`;
         } else if (t.status === 'Ditolak' || (t.status || '').toLowerCase().includes('tolak')) {
           catatanText = `✕ ${t.rejectionReason || 'Ditolak: alasan tidak memadai'}`;
         } else if (t.status === 'Kedaluwarsa' || t.status === 'Kadaluwarsa') {
@@ -2432,7 +2444,7 @@ function renderEmpCards(list, containerElement) {
               </div>
               <div style="text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
                 <span class="figma-tag-badge ${isDinas ? 'badge-dinas' : 'badge-pribadi'}" style="white-space: nowrap;">${displayCategory}</span>
-                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">Darurat</span>` : ''}
+                ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">🚨 Darurat</span>` : ''}
                 ${isGroupDinas ? `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>` : ''}
               </div>
             </div>
@@ -2551,7 +2563,7 @@ function renderEmpTable(list, containerElement) {
                 <td style="vertical-align: middle;">
                   <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                     <span style="font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); font-size: 0.8rem;">${t.id}</span>
-                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">Darurat</span>` : ''}
+                    ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
                     ${isGroupDinas ? `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>` : ''}
                   </div>
                   <div style="font-size: 0.725rem; color: #64748b; margin-top: 3px; line-height: 1.35;">
@@ -2813,7 +2825,14 @@ function renderKaryawanMobileDashboard() {
 
   // 2. Active Ticket Data
   const ticketsList = window.ticketsList || [];
-  const empTickets = ticketsList.filter(t => !t.deletedByKaryawan && (t.employeeName === empActor.name || t.employeeNip === empActor.nip || (!t.employeeName && t.employeeId === 'EMP-001')));
+  const empTickets = ticketsList.filter(t => !t.deletedByKaryawan && (
+    t.applicantNip === empActor.nip || 
+    t.employeeNip === empActor.nip || 
+    t.employeeName === empActor.name || 
+    (!t.applicantNip && empActor.nip === 'PK-2024-8841') ||
+    (!t.employeeName && t.employeeId === 'EMP-001') ||
+    (Array.isArray(t.members) && t.members.some(m => m.nip === empActor.nip))
+  ));
 
   const activeTicket = empTickets.find(t => 
     t.status === 'Sedang di Luar' || 
@@ -3018,7 +3037,16 @@ function renderKaryawanMobileDashboard() {
   // 6. Render Card: Pengajuan Terbaru (PDF Page 1 - 2 items)
   const mobileRecentTicketsList = document.getElementById('mobileRecentTicketsList');
   if (mobileRecentTicketsList) {
-    const pastTickets = empTickets.filter(t => !activeTicket || t.id !== activeTicket.id).slice(0, 2);
+    const sortedPastTickets = empTickets.filter(t => !activeTicket || t.id !== activeTicket.id);
+    sortedPastTickets.sort((a, b) => {
+      const parseTime = (item) => {
+        const raw = item.createdAt || item.plannedExit || 0;
+        const d = (typeof window.parseTicketDateTime === 'function') ? window.parseTicketDateTime(raw) : new Date(raw);
+        return (d && !isNaN(d.getTime())) ? d.getTime() : 0;
+      };
+      return parseTime(b) - parseTime(a);
+    });
+    const pastTickets = sortedPastTickets.slice(0, 2);
     if (pastTickets.length === 0) {
       mobileRecentTicketsList.innerHTML = `
         <div style="padding: 1rem 0; text-align: center; color: #94a3b8; font-size: 0.8rem;">

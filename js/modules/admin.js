@@ -912,10 +912,10 @@ function renderAdminReports(isPrinting = false) {
         <td style="white-space: nowrap;">
           <div style="display: flex; align-items: center; gap: 0.45rem;">
             <span class="report-ticket-id">${t.id}</span>
-            ${isEmergency ? `<span class="badge-editorial-darurat">Darurat</span>` : ''}
+            ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1.5px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap; line-height: 1.3;">🚨 Darurat</span>` : ''}
             ${isGroupDinas ? (() => {
               const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-              return `<span class="badge-editorial-tim" title="Tim Dinas (${groupCount} Orang)">Tim (${groupCount})</span>`;
+              return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1.5px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap; line-height: 1.3;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
             })() : ''}
           </div>
         </td>
@@ -2529,6 +2529,8 @@ function toggleUserAccess(kujangId, skipConfirm = false) {
               t.reassignedTo = fallbackApp.name;
               t.approverName = fallbackApp.name;
               t.approverNip = fallbackApp.nip;
+              t.approverNote = `Hak akses "${user.name}" telah dicabut`;
+              t.systemNote = `Hak akses "${user.name}" telah dicabut`;
               if (!t.timeline) t.timeline = [];
               t.timeline.unshift({
                 event: 'Dialihkan Otomatis oleh Sistem',
@@ -2718,6 +2720,8 @@ function deleteAdminUser(kujangId) {
           t.reassignedFrom = deletedName;
           t.reassignedTo = newApproverName;
           t.approverName = newApproverName;
+          t.approverNote = `Hak akses "${deletedName}" telah dihapus`;
+          t.systemNote = `Hak akses "${deletedName}" telah dihapus`;
           if (!t.timeline) t.timeline = [];
           t.timeline.unshift({
             event: 'Dialihkan Otomatis oleh Sistem',
@@ -3204,10 +3208,10 @@ function renderAdminStatusTracking() {
             <a href="javascript:void(0)" onclick="window.viewAdminTicketDetail('${t.id}')" class="report-ticket-id" style="text-decoration: none; font-weight: 700; color: var(--primary-accent);">
               ${t.id}
             </a>
-            ${isEmergency ? `<span class="badge-editorial-darurat">Darurat</span>` : ''}
+            ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1.5px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap; line-height: 1.3;">🚨 Darurat</span>` : ''}
             ${isGroupDinas ? (() => {
               const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-              return `<span class="badge-editorial-tim" title="Tim Dinas (${groupCount} Orang)">Tim (${groupCount})</span>`;
+              return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1.5px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap; line-height: 1.3;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
             })() : ''}
           </div>
           <div style="margin-top: 3px;">${cleanCategoryBadge(t.category)}</div>
