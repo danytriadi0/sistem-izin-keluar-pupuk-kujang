@@ -2701,10 +2701,15 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   const infoExtNewReturn = document.getElementById('infoExtNewReturn');
   const infoExtReason = document.getElementById('infoExtReason');
   const approverExtActionBtns = document.getElementById('approverExtActionBtns');
+  const karyawanExtActionBtns = document.getElementById('karyawanExtActionBtns');
   const btnDetailRejectExt = document.getElementById('btnDetailRejectExt');
   const btnDetailApproveExt = document.getElementById('btnDetailApproveExt');
+  const btnDetailCancelExt = document.getElementById('btnDetailCancelExt');
+  const btnFooterCancelExt = document.getElementById('btnFooterCancelExt');
 
   const hasPendingExt = ticket.pendingExtension && ticket.pendingExtension.status === 'Menunggu Persetujuan';
+  const isKaryawanViewer = (window.currentActor === 'karyawan' || window.currentActor === 'karyawan2' || !window.currentActor);
+
   if (infoPendingExtensionBox) {
     if (hasPendingExt) {
       infoPendingExtensionBox.style.display = 'block';
@@ -2716,7 +2721,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
       if (infoExtReason) infoExtReason.textContent = ticket.pendingExtension.reason;
 
       if (approverExtActionBtns) {
-        if (window.currentActor === 'approver') {
+        if (window.currentActor === 'approver' || window.currentActor === 'approver2') {
           approverExtActionBtns.style.display = 'flex';
           if (btnDetailApproveExt) {
             btnDetailApproveExt.onclick = () => {
@@ -2736,8 +2741,39 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
           approverExtActionBtns.style.display = 'none';
         }
       }
+
+      if (karyawanExtActionBtns) {
+        if (isKaryawanViewer) {
+          karyawanExtActionBtns.style.display = 'flex';
+          if (btnDetailCancelExt) {
+            btnDetailCancelExt.onclick = () => {
+              if (typeof window.executeCancelPendingExtension === 'function') {
+                window.executeCancelPendingExtension(ticket.id);
+              }
+            };
+          }
+        } else {
+          karyawanExtActionBtns.style.display = 'none';
+        }
+      }
     } else {
       infoPendingExtensionBox.style.display = 'none';
+      if (karyawanExtActionBtns) karyawanExtActionBtns.style.display = 'none';
+    }
+  }
+
+  // Employee cancel extension button in detail modal footer
+  if (btnFooterCancelExt) {
+    if (hasPendingExt && isKaryawanViewer && !isFinished) {
+      btnFooterCancelExt.style.display = 'inline-flex';
+      btnFooterCancelExt.onclick = () => {
+        if (typeof window.executeCancelPendingExtension === 'function') {
+          window.executeCancelPendingExtension(ticket.id);
+        }
+      };
+    } else {
+      btnFooterCancelExt.style.display = 'none';
+      btnFooterCancelExt.onclick = null;
     }
   }
 
@@ -2797,6 +2833,10 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
     if (btnDetailEmergencyUnlock) { btnDetailEmergencyUnlock.style.setProperty('display', 'none', 'important'); btnDetailEmergencyUnlock.onclick = null; }
     const approverExtActionBtns = document.getElementById('approverExtActionBtns');
     if (approverExtActionBtns) { approverExtActionBtns.style.setProperty('display', 'none', 'important'); }
+    const karyawanExtActionBtns = document.getElementById('karyawanExtActionBtns');
+    if (karyawanExtActionBtns) { karyawanExtActionBtns.style.setProperty('display', 'none', 'important'); }
+    const btnFooterCancelExt = document.getElementById('btnFooterCancelExt');
+    if (btnFooterCancelExt) { btnFooterCancelExt.style.setProperty('display', 'none', 'important'); btnFooterCancelExt.onclick = null; }
 
     // Make status badge on top right purely static if waiting for authorization
     const detailStatusPillTop = document.getElementById('detailStatusPillTop');
@@ -2845,6 +2885,11 @@ function closeTicketDetailModal() {
   if (btnDetailScanOut) {
     btnDetailScanOut.style.setProperty('display', 'none', 'important');
     btnDetailScanOut.onclick = null;
+  }
+  const btnFooterCancelExt = document.getElementById('btnFooterCancelExt');
+  if (btnFooterCancelExt) {
+    btnFooterCancelExt.style.setProperty('display', 'none', 'important');
+    btnFooterCancelExt.onclick = null;
   }
   window._openedFromScannerTerminal = false;
   window._openedFromNotification = false;
@@ -4999,11 +5044,16 @@ function executeCancelPendingExtension(targetTicketId) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   const nowFormatted = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ${pad(now.getHours())}.${pad(now.getMinutes())} WIB`;
 
+  const currentActorObj = (typeof window.getCurrentEmployeeActor === 'function' ? window.getCurrentEmployeeActor() : null)
+    || (window.ACTORS && window.ACTORS[window.currentActor])
+    || (typeof window.getEmployeeActor === 'function' ? window.getEmployeeActor() : null);
+  const employeeName = (currentActorObj && currentActorObj.name) || ticket.applicantName || 'Karyawan';
+
   if (!ticket.timeline) ticket.timeline = [];
   ticket.timeline.push({
     event: 'Pembatalan Pengajuan Perpanjangan',
     time: nowFormatted,
-    by: `${ticket.applicantName || 'Budi Pratama'} (Karyawan)`,
+    by: `${employeeName} (Karyawan)`,
     desc: `Karyawan membatalkan pengajuan perpanjangan waktu kembali (semula diajukan hingga ${window.formatDisplayDate ? window.formatDisplayDate(ticket.pendingExtension.newEstimatedReturn) : ticket.pendingExtension.newEstimatedReturn}).`
   });
 
