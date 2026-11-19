@@ -783,3 +783,20 @@ window.addEventListener('scroll', () => {
 document.addEventListener('DOMContentLoaded', () => {
   initAllTableDragScroll();
 });
+
+// Native Date/Time Picker Easy-Trigger: Click anywhere inside input to open calendar/time picker
+document.addEventListener('click', (e) => {
+  const target = e.target;
+  if (target && target.tagName === 'INPUT') {
+    const type = target.type;
+    if (type === 'datetime-local' || type === 'date' || type === 'time') {
+      if (!target.disabled && !target.readOnly && typeof target.showPicker === 'function') {
+        try {
+          target.showPicker();
+        } catch (err) {
+          // Ignore if user cancelled or picker already open
+        }
+      }
+    }
+  }
+});

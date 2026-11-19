@@ -1452,7 +1452,7 @@ function renderKaryawanDashboard() {
                     </button>
                   `}
                 </div>
-                <button type="button" class="btn-figma-danger" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
+                <button type="button" class="btn-figma-danger btn-cancel-pending-ext" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
                   <span>✕ Batalkan Perpanjangan</span>
                 </button>
               </div>
@@ -1895,7 +1895,7 @@ function renderPengajuanSayaView() {
                   </button>
                 `}
               </div>
-              <button type="button" class="btn-figma-danger" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
+              <button type="button" class="btn-figma-danger btn-cancel-pending-ext" style="width: 100%; padding: 6px 12px; font-size: 0.775rem; font-weight: 700; background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="window.executeCancelPendingExtension('${activeTicket.id}')">
                 <span>✕ Batalkan Perpanjangan</span>
               </button>
             </div>
@@ -2466,7 +2466,7 @@ function renderEmpCards(list, containerElement) {
             </div>
 
             <!-- Note Banner (Sesuai status) -->
-            <div class="figma-note-banner note-${noteType}" style="font-size: 0.72rem; color: ${catatanColor}; background: ${catatanBg}; border: 1px solid ${catatanBorder}; border-radius: 6px; padding: 0.38rem 0.55rem; line-height: 1.35; font-weight: 600;">
+            <div class="figma-note-banner note-${noteType}" style="font-size: 0.72rem; color: ${catatanColor}; background: ${catatanBg}; border: 1px solid ${catatanBorder}; border-radius: 6px; padding: 0.38rem 0.55rem; line-height: 1.35; font-weight: 600; flex: 1; min-height: 38px; display: flex; align-items: center;">
               ${catatanText}
             </div>
 

@@ -75,11 +75,11 @@
     renderMobileShell();
     renderActiveView();
 
-    // TINGGI-02 FIX: Polling transisi overdue & expired tickets di background mobile
+    // TINGGI-02 FIX: Polling transisi overdue & expired tickets di background mobile (silent=true agar tidak spam toast)
     if (!window._mobileOverdueTimer) {
       window._mobileOverdueTimer = setInterval(function () {
         if (!document.hidden && typeof window.checkOverdueAndExpiredTickets === 'function') {
-          window.checkOverdueAndExpiredTickets(false);
+          window.checkOverdueAndExpiredTickets(true);
         }
       }, 15000);
     }
@@ -264,10 +264,10 @@
     const container = document.getElementById('mobileMainContent');
     if (!container) return;
 
-    // TINGGI-02 FIX: Sinkronisasi tiket overdue secara real-time pada setiap render view
+    // TINGGI-02 FIX: Sinkronisasi tiket overdue secara real-time pada setiap render view (silent=true)
     if (typeof window.checkOverdueAndExpiredTickets === 'function') {
       try {
-        window.checkOverdueAndExpiredTickets(false);
+        window.checkOverdueAndExpiredTickets(true);
       } catch (e) {
         console.warn('Overdue check error in mobile view:', e);
       }

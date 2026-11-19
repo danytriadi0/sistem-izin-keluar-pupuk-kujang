@@ -4328,7 +4328,7 @@
               ` : (t.hasExtensionPending || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan')) ? `
                 <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;">
-                    <button type="button" class="mobile-btn-secondary" disabled style="background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a; min-height: 40px; font-size: 0.725rem; font-weight: 700; opacity: 0.95; cursor: not-allowed; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; padding: 0 4px;">
+                    <button type="button" class="mobile-btn-secondary btn-pending-ext-notice" disabled style="background: #fffbeb; color: #92400e; border: 1.5px solid #fde68a; min-height: 40px; font-size: 0.725rem; font-weight: 700; opacity: 0.95; cursor: not-allowed; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; padding: 0 4px;">
                       Menunggu Persetujuan
                     </button>
                     ${isGroupDinasActive ? `
@@ -4341,7 +4341,7 @@
                       </button>
                     `}
                   </div>
-                  <button type="button" class="mobile-btn-secondary" style="background: #ffffff; color: #b91c1c; border: 1.5px solid #fca5a5; min-height: 36px; font-size: 0.775rem; font-weight: 700; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;" onclick="window.mobileCancelPendingExtension('${t.id}')">
+                  <button type="button" class="mobile-btn-secondary btn-cancel-pending-ext" style="background: #ffffff; color: #b91c1c; border: 1.5px solid #fca5a5; min-height: 36px; font-size: 0.775rem; font-weight: 700; border-radius: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;" onclick="window.mobileCancelPendingExtension('${t.id}')">
                     ✕ Batalkan Perpanjangan
                   </button>
                 </div>

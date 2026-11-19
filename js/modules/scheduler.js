@@ -219,6 +219,7 @@ function _executeCheckOverdueAndExpiredTickets(silent = true) {
         : 0;
 
       if (effectiveDeadlineMs > 0 && now.getTime() > effectiveDeadlineMs) {
+        const wasAlreadyExpired = (ticket.status === 'Kedaluwarsa');
         ticket.status = 'Kedaluwarsa';
         if (!ticket.notifiedExpired) {
           ticket.notifiedExpired = true;
@@ -236,16 +237,21 @@ function _executeCheckOverdueAndExpiredTickets(silent = true) {
               eventId: `expired_${ticket.id}`
             });
           }
+          if (!wasAlreadyExpired) {
+            newlyExpired++;
+          }
         }
         if (!ticket.timeline) ticket.timeline = [];
-        ticket.timeline.push({
-          event: isEmergencyTicket ? 'Izin Darurat Kedaluwarsa' : 'Tiket Kedaluwarsa',
-          time: nowFormatted,
-          by: 'Sistem Otomatis (Scheduler)',
-          desc: `Tiket ${isEmergencyTicket ? 'darurat ' : ''}otomatis hangus/kedaluwarsa karena tidak dipindai keluar melewati batas toleransi rencana keluar.`
-        });
+        const hasExpiredEvent = ticket.timeline.some(tl => (tl.event || '').toLowerCase().includes('kedaluwarsa'));
+        if (!hasExpiredEvent) {
+          ticket.timeline.push({
+            event: isEmergencyTicket ? 'Izin Darurat Kedaluwarsa' : 'Tiket Kedaluwarsa',
+            time: nowFormatted,
+            by: 'Sistem Otomatis (Scheduler)',
+            desc: `Tiket ${isEmergencyTicket ? 'darurat ' : ''}otomatis hangus/kedaluwarsa karena tidak dipindai keluar melewati batas toleransi rencana keluar.`
+          });
+        }
         hasChanges = true;
-        newlyExpired++;
       }
     }
 

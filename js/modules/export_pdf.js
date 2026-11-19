@@ -155,21 +155,23 @@
       let rowsHtml = '';
       if (tickets.length > 0) {
         rowsHtml = tickets.map(t => `
-          <tr style="height: 38px;">
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top; text-align: center;">${formatDateWaktu(t)}</td>
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top;">${formatIdentitasAkses(t)}</td>
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top; font-size: 8pt; color: #000000;">${t.department || 'Departemen Rekayasa & Pemeliharaan'}</td>
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top; font-size: 8pt; color: #000000;">${t.reason || t.destination || t.category || '-'}</td>
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top;">${formatWaktuScanTapBatas(t)}</td>
-            <td style="border: 1px solid #000000; padding: 6px 6px; vertical-align: top; text-align: center; font-weight: 700; font-size: 8.5pt; color: #000000;">${t.status || 'Selesai'}</td>
+          <tr style="height: 38px; page-break-inside: avoid; break-inside: avoid;">
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top; text-align: center;">${formatDateWaktu(t)}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top;">${formatIdentitasAkses(t)}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top; font-size: 8pt; color: #1e293b;">${t.department || 'Departemen Rekayasa & Pemeliharaan'}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top; font-size: 8pt; color: #1e293b;">${t.reason || t.destination || t.category || '-'}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top;">${formatWaktuScanTapBatas(t)}</td>
+            <td style="border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: middle; text-align: center;">
+              <span style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 7.5pt; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">${t.status || 'Selesai'}</span>
+            </td>
           </tr>
         `).join('');
       }
 
       if (tickets.length === 0) {
         rowsHtml = `
-          <tr style="height: 48px;">
-            <td colspan="6" style="border: 1px solid #000000; padding: 14px 10px; text-align: center; color: #475569; font-style: italic; font-size: 8.5pt;">
+          <tr style="height: 48px; page-break-inside: avoid; break-inside: avoid;">
+            <td colspan="6" style="border: 1px solid #cbd5e1; padding: 14px 10px; text-align: center; color: #64748b; font-style: italic; font-size: 8.5pt;">
               Tidak ada data perizinan yang sesuai dengan filter saat ini.
             </td>
           </tr>
@@ -215,27 +217,37 @@
           correctLevel: QRCode.CorrectLevel.M
         });
 
-        // Set synchronous crisp styling without waiting for async timeouts
-        const qrCanvas = qrMount.querySelector('canvas');
-        if (qrCanvas) {
-          qrCanvas.style.width = '56px';
-          qrCanvas.style.height = '56px';
-          qrCanvas.style.display = 'block';
-          qrCanvas.style.margin = '0 auto';
-        }
+        // Pastikan terkonversi menjadi elemen gambar permanen agar html2canvas tidak blank
+        const syncCanvasToImg = () => {
+          const qrCanvas = qrMount.querySelector('canvas');
+          if (qrCanvas) {
+            try {
+              const dataUrl = qrCanvas.toDataURL('image/png');
+              qrMount.innerHTML = `<img src="${dataUrl}" style="width: 56px; height: 56px; display: block; margin: 0 auto;" alt="QR TTE" />`;
+            } catch (e) {
+              qrCanvas.style.width = '56px';
+              qrCanvas.style.height = '56px';
+              qrCanvas.style.display = 'block';
+              qrCanvas.style.margin = '0 auto';
+            }
+          }
+        };
+        setTimeout(syncCanvasToImg, 50);
+        setTimeout(syncCanvasToImg, 150);
 
         const qrLabel = document.createElement('div');
-        qrLabel.style.fontSize = '6.5pt';
+        qrLabel.style.fontSize = '6pt';
         qrLabel.style.fontWeight = '800';
         qrLabel.style.color = '#008444';
-        qrLabel.style.marginTop = '2px';
+        qrLabel.style.marginTop = '3px';
         qrLabel.style.lineHeight = '1';
-        qrLabel.textContent = '(QR)';
+        qrLabel.style.letterSpacing = '0.5px';
+        qrLabel.textContent = 'TERVERIFIKASI';
         qrContainer.appendChild(qrLabel);
       } else {
         qrContainer.innerHTML = `
-          <div style="font-weight: 800; font-size: 0.9rem; color: #000000;">(QR)</div>
-          <div style="font-size: 6pt; color: #475569;">TERVERIFIKASI</div>
+          <div style="font-weight: 800; font-size: 0.9rem; color: #008444;">(QR)</div>
+          <div style="font-size: 6pt; color: #475569; letter-spacing: 0.5px;">TERVERIFIKASI</div>
         `;
       }
     }
@@ -315,11 +327,15 @@
     }
 
     const opt = {
-      margin: [6, 8, 6, 8],
+      margin: [8, 8, 8, 8],
       filename: 'Laporan-Perizinan-Pupuk-Kujang.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: {
+        mode: ['css', 'legacy'],
+        avoid: ['tr', '.pdf-signature-section', '.pdf-footer-section', '.pdf-logos-row', '.pdf-top-bar']
+      }
     };
 
     if (typeof html2pdf !== 'undefined') {

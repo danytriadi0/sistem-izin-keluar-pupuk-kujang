@@ -3874,6 +3874,29 @@ body.theme-dark .role-dropdown-item.active {
   gap: 0.6rem;
 }
 
+/* Card Realization & Keterangan Box (Stretches vertically to avoid awkward empty space) */
+.card-realization-box {
+  flex: 1 1 auto !important;
+  min-height: 52px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+body.theme-dark .card-realization-box {
+  background: #141c2c !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .card-realization-box strong {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .card-realization-box div {
+  color: #cbd5e1 !important;
+}
+
 /* CARD ACTION BUTTONS (TIKET & QR CODE + LIHAT RINCIAN) */
 .btn-card-qr {
   background: var(--corp-teal);
@@ -12453,43 +12476,46 @@ body.theme-dark .sidebar-brand-subtitle p {
   opacity: 0.85;
 }
 
-/* Modal Action Buttons (Gambar 1) */
+/* Modal Action Buttons (Approver Decision: Red Reject & Green Approve, Identik Card) */
 #modalTicketDetail .btn-detail-reject,
 #modalTicketDetail #btnDetailRejectTicket {
-  background: #ffffff !important;
-  border: 1.5px solid #cbd5e1 !important;
-  color: #0f172a !important;
+  background: var(--rose-light, #fff1f2) !important;
+  border: 1.5px solid var(--rose-border, #fecdd3) !important;
+  color: var(--rose-danger, #e11d48) !important;
   font-weight: 700 !important;
   border-radius: 8px !important;
   padding: 0.55rem 1.35rem !important;
   font-size: 0.85rem !important;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(225, 29, 72, 0.08);
+  transition: all 0.15s ease;
 }
 
 #modalTicketDetail .btn-detail-reject:hover,
 #modalTicketDetail #btnDetailRejectTicket:hover {
-  background: #f8fafc !important;
-  border-color: #94a3b8 !important;
+  background: #ffe4e6 !important;
+  border-color: #fda4af !important;
+  color: #be123c !important;
 }
 
 #modalTicketDetail .btn-detail-approve,
 #modalTicketDetail #btnDetailApproveTicket {
-  background: #0f3b75 !important;
-  border: 1.5px solid #0f3b75 !important;
+  background: var(--corp-teal, #059669) !important;
+  border: 1.5px solid var(--corp-teal, #059669) !important;
   color: #ffffff !important;
   font-weight: 700 !important;
   border-radius: 8px !important;
   padding: 0.55rem 1.35rem !important;
   font-size: 0.85rem !important;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(15, 59, 117, 0.25);
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.25);
+  transition: all 0.15s ease;
 }
 
 #modalTicketDetail .btn-detail-approve:hover,
 #modalTicketDetail #btnDetailApproveTicket:hover {
-  background: #0a2d5c !important;
-  border-color: #0a2d5c !important;
+  background: var(--corp-teal-hover, #047857) !important;
+  border-color: var(--corp-teal-hover, #047857) !important;
 }
 
 /* Dark mode overrides for Modal Detail */
@@ -12537,9 +12563,24 @@ body.theme-dark #modalTicketDetail #infoSecurityLbl {
 }
 
 body.theme-dark #modalTicketDetail #btnDetailRejectTicket {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: #f8fafc !important;
+  background: rgba(225, 29, 72, 0.16) !important;
+  border-color: rgba(244, 63, 94, 0.4) !important;
+  color: #fca5a5 !important;
+}
+body.theme-dark #modalTicketDetail #btnDetailRejectTicket:hover {
+  background: rgba(225, 29, 72, 0.28) !important;
+  border-color: rgba(244, 63, 94, 0.6) !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark #modalTicketDetail #btnDetailApproveTicket {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+}
+body.theme-dark #modalTicketDetail #btnDetailApproveTicket:hover {
+  background: #047857 !important;
+  border-color: #047857 !important;
 }
 
 
@@ -14382,4 +14423,222 @@ body.theme-dark [style*="color:#be123c"] {
 /* Global Z-Index enforcement for delete confirm modal */
 #modalDeleteConfirm {
   z-index: 10070 !important;
+}
+
+/* ==========================================================================
+   DATE & TIME PICKER ENHANCEMENTS & DARK MODE REFINEMENTS
+   ========================================================================== */
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"] {
+  cursor: pointer !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+}
+
+/* Gambar 5: Dark Mode Banner Otorisasi Darurat Modal Detail */
+body.theme-dark #topEmergencyAuthBanner,
+body.theme-dark .emergency-auth-banner {
+  background: rgba(185, 28, 28, 0.12) !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.35) !important;
+  box-shadow: none !important;
+}
+body.theme-dark .emergency-banner-title {
+  color: #f87171 !important;
+}
+body.theme-dark .emergency-banner-sub {
+  color: #cbd5e1 !important;
+}
+body.theme-dark .emergency-banner-status {
+  color: #fca5a5 !important;
+}
+
+/* Gambar 4: Dark Mode Member Search Dropdown (Tambah Anggota Tim Dinas) */
+body.theme-dark #memberFloatingDropdown {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+}
+body.theme-dark .member-search-item {
+  border-bottom-color: #1e293b !important;
+}
+body.theme-dark .member-search-item:hover {
+  background: #1e293b !important;
+}
+body.theme-dark .member-search-item [style*="color: #0f172a"],
+body.theme-dark .member-search-item [style*="color:#0f172a"] {
+  color: #f8fafc !important;
+}
+body.theme-dark .member-search-item [style*="color: #64748b"],
+body.theme-dark .member-search-item [style*="color:#64748b"] {
+  color: #94a3b8 !important;
+}
+body.theme-dark .member-search-item [style*="background: #e0f2fe"],
+body.theme-dark .member-search-item [style*="background:#e0f2fe"] {
+  background: rgba(14, 165, 233, 0.2) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(14, 165, 233, 0.4) !important;
+}
+body.theme-dark .member-search-item [style*="background: #f0fdf4"],
+body.theme-dark .member-search-item [style*="background:#f0fdf4"] {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+/* Gambar 3: Dark Mode Batalkan Perpanjangan & Menunggu Persetujuan Perpanjangan */
+body.theme-dark .btn-cancel-pending-ext {
+  background: rgba(220, 38, 38, 0.16) !important;
+  color: #fca5a5 !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.4) !important;
+}
+body.theme-dark .btn-cancel-pending-ext:hover {
+  background: rgba(220, 38, 38, 0.28) !important;
+  color: #ffffff !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+body.theme-dark .btn-pending-ext-notice {
+  background: rgba(217, 119, 6, 0.18) !important;
+  color: #fbbf24 !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
+}
+
+/* ==========================================================================
+   PENDING EXTENSION ALERT BOX & APPROVER DECISION BUTTONS REFINEMENT
+   ========================================================================== */
+.pending-extension-box {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.08);
+}
+.pending-extension-box .pending-ext-title {
+  color: #92400e;
+}
+.pending-extension-box .pending-ext-badge {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+.pending-extension-box .pending-ext-text {
+  color: #78350f;
+}
+.pending-extension-box .pending-ext-text strong {
+  color: #92400e;
+}
+.pending-extension-box #infoExtNewReturn {
+  color: #92400e;
+}
+.pending-extension-box #infoExtReason {
+  color: #78350f;
+}
+
+/* Dark mode for Pending Extension Box (Image 2 Fix) */
+body.theme-dark .pending-extension-box,
+body.theme-dark #infoPendingExtensionBox {
+  background: rgba(217, 119, 6, 0.14) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.38) !important;
+  box-shadow: none !important;
+}
+body.theme-dark .pending-extension-box .pending-ext-title,
+body.theme-dark #infoPendingExtensionBox .pending-ext-title {
+  color: #fbbf24 !important;
+}
+body.theme-dark .pending-extension-box .pending-ext-badge,
+body.theme-dark #infoPendingExtensionBox .pending-ext-badge {
+  background: rgba(245, 158, 11, 0.22) !important;
+  color: #fef08a !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+}
+body.theme-dark .pending-extension-box .pending-ext-text,
+body.theme-dark #infoPendingExtensionBox .pending-ext-text {
+  color: #cbd5e1 !important;
+}
+body.theme-dark .pending-extension-box .pending-ext-text strong,
+body.theme-dark #infoPendingExtensionBox .pending-ext-text strong {
+  color: #e2e8f0 !important;
+}
+body.theme-dark .pending-extension-box #infoExtNewReturn,
+body.theme-dark #infoPendingExtensionBox #infoExtNewReturn {
+  color: #f8fafc !important;
+}
+body.theme-dark .pending-extension-box #infoExtReason,
+body.theme-dark #infoPendingExtensionBox #infoExtReason {
+  color: #cbd5e1 !important;
+}
+
+/* Reject extension button inside box */
+#btnDetailRejectExt {
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1.5px solid #fecdd3;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+#btnDetailRejectExt:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+  color: #be123c;
+}
+body.theme-dark #btnDetailRejectExt {
+  background: rgba(220, 38, 38, 0.16) !important;
+  color: #fca5a5 !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.4) !important;
+}
+body.theme-dark #btnDetailRejectExt:hover {
+  background: rgba(220, 38, 38, 0.28) !important;
+  color: #ffffff !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+
+/* Approver Decision Buttons inside Detail Modal (Image 4 Fix) */
+#btnDetailApproveTicket {
+  background: var(--corp-teal, #059669) !important;
+  color: #ffffff !important;
+  border: 1.5px solid var(--corp-teal, #059669) !important;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25) !important;
+  transition: all 0.15s ease;
+}
+#btnDetailApproveTicket:hover {
+  background: var(--corp-teal-hover, #047857) !important;
+  border-color: var(--corp-teal-hover, #047857) !important;
+}
+
+#btnDetailRejectTicket {
+  background: var(--rose-light, #fff1f2) !important;
+  color: var(--rose-danger, #e11d48) !important;
+  border: 1.5px solid var(--rose-border, #fecdd3) !important;
+  transition: all 0.15s ease;
+}
+#btnDetailRejectTicket:hover {
+  background: #ffe4e6 !important;
+  color: #be123c !important;
+  border-color: #fda4af !important;
+}
+
+body.theme-dark #btnDetailApproveTicket {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border: 1.5px solid #059669 !important;
+  box-shadow: none !important;
+}
+body.theme-dark #btnDetailApproveTicket:hover {
+  background: #047857 !important;
+  border-color: #047857 !important;
+}
+
+body.theme-dark #btnDetailRejectTicket {
+  background: rgba(225, 29, 72, 0.16) !important;
+  color: #fca5a5 !important;
+  border: 1.5px solid rgba(244, 63, 94, 0.4) !important;
+}
+body.theme-dark #btnDetailRejectTicket:hover {
+  background: rgba(225, 29, 72, 0.28) !important;
+  color: #ffffff !important;
+  border-color: rgba(244, 63, 94, 0.6) !important;
 }

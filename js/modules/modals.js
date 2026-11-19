@@ -2743,18 +2743,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
       }
 
       if (karyawanExtActionBtns) {
-        if (isKaryawanViewer) {
-          karyawanExtActionBtns.style.display = 'flex';
-          if (btnDetailCancelExt) {
-            btnDetailCancelExt.onclick = () => {
-              if (typeof window.executeCancelPendingExtension === 'function') {
-                window.executeCancelPendingExtension(ticket.id);
-              }
-            };
-          }
-        } else {
-          karyawanExtActionBtns.style.display = 'none';
-        }
+        karyawanExtActionBtns.style.display = 'none';
       }
     } else {
       infoPendingExtensionBox.style.display = 'none';
@@ -2766,6 +2755,7 @@ function openTicketDetail(ticketId, defaultTab = 'info', options = {}) {
   if (btnFooterCancelExt) {
     if (hasPendingExt && isKaryawanViewer && !isFinished) {
       btnFooterCancelExt.style.display = 'inline-flex';
+      btnFooterCancelExt.textContent = 'Batalkan Perpanjangan';
       btnFooterCancelExt.onclick = () => {
         if (typeof window.executeCancelPendingExtension === 'function') {
           window.executeCancelPendingExtension(ticket.id);

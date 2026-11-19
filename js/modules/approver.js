@@ -815,7 +815,7 @@ function renderApproverCards(list, containerElement, isTracking = false) {
             ${t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan' && t.status !== 'Menunggu Verifikasi Atasan' ? `
               <div class="approver-alert-banner extension" style="border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.8rem; margin: 0.5rem 0;">
                 <div style="font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
-                  <span>⏱️ Permohonan Perpanjangan Waktu</span>
+                  <span>Permohonan Perpanjangan Waktu</span>
                   <span style="font-size:0.75rem; font-weight:700;">Grace Period</span>
                 </div>
                 <div style="margin-top: 0.35rem; font-size: 0.775rem; line-height: 1.4;">
@@ -825,11 +825,19 @@ function renderApproverCards(list, containerElement, isTracking = false) {
               </div>
             ` : ''}
 
-            ${t.approverNote ? `
-              <div style="background:var(--bg-subtle, #f8fafc); border:1px solid var(--border-color); border-radius:6px; padding:0.45rem 0.65rem; font-size:0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
-                <strong>Catatan Keputusan:</strong> "${t.approverNote}"
+            ${isRiwayatView ? `
+              <!-- Realization Summary Row (Scan Out, Tap In, & Catatan Atasan) -->
+              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
+                ${t.scanOutTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Scan Out:</strong> ${t.scanOutTime}</div>` : ''}
+                ${t.scanInTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Tap In:</strong> ${t.scanInTime}</div>` : ''}
+                ${t.approverNote ? `<div style="color: var(--text-secondary, #475569); line-height: 1.35;"><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>` : ''}
+                ${(!t.scanOutTime && !t.scanInTime && !t.approverNote) ? `<div style="color: var(--text-muted);">Belum ada catatan pemindaian gerbang</div>` : ''}
               </div>
-            ` : ''}
+            ` : (t.approverNote ? `
+              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.75rem; flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0.5rem;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
+                <div><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>
+              </div>
+            ` : '')}
 
             ${(() => {
               const isReassignedAway = isTicketReassignedFromCurrentApprover(t);

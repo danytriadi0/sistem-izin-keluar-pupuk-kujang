@@ -499,35 +499,21 @@ function loadTickets() {
           }
         } catch (e) {}
       }
-      // Pulihkan tiket darurat jika sebelumnya terlanjur ditandai Kedaluwarsa oleh scheduler lama
-      if ((t.isEmergency || (t.id && t.id.startsWith('TK-EMG'))) && t.status === 'Kedaluwarsa') {
-        t.status = 'Disetujui';
-        changed = true;
-      }
-      // Pulihkan tiket aktif yang tidak sengaja ter-expire saat simulasi hari ini
-      if (t.status === 'Kedaluwarsa' && !t.scanOutTime) {
-        const createTime = parseTicketDateTime(t.createdAt || t.id);
-        const exitTime = parseTicketDateTime(t.plannedExit);
-        const now = new Date();
-        const isToday = (createTime && !isNaN(createTime.getTime()) &&
-          createTime.getDate() === now.getDate() &&
-          createTime.getMonth() === now.getMonth() &&
-          createTime.getFullYear() === now.getFullYear()) ||
-          (exitTime && !isNaN(exitTime.getTime()) &&
-          exitTime.getDate() === now.getDate() &&
-          exitTime.getMonth() === now.getMonth() &&
-          exitTime.getFullYear() === now.getFullYear()) ||
-          Boolean(t.id && t.id.includes(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`));
-
-        if (isToday) {
-          const wasApproved = Boolean(t.approvedAt || (t.timeline && t.timeline.some(tl => (tl.event || tl.status || '').toLowerCase().includes('setujui'))));
-          t.status = wasApproved ? 'Disetujui' : 'Menunggu Persetujuan';
-          t.notifiedExpired = false;
-          if (Array.isArray(t.timeline)) {
-            t.timeline = t.timeline.filter(tl => !(tl.event || '').toLowerCase().includes('kedaluwarsa') && !(tl.desc || '').toLowerCase().includes('kedaluwarsa'));
+      // Bersihkan residu timeline ganda akibat loop kedaluwarsa sebelumnya jika ada
+      if (Array.isArray(t.timeline)) {
+        let seenExpiredEvent = false;
+        t.timeline = t.timeline.filter(e => {
+          const isExp = (e.event && e.event.toLowerCase().includes('kedaluwarsa')) ||
+                        (e.desc && e.desc.toLowerCase().includes('kedaluwarsa'));
+          if (isExp) {
+            if (seenExpiredEvent) {
+              changed = true;
+              return false;
+            }
+            seenExpiredEvent = true;
           }
-          changed = true;
-        }
+          return true;
+        });
       }
       // Pastikan tiket yang dibatalkan atau ditolak tidak berstatus terkunci aktif
       if (t.status === 'Dibatalkan' || t.status === 'Ditolak' || t.status === 'Selesai') {
