@@ -25,7 +25,7 @@ function getCurrentApproverActor() {
         return found;
       }
     }
-  } catch(e) {}
+  } catch (e) { }
   const ACTORS = window.ACTORS || {};
   const isApprover2 = (window.currentActor === 'approver2');
   if (isApprover2 && ACTORS.approver2 && ACTORS.approver2.name) return ACTORS.approver2;
@@ -187,15 +187,15 @@ function updateApproverMetrics() {
   const ticketsList = window.ticketsList || [];
   const currentApprover = getCurrentApproverActor();
 
-  const pendingInitial = ticketsList.filter(t => 
-    t.status !== 'Dibatalkan' && 
-    t.status !== 'Ditolak' && 
+  const pendingInitial = ticketsList.filter(t =>
+    t.status !== 'Dibatalkan' &&
+    t.status !== 'Ditolak' &&
     (t.status === 'Menunggu Persetujuan' || t.status === 'Menunggu Otorisasi Darurat' || t.status === 'Menunggu Verifikasi Atasan') &&
     isTicketAssignedToCurrentApprover(t)
   ).length;
 
-  const pendingExtensions = ticketsList.filter(t => 
-    t.pendingExtension && 
+  const pendingExtensions = ticketsList.filter(t =>
+    t.pendingExtension &&
     t.pendingExtension.status === 'Menunggu Persetujuan' &&
     t.status !== 'Menunggu Verifikasi Atasan' &&
     isTicketAssignedToCurrentApprover(t)
@@ -508,8 +508,8 @@ function renderApproverDashboard() {
             </div>
             <div style="font-size: 0.775rem; color: #334155; line-height: 1.4;">
               ${hasProofPhoto
-                ? `Karyawan mengirim ulang <strong>Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1})</strong>. Periksa foto &amp; konfirmasi kembali:`
-                : `Personel telah melakukan Tap In di gerbang. Periksa kehadiran fisik di ruangan kerja:`}
+            ? `Karyawan mengirim ulang <strong>Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1})</strong>. Periksa foto &amp; konfirmasi kembali:`
+            : `Personel telah melakukan Tap In di gerbang. Periksa kehadiran fisik di ruangan kerja:`}
             </div>
             ${hasProofPhoto ? `
               <div class="proof-photo-review-card" style="display: flex; gap: 0.65rem; align-items: center; padding: 0.55rem 0.65rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-color, #e2e8f0);">
@@ -750,9 +750,9 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                 <span style="font-weight: 700; font-size: 0.75rem; color: ${isRiwayatView ? 'var(--text-secondary, #475569)' : (isDinas ? '#059669' : '#d97706')}; white-space: nowrap;">${displayCategory}</span>
                 ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px; white-space: nowrap;">🚨 Darurat</span>` : ''}
                 ${isGroupDinas ? (() => {
-                  const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-                  return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
-                })() : ''}
+        const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
+        return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px; white-space: nowrap;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
+      })() : ''}
               </div>
             </div>
 
@@ -767,23 +767,23 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                 <span style="font-size: 0.7rem; opacity: 0.85;">${t.reassignedAt || ''}</span>
               </div>
             ` : (() => {
-              if (t.isGroupDinas && Array.isArray(t.members)) {
-                const currentActor = getCurrentApproverActor();
-                const aNip = (currentActor.nip || '').trim();
-                const cActorName = cleanPersonName(currentActor.name || '');
-                const myMembers = t.members.filter(m => isMemberMySubordinate(m, aNip, cActorName));
-                if (myMembers.length > 0 && !isTicketAssignedToCurrentApprover(t)) {
-                  const names = myMembers.map(m => m.name.split(',')[0]).join(', ');
-                  return `
+        if (t.isGroupDinas && Array.isArray(t.members)) {
+          const currentActor = getCurrentApproverActor();
+          const aNip = (currentActor.nip || '').trim();
+          const cActorName = cleanPersonName(currentActor.name || '');
+          const myMembers = t.members.filter(m => isMemberMySubordinate(m, aNip, cActorName));
+          if (myMembers.length > 0 && !isTicketAssignedToCurrentApprover(t)) {
+            const names = myMembers.map(m => m.name.split(',')[0]).join(', ');
+            return `
                     <div class="approver-alert-banner" style="background: #ffffff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; padding: 0.45rem 0.75rem; font-size: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
                       <span style="color: #334155;"><strong>Tembusan Pengawasan:</strong> Staf Anda (<strong>${names}</strong>) terdaftar dalam tim dinas ini</span>
                       <span style="font-size: 0.7rem; color: #475569; font-weight: 700;">Peninjau: ${t.approverName}</span>
                     </div>
                   `;
-                }
-              }
-              return '';
-            })())}
+          }
+        }
+        return '';
+      })())}
 
             <!-- Detail Box (Tujuan keluar, Keperluan, Rencana waktu) Sesuai Gambar 2 -->
             <div class="figma-card-detail-box" style="display: flex; flex-direction: column; gap: 0.35rem; padding: 0.55rem 0.65rem; background: var(--bg-subtle, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; margin: 0.4rem 0;">
@@ -827,27 +827,27 @@ function renderApproverCards(list, containerElement, isTracking = false) {
 
             ${isRiwayatView ? `
               <!-- Realization Summary Row (Scan Out, Tap In, & Catatan Atasan) -->
-              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
+              <div class="card-realization-box" style="background-color:   #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
                 ${t.scanOutTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Scan Out:</strong> ${t.scanOutTime}</div>` : ''}
                 ${t.scanInTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Tap In:</strong> ${t.scanInTime}</div>` : ''}
                 ${t.approverNote ? `<div style="color: var(--text-secondary, #475569); line-height: 1.35;"><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>` : ''}
                 ${(!t.scanOutTime && !t.scanInTime && !t.approverNote) ? `<div style="color: var(--text-muted);">Belum ada catatan pemindaian gerbang</div>` : ''}
               </div>
             ` : (t.approverNote ? `
-              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.75rem; flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0.5rem;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
+              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); back border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.75rem; flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0.5rem;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
                 <div><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>
               </div>
             ` : '')}
 
             ${(() => {
-              const isReassignedAway = isTicketReassignedFromCurrentApprover(t);
-              const isAssigned = isTicketAssignedToCurrentApprover(t);
-              const canDecide = !isTrackingView && isAssigned && !isReassignedAway;
-              const isEmergDeciding = isEmergency && (t.status === 'Menunggu Otorisasi Darurat' || (t.emergencyLocked && t.status !== 'Disetujui' && !['Selesai', 'Ditolak', 'Dibatalkan', 'Kedaluwarsa'].includes(t.status)));
+        const isReassignedAway = isTicketReassignedFromCurrentApprover(t);
+        const isAssigned = isTicketAssignedToCurrentApprover(t);
+        const canDecide = !isTrackingView && isAssigned && !isReassignedAway;
+        const isEmergDeciding = isEmergency && (t.status === 'Menunggu Otorisasi Darurat' || (t.emergencyLocked && t.status !== 'Disetujui' && !['Selesai', 'Ditolak', 'Dibatalkan', 'Kedaluwarsa'].includes(t.status)));
 
-              if (canDecide && (isPending || isEmergDeciding || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))) {
-                // Decision Mode (Exclusive to Officially Assigned Approver)
-                return `
+        if (canDecide && (isPending || isEmergDeciding || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))) {
+          // Decision Mode (Exclusive to Officially Assigned Approver)
+          return `
                 <div class="card-actions-bar" style="display: flex; flex-direction: column; gap: 0.45rem; width: 100%; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color);">
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; width: 100%;">
                     ${t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan' && t.status !== 'Menunggu Verifikasi Atasan' ? `
@@ -858,7 +858,7 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                         ✓ Setujui Perpanjang
                       </button>
                     ` : (isEmergDeciding ? (
-                      t.selectedMethod === 'facescan' ? `
+              t.selectedMethod === 'facescan' ? `
                         <div style="grid-column: span 2; display: flex; align-items: center; justify-content: center; background: #faf5ff; border: 1px solid #e9d5ff; padding: 0.4rem 0.65rem; border-radius: 6px;">
                           <span style="font-size: 0.725rem; color: #7e22ce; font-weight: 700;">🤳 Otorisasi Scan Wajah di Tempat (Menunggu Pemohon)</span>
                         </div>
@@ -870,7 +870,7 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                           ✓ Setujui
                         </button>
                       `
-                    ) : `
+            ) : `
                       <button class="btn-reject" style="width: 100%; min-height: 34px; justify-content: center; font-size: 0.775rem; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="openRejectModal('${t.id}')">
                         ✕ Tolak
                       </button>
@@ -884,11 +884,11 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                     <span>Detail Pengajuan</span>
                   </button>
                 </div>`;
-              }
+        }
 
-              // Monitoring / Read-Only Mode (Subordinate pending with other approver OR Reassigned Away)
-              if (!isTrackingView && (isReassignedAway || !isAssigned) && (isPending || isEmergDeciding || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))) {
-                return `
+        // Monitoring / Read-Only Mode (Subordinate pending with other approver OR Reassigned Away)
+        if (!isTrackingView && (isReassignedAway || !isAssigned) && (isPending || isEmergDeciding || (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))) {
+          return `
                 <div class="card-actions-bar" style="display: flex; flex-direction: column; gap: 0.45rem; width: 100%; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color);">
                   <div style="display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.6rem; background: #ffffff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; font-size: 0.725rem; color: #334155; font-weight: 600;">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
@@ -899,11 +899,11 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                     <span>Detail Pengajuan</span>
                   </button>
                 </div>`;
-              }
+        }
 
-              // Standard Tracking View (Pelacakan) & Antrean
-              if (t.status === 'Menunggu Bukti Kedatangan') {
-                return `
+        // Standard Tracking View (Pelacakan) & Antrean
+        if (t.status === 'Menunggu Bukti Kedatangan') {
+          return `
                 <div class="card-actions-bar" style="display: flex; flex-direction: column; gap: 0.45rem; width: 100%; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color);">
                   <div class="proof-reason-alert-box" style="padding: 0.5rem 0.7rem; border-radius: 6px; font-size: 0.725rem; line-height: 1.4; background: #ffffff; border: 1px solid var(--border-color, #e2e8f0); color: #0f172a;">
                     <strong>Menunggu Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1}):</strong><br>
@@ -914,23 +914,23 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                     <span>Detail Pengajuan</span>
                   </button>
                 </div>`;
-              }
+        }
 
-              if (t.status === 'Menunggu Verifikasi Atasan') {
-                const isPrimary = isTicketAssignedToCurrentApprover(t);
-                if (!isPrimary) {
-                  return `
+        if (t.status === 'Menunggu Verifikasi Atasan') {
+          const isPrimary = isTicketAssignedToCurrentApprover(t);
+          if (!isPrimary) {
+            return `
                   <div class="card-actions-bar" style="display: flex; gap: 0.5rem; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color); width: 100%;">
                     <span style="font-size: 0.72rem; color: #475569; font-weight: 600;">Tap In gerbang tercatat (Menunggu konfirmasi ${t.approverName})</span>
                     <button type="button" class="btn-pill-action btn-pill-detail" onclick="openTicketDetail('${t.id}', 'detail')" title="Lihat Detail Pengajuan">
                       <span>Detail Pengajuan</span>
                     </button>
                   </div>`;
-                }
+          }
 
-                // KHUSUS MENU PELACAKAN: Hanya pemantauan status (read-only), DILARANG menampilkan tombol konfirmasi kedatangan
-                if (window.currentApproverNav === 'pelacakan' || window.currentApproverNav === 'tim') {
-                  return `
+          // KHUSUS MENU PELACAKAN: Hanya pemantauan status (read-only), DILARANG menampilkan tombol konfirmasi kedatangan
+          if (window.currentApproverNav === 'pelacakan' || window.currentApproverNav === 'tim') {
+            return `
                   <div class="card-actions-bar" style="display: flex; gap: 0.5rem; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color); width: 100%;">
                     <span style="font-size: 0.725rem; color: #475569; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
                       <span>Tap In gerbang tercatat (${t.tapInTime || t.arrivalReportedTime || 'Terkunci'}) — Menunggu konfirmasi di Antrean</span>
@@ -939,17 +939,17 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                       <span>Detail Pengajuan</span>
                     </button>
                   </div>`;
-                }
+          }
 
-                // MENU ANTREAN PERSETUJUAN & DASHBOARD ATASAN: Tampilkan foto bukti (jika ada) & tombol aksi konfirmasi
-                const hasProofPhoto = Boolean(t.arrivalProofPhoto);
-                return `
+          // MENU ANTREAN PERSETUJUAN & DASHBOARD ATASAN: Tampilkan foto bukti (jika ada) & tombol aksi konfirmasi
+          const hasProofPhoto = Boolean(t.arrivalProofPhoto);
+          return `
                 <div class="card-actions-bar" style="display: flex; flex-direction: column; gap: 0.45rem; width: 100%; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color);">
                   <div style="padding: 0.45rem 0.65rem; background: #ffffff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; font-size: 0.725rem; color: #334155; line-height: 1.4;">
                     <strong style="color: #0f172a;">Tap In Gerbang Masuk (${t.tapInTime || t.arrivalReportedTime || 'Terkunci'}):</strong><br>
                     ${hasProofPhoto
-                      ? `Karyawan mengirim ulang <strong>Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1})</strong>. Periksa foto & konfirmasi kembali:`
-                      : `Personel ${t.isGroupDinas ? 'tim dinas ' : ''}telah tap in di gerbang. Periksa kehadiran fisik di ruangan kerja dan berikan konfirmasi:`}
+              ? `Karyawan mengirim ulang <strong>Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1})</strong>. Periksa foto & konfirmasi kembali:`
+              : `Personel ${t.isGroupDinas ? 'tim dinas ' : ''}telah tap in di gerbang. Periksa kehadiran fisik di ruangan kerja dan berikan konfirmasi:`}
                   </div>
                   ${hasProofPhoto ? `
                     <div class="proof-photo-review-card" style="display: flex; gap: 0.65rem; align-items: center; padding: 0.55rem 0.65rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-color, #e2e8f0);">
@@ -974,9 +974,9 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                     <span>Detail Pengajuan</span>
                   </button>
                 </div>`;
-              }
+        }
 
-              return `
+        return `
               <div class="card-actions-bar" style="display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color); flex-wrap: nowrap; width: 100%;">
                 <button type="button" class="btn-pill-action btn-pill-detail" onclick="openTicketDetail('${t.id}', 'detail')" title="Lihat Detail Pengajuan">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
@@ -988,7 +988,7 @@ function renderApproverCards(list, containerElement, isTracking = false) {
                   <span>Hapus</span>
                 </button>` : ''}
               </div>`;
-            })()}
+      })()}
           </div>
         `;
   }).join('')}
@@ -1026,61 +1026,61 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
         </thead>
         <tbody>
           ${list.map(t => {
-            const isEmergency = Boolean(t.isEmergency || (t.id && t.id.startsWith('TK-EMG')) || (t.category && t.category.toLowerCase().includes('darurat')));
-            let displayCategory = t.category;
-            if (!displayCategory || displayCategory === 'Izin Darurat' || displayCategory === 'Darurat') {
-              displayCategory = (t.type === 'Pulang Mendahului' || (t.reason && t.reason.toLowerCase().includes('keluarga'))) ? 'Urusan Pribadi' : 'Dinas Kantor';
-            }
-            const isDinas = displayCategory === 'Dinas Kantor';
-            const isGroupDinas = Boolean((t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) && isDinas);
-            const statusHtml = typeof window.getCleanEmpStatus === 'function' ? window.getCleanEmpStatus(t.status, t) : window.getStatusPill(t.status, t);
-            const scheduleWithDay = typeof window.formatTicketScheduleWithDay === 'function'
-              ? window.formatTicketScheduleWithDay(t)
-              : `<div style="font-weight: 600; color: var(--text-primary); font-size: 0.775rem; white-space: nowrap;">${(t.plannedExit || '').slice(0, 10)}</div><div style="font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono); margin-top: 2px; white-space: nowrap;">${(t.plannedExit || '').slice(11, 16)} WIB</div>`;
+    const isEmergency = Boolean(t.isEmergency || (t.id && t.id.startsWith('TK-EMG')) || (t.category && t.category.toLowerCase().includes('darurat')));
+    let displayCategory = t.category;
+    if (!displayCategory || displayCategory === 'Izin Darurat' || displayCategory === 'Darurat') {
+      displayCategory = (t.type === 'Pulang Mendahului' || (t.reason && t.reason.toLowerCase().includes('keluarga'))) ? 'Urusan Pribadi' : 'Dinas Kantor';
+    }
+    const isDinas = displayCategory === 'Dinas Kantor';
+    const isGroupDinas = Boolean((t.isGroupDinas || (Array.isArray(t.members) && t.members.length > 0)) && isDinas);
+    const statusHtml = typeof window.getCleanEmpStatus === 'function' ? window.getCleanEmpStatus(t.status, t) : window.getStatusPill(t.status, t);
+    const scheduleWithDay = typeof window.formatTicketScheduleWithDay === 'function'
+      ? window.formatTicketScheduleWithDay(t)
+      : `<div style="font-weight: 600; color: var(--text-primary); font-size: 0.775rem; white-space: nowrap;">${(t.plannedExit || '').slice(0, 10)}</div><div style="font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono); margin-top: 2px; white-space: nowrap;">${(t.plannedExit || '').slice(11, 16)} WIB</div>`;
 
-            let catatanHtml = `<span style="color: var(--text-muted); font-size: 0.75rem;">-</span>`;
-            if (t.status === 'Menunggu Verifikasi Atasan') {
-              catatanHtml = t.arrivalProofPhoto
-                ? `<span style="color: #2563eb; font-size: 0.74rem; font-weight: 600;">📷 Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1}) siap ditinjau</span>`
-                : `<span style="color: #0f172a; font-size: 0.74rem; font-weight: 600;">Tap In Gerbang (${t.tapInTime || t.arrivalReportedTime || 'Terkunci'}) — Perlu konfirmasi fisik</span>`;
-            } else if (t.status === 'Menunggu Bukti Kedatangan') {
-              catatanHtml = `<span style="color: #d97706; font-size: 0.74rem; font-weight: 600;">Putaran #${t.arrivalRejectionRound || 1}: "${t.arrivalRejectReason || 'Menunggu bukti foto'}"</span>`;
-            } else if (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan') {
-              catatanHtml = `<span style="color: #d97706; font-size: 0.74rem; font-weight: 600;">Perpanjangan s/d ${t.pendingExtension.newReturn || '-'} (${t.pendingExtension.reason || '-'})</span>`;
-            } else if (t.approverNote) {
-              let noteText = t.approverNote;
-              if (noteText.includes('[Otorisasi Darurat Sah]: QR Code dibuka melalui "Scan Wajah Atasan (Face Scan Biometrik)"') || (noteText.includes('[Otorisasi') && noteText.includes('Face Scan'))) {
-                noteText = `[Otorisasi Sah]: QR Code dibuka via Face Scan Biometrik oleh ${t.approverName || 'Atasan Peninjau'}.`;
-              } else if (noteText.includes('[Otorisasi Darurat Sah]:')) {
-                noteText = noteText.replace(/\[Otorisasi Darurat Sah\]:?\s*/gi, '[Otorisasi Sah]: ')
-                                   .replace(/melalui\s*"([^"]+)"/gi, 'via $1')
-                                   .replace(/Verifikasi wajah biometrik berhasil dilakukan langsung di tempat kejadian\./gi, '')
-                                   .replace(/Disetujui 1-Klik melalui Dashboard Atasan\./gi, '')
-                                   .replace(/Verifikasi kode sandi otorisasi.*cocok secara sah\./gi, '')
-                                   .replace(/\s{2,}/g, ' ')
-                                   .trim();
-              }
-              catatanHtml = `<span style="color: var(--text-primary); font-size: 0.75rem; font-style: normal;" title="${(t.approverNote || '').replace(/"/g, '&quot;')}">"${noteText}"</span>`;
-            } else if (t.rejectionReason) {
-              catatanHtml = `<span style="color: #ef4444; font-size: 0.75rem;" title="${(t.rejectionReason || '').replace(/"/g, '&quot;')}">${t.rejectionReason}</span>`;
-            } else if (t.reassignedStatusLabel) {
-              catatanHtml = `<span style="color: #0284c7; font-size: 0.725rem; font-weight: 700;">${t.reassignedStatusLabel}</span>`;
-            } else if (t.reassignedTo) {
-              catatanHtml = `<span style="color: #f59e0b; font-size: 0.725rem;">Dialihkan ke ${t.reassignedTo}</span>`;
-            }
+    let catatanHtml = `<span style="color: var(--text-muted); font-size: 0.75rem;">-</span>`;
+    if (t.status === 'Menunggu Verifikasi Atasan') {
+      catatanHtml = t.arrivalProofPhoto
+        ? `<span style="color: #2563eb; font-size: 0.74rem; font-weight: 600;">📷 Foto Bukti Kedatangan (Putaran #${t.arrivalRejectionRound || 1}) siap ditinjau</span>`
+        : `<span style="color: #0f172a; font-size: 0.74rem; font-weight: 600;">Tap In Gerbang (${t.tapInTime || t.arrivalReportedTime || 'Terkunci'}) — Perlu konfirmasi fisik</span>`;
+    } else if (t.status === 'Menunggu Bukti Kedatangan') {
+      catatanHtml = `<span style="color: #d97706; font-size: 0.74rem; font-weight: 600;">Putaran #${t.arrivalRejectionRound || 1}: "${t.arrivalRejectReason || 'Menunggu bukti foto'}"</span>`;
+    } else if (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan') {
+      catatanHtml = `<span style="color: #d97706; font-size: 0.74rem; font-weight: 600;">Perpanjangan s/d ${t.pendingExtension.newReturn || '-'} (${t.pendingExtension.reason || '-'})</span>`;
+    } else if (t.approverNote) {
+      let noteText = t.approverNote;
+      if (noteText.includes('[Otorisasi Darurat Sah]: QR Code dibuka melalui "Scan Wajah Atasan (Face Scan Biometrik)"') || (noteText.includes('[Otorisasi') && noteText.includes('Face Scan'))) {
+        noteText = `[Otorisasi Sah]: QR Code dibuka via Face Scan Biometrik oleh ${t.approverName || 'Atasan Peninjau'}.`;
+      } else if (noteText.includes('[Otorisasi Darurat Sah]:')) {
+        noteText = noteText.replace(/\[Otorisasi Darurat Sah\]:?\s*/gi, '[Otorisasi Sah]: ')
+          .replace(/melalui\s*"([^"]+)"/gi, 'via $1')
+          .replace(/Verifikasi wajah biometrik berhasil dilakukan langsung di tempat kejadian\./gi, '')
+          .replace(/Disetujui 1-Klik melalui Dashboard Atasan\./gi, '')
+          .replace(/Verifikasi kode sandi otorisasi.*cocok secara sah\./gi, '')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+      }
+      catatanHtml = `<span style="color: var(--text-primary); font-size: 0.75rem; font-style: normal;" title="${(t.approverNote || '').replace(/"/g, '&quot;')}">"${noteText}"</span>`;
+    } else if (t.rejectionReason) {
+      catatanHtml = `<span style="color: #ef4444; font-size: 0.75rem;" title="${(t.rejectionReason || '').replace(/"/g, '&quot;')}">${t.rejectionReason}</span>`;
+    } else if (t.reassignedStatusLabel) {
+      catatanHtml = `<span style="color: #0284c7; font-size: 0.725rem; font-weight: 700;">${t.reassignedStatusLabel}</span>`;
+    } else if (t.reassignedTo) {
+      catatanHtml = `<span style="color: #f59e0b; font-size: 0.725rem;">Dialihkan ke ${t.reassignedTo}</span>`;
+    }
 
-            const isAntrianView = (window.currentApproverNav === 'antrian');
-            const isRiwayatView = (window.currentApproverNav === 'riwayat');
-            const isAssigned = isTicketAssignedToCurrentApprover(t);
-            const isReassignedAway = isTicketReassignedFromCurrentApprover(t);
-            const canDecide = !isReadOnlyMonitoring && isAssigned && !isReassignedAway;
-            const isPending = (t.status === 'Menunggu Persetujuan');
-            const isEmergDeciding = (t.status === 'Menunggu Otorisasi Darurat');
+    const isAntrianView = (window.currentApproverNav === 'antrian');
+    const isRiwayatView = (window.currentApproverNav === 'riwayat');
+    const isAssigned = isTicketAssignedToCurrentApprover(t);
+    const isReassignedAway = isTicketReassignedFromCurrentApprover(t);
+    const canDecide = !isReadOnlyMonitoring && isAssigned && !isReassignedAway;
+    const isPending = (t.status === 'Menunggu Persetujuan');
+    const isEmergDeciding = (t.status === 'Menunggu Otorisasi Darurat');
 
-            let extraAntrianBtns = '';
-            if (isAntrianView && canDecide) {
-              if (t.status === 'Menunggu Verifikasi Atasan') {
-                extraAntrianBtns = `
+    let extraAntrianBtns = '';
+    if (isAntrianView && canDecide) {
+      if (t.status === 'Menunggu Verifikasi Atasan') {
+        extraAntrianBtns = `
                   ${t.arrivalProofPhoto ? `
                     <button type="button" class="btn-pill-action btn-pill-detail" onclick="event.stopPropagation(); if(typeof window.viewArrivalProofPhoto==='function') window.viewArrivalProofPhoto('${t.id}')" title="Lihat Foto Bukti Kedatangan">
                       <span>📷 Foto</span>
@@ -1093,8 +1093,8 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                     ✓ Sudah Tiba
                   </button>
                 `;
-              } else if (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan') {
-                extraAntrianBtns = `
+      } else if (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan') {
+        extraAntrianBtns = `
                   <button type="button" class="btn-reject" style="padding: 0.34rem 0.65rem; font-size: 0.74rem; font-weight: 700; border-radius: 6px; cursor: pointer;" onclick="event.stopPropagation(); openRejectExtensionModal('${t.id}')">
                     ✕ Tolak Perpanjang
                   </button>
@@ -1102,8 +1102,8 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                     ✓ Setujui Perpanjang
                   </button>
                 `;
-              } else if (isEmergDeciding) {
-                extraAntrianBtns = t.selectedMethod === 'facescan' ? `
+      } else if (isEmergDeciding) {
+        extraAntrianBtns = t.selectedMethod === 'facescan' ? `
                   <span style="font-size: 0.72rem; color: #7e22ce; background: #faf5ff; border: 1px solid #e9d5ff; padding: 0.28rem 0.55rem; border-radius: 6px; font-weight: 700;">🤳 Scan Wajah (Menunggu)</span>
                 ` : `
                   <button type="button" class="btn-reject" style="padding: 0.34rem 0.65rem; font-size: 0.74rem; font-weight: 700; border-radius: 6px; cursor: pointer;" onclick="event.stopPropagation(); openRejectModal('${t.id}')">
@@ -1113,8 +1113,8 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                     ✓ Setujui
                   </button>
                 `;
-              } else if (isPending) {
-                extraAntrianBtns = `
+      } else if (isPending) {
+        extraAntrianBtns = `
                   <button type="button" class="btn-reject" style="padding: 0.34rem 0.65rem; font-size: 0.74rem; font-weight: 700; border-radius: 6px; cursor: pointer;" onclick="event.stopPropagation(); openRejectModal('${t.id}')">
                     ✕ Tolak
                   </button>
@@ -1122,10 +1122,10 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                     ✓ Setujui
                   </button>
                 `;
-              }
-            }
+      }
+    }
 
-            let tindakanHtml = `
+    let tindakanHtml = `
               <div style="display: flex; justify-content: center; align-items: center; gap: 0.35rem;">
                 ${extraAntrianBtns}
                 <button type="button" class="btn-action-more-dots" onclick="event.stopPropagation(); window.toggleRowActionDropdown(this, 'approver', '${t.id}', ${isRiwayatView})" title="Opsi Tindakan #${t.id}" aria-label="Opsi Tindakan">
@@ -1138,9 +1138,9 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
               </div>
             `;
 
-            const isRowSelected = Boolean(isSelectActive && appSelState.selected.has(t.id));
+    const isRowSelected = Boolean(isSelectActive && appSelState.selected.has(t.id));
 
-            return `
+    return `
               <tr class="${isRowSelected ? 'riwayat-card-selected ' : ''}${isSelectActive ? 'riwayat-select-active-item' : ''}" data-select-role="approver" data-ticket-id="${t.id}" onclick="${isRiwayatView ? `window.handleRiwayatItemClick('approver', '${t.id}', event)` : ''}">
                 ${isSelectActive ? `<td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="riwayat-select-checkbox" ${isRowSelected ? 'checked' : ''} onchange="window.toggleRiwayatTicketSelection('approver', '${t.id}', this.checked)" onclick="event.stopPropagation()"></td>` : ''}
                 <td style="vertical-align: middle;">
@@ -1148,9 +1148,9 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                     <span style="font-weight: 700; font-family: var(--font-mono); color: var(--text-primary); font-size: 0.8rem; white-space: nowrap;">${t.id}</span>
                     ${isEmergency ? `<span style="font-size: 0.68rem; font-weight: 800; color: #be123c; background: #ffe4e6; padding: 1px 6px; border-radius: 4px; border: 1px solid #fecdd3; letter-spacing: 0.2px;">🚨 Darurat</span>` : ''}
                     ${isGroupDinas ? (() => {
-                      const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
-                      return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
-                    })() : ''}
+        const groupCount = (t.initiatorCancelled ? 0 : 1) + (Array.isArray(t.members) ? t.members.filter(m => m.status !== 'batal').length : (t.memberCount || 2));
+        return `<span style="font-size: 0.68rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; border: 1px solid #bae6fd; letter-spacing: 0.2px;" title="Tim Dinas (${groupCount} Orang)">👥 Tim (${groupCount})</span>`;
+      })() : ''}
                   </div>
                   <div style="font-size: 0.725rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35;">
                     <div>${displayCategory}</div>
@@ -1176,7 +1176,7 @@ function renderApproverTable(list, containerElement, isReadOnlyMonitoring = fals
                 <td style="white-space: nowrap; vertical-align: middle; text-align: center;">${tindakanHtml}</td>
               </tr>
             `;
-          }).join('')}
+  }).join('')}
         </tbody>
       </table>
     </div>
@@ -1208,8 +1208,8 @@ function renderApproverView() {
   // 2. ANTRIAN PERSETUJUAN (Termasuk Tiket Darurat Terkunci)
   if (currentApproverNav === 'antrian') {
     const isEmgTicket = (t) => Boolean(
-      t.isEmergency || 
-      (t.id && (t.id.includes('-EMG-') || t.id.startsWith('TK-EMG'))) || 
+      t.isEmergency ||
+      (t.id && (t.id.includes('-EMG-') || t.id.startsWith('TK-EMG'))) ||
       t.status === 'Menunggu Otorisasi Darurat'
     );
 
@@ -1230,15 +1230,15 @@ function renderApproverView() {
     };
 
     // 1. Pengajuan tertunda yang ditujukan ke atasan aktif saat ini
-    const pendingListAll = ticketsList.filter(t => 
+    const pendingListAll = ticketsList.filter(t =>
       t.status !== 'Dibatalkan' &&
       t.status !== 'Ditolak' &&
       t.status !== 'Selesai' &&
       isTicketAssignedToCurrentApprover(t) &&
-      (t.status === 'Menunggu Persetujuan' || 
-       t.status === 'Menunggu Otorisasi Darurat' || 
-       t.status === 'Menunggu Verifikasi Atasan' || 
-       (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))
+      (t.status === 'Menunggu Persetujuan' ||
+        t.status === 'Menunggu Otorisasi Darurat' ||
+        t.status === 'Menunggu Verifikasi Atasan' ||
+        (t.pendingExtension && t.pendingExtension.status === 'Menunggu Persetujuan'))
     );
     pendingListAll.sort(priorityEmergencyComparator);
 
@@ -1402,8 +1402,8 @@ function renderApproverView() {
   // 3. PELACAKAN IZIN KARYAWAN (HANYA IZIN AKTIF / BERJALAN)
   if (currentApproverNav === 'pelacakan' || currentApproverNav === 'tim') {
     const activeStatuses = ['Sedang di Luar', 'Terlambat', 'Disetujui', 'Menunggu Verifikasi Atasan', 'Menunggu Bukti Kedatangan'];
-    let list = ticketsList.filter(t => 
-      !isDeletedByCurrentApprover(t) && 
+    let list = ticketsList.filter(t =>
+      !isDeletedByCurrentApprover(t) &&
       isTicketUnderMySupervision(t) &&
       activeStatuses.includes(t.status)
     );
@@ -1416,7 +1416,7 @@ function renderApproverView() {
       if (matcher) {
         list = list.filter(t => matcher(searchVal, t.id, t.applicantName, t.applicantNip, t.destination, t.reason, t.department, t.approverName, t.category, t.type));
       } else {
-        list = list.filter(t => 
+        list = list.filter(t =>
           (t.id && t.id.toLowerCase().includes(searchVal)) ||
           (t.applicantName && t.applicantName.toLowerCase().includes(searchVal)) ||
           (t.applicantNip && t.applicantNip.toLowerCase().includes(searchVal)) ||
@@ -1541,7 +1541,7 @@ function renderApproverView() {
       if (matcher) {
         list = list.filter(t => matcher(searchVal, t.id, t.applicantName, t.applicantNip, t.destination, t.reason, t.department, t.approverName, t.category, t.type));
       } else {
-        list = list.filter(t => 
+        list = list.filter(t =>
           (t.id && t.id.toLowerCase().includes(searchVal)) ||
           (t.applicantName && t.applicantName.toLowerCase().includes(searchVal)) ||
           (t.applicantNip && t.applicantNip.toLowerCase().includes(searchVal)) ||
@@ -1791,7 +1791,7 @@ function confirmApproveDecision() {
 
     if (ticket.isGroupDinas && Array.isArray(ticket.members)) {
       const activeMembers = ticket.members.filter(m => m.status !== 'batal');
-      
+
       // 1. Notifikasi ke masing-masing anggota aktif
       activeMembers.forEach(m => {
         window.createNotification({
@@ -1877,7 +1877,7 @@ function confirmApproveDecision() {
       });
     }
   }
-  
+
   const modalApproveDecision = document.getElementById('modalApproveDecision');
   if (modalApproveDecision) modalApproveDecision.classList.remove('open');
 
@@ -1885,7 +1885,7 @@ function confirmApproveDecision() {
   if (chkDontShowApprove && chkDontShowApprove.checked) {
     try { sessionStorage.setItem('kujang_skip_confirm_approve', 'true'); } catch (e) { }
   }
-  
+
   const modalTicketDetail = document.getElementById('modalTicketDetail');
   if (modalTicketDetail) modalTicketDetail.classList.remove('open');
 
@@ -2477,7 +2477,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // ATASAN RETURN / ARRIVAL VERIFICATION
 // ==========================================
-window.confirmArrivalByApprover = function(ticketId) {
+window.confirmArrivalByApprover = function (ticketId) {
   const ticketsList = window.ticketsList || [];
   const t = ticketsList.find(x => x.id === ticketId);
   if (!t) return;
@@ -2499,7 +2499,7 @@ window.confirmArrivalByApprover = function(ticketId) {
       if (tapInD && estD && !isNaN(tapInD.getTime()) && !isNaN(estD.getTime())) {
         if (tapInD.getTime() > estD.getTime()) wasOverdue = true;
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 
   t.status = 'Selesai';
@@ -2569,7 +2569,7 @@ function formatArrivalRealtimeWib(dateObj) {
   return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}, ${pad(d.getHours())}.${pad(d.getMinutes())}.${pad(d.getSeconds())} WIB`;
 }
 
-window.rejectArrivalByApprover = function(ticketId) {
+window.rejectArrivalByApprover = function (ticketId) {
   const ticketsList = window.ticketsList || [];
   const t = ticketsList.find(x => x.id === ticketId);
   if (!t) return;
@@ -2594,13 +2594,13 @@ window.rejectArrivalByApprover = function(ticketId) {
   setTimeout(() => { if (inputEl) inputEl.focus(); }, 60);
 };
 
-window.closeRejectArrivalReasonModal = function() {
+window.closeRejectArrivalReasonModal = function () {
   const modal = document.getElementById('modalRejectArrivalReason');
   if (modal) modal.classList.remove('open');
   window._pendingRejectArrivalTicketId = null;
 };
 
-window.submitRejectArrivalReason = function() {
+window.submitRejectArrivalReason = function () {
   const ticketId = window._pendingRejectArrivalTicketId;
   if (!ticketId) return;
 
