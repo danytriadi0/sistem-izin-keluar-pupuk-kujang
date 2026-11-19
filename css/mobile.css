@@ -2041,10 +2041,33 @@ body.theme-dark .mobile-scanner-idle .mobile-scanner-btn-upload {
   border-style: solid;
 }
 
-.mobile-scanner-corner.tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 14px; }
-.mobile-scanner-corner.tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 14px; }
-.mobile-scanner-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 14px; }
-.mobile-scanner-corner.br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 14px; }
+.mobile-scanner-corner.tl {
+  top: -2px;
+  left: -2px;
+  border-width: 4px 0 0 4px;
+  border-top-left-radius: 14px;
+}
+
+.mobile-scanner-corner.tr {
+  top: -2px;
+  right: -2px;
+  border-width: 4px 4px 0 0;
+  border-top-right-radius: 14px;
+}
+
+.mobile-scanner-corner.bl {
+  bottom: -2px;
+  left: -2px;
+  border-width: 0 0 4px 4px;
+  border-bottom-left-radius: 14px;
+}
+
+.mobile-scanner-corner.br {
+  bottom: -2px;
+  right: -2px;
+  border-width: 0 4px 4px 0;
+  border-bottom-right-radius: 14px;
+}
 
 .mobile-scanner-laser {
   position: absolute;
@@ -2057,8 +2080,13 @@ body.theme-dark .mobile-scanner-idle .mobile-scanner-btn-upload {
 }
 
 @keyframes mobileLaserScan {
-  0% { top: 8px; }
-  100% { top: 190px; }
+  0% {
+    top: 8px;
+  }
+
+  100% {
+    top: 190px;
+  }
 }
 
 /* ===================================================================
@@ -2611,6 +2639,7 @@ body.theme-dark #mobileAppContainer .mobile-filter-reset-btn {
   border-color: #059669 !important;
   color: #ffffff !important;
 }
+
 /* ===================================================================
    18. COMPREHENSIVE EDITORIAL DARK THEME FOR MOBILE APP
    =================================================================== */
@@ -3187,8 +3216,13 @@ body.theme-dark .mobile-user-avatar,
 
 /* 2. Loading Spinner Minimalis Pupuk Kujang */
 @keyframes mobileSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .mobile-spinner {
@@ -3210,8 +3244,13 @@ body.theme-dark .mobile-user-avatar,
 
 /* 3. Skeleton Loading Shimmer Halus */
 @keyframes mobileShimmerSweep {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .mobile-skeleton {
@@ -3312,26 +3351,32 @@ body.theme-dark .mobile-notif-icon-box.read,
   background: #ffffff;
   transition: background 0.15s ease;
 }
+
 .mobile-sheet .dropdown-notif-item:active {
   background: #f1f5f9 !important;
 }
+
 body.theme-dark .mobile-sheet .dropdown-notif-item,
 .theme-dark .mobile-sheet .dropdown-notif-item {
   background: #111622 !important;
   border-bottom-color: #1e2c42 !important;
 }
+
 body.theme-dark .mobile-sheet .dropdown-notif-item:active,
 .theme-dark .mobile-sheet .dropdown-notif-item:active {
   background: #162032 !important;
 }
+
 body.theme-dark .mobile-sheet .dropdown-notif-title,
 .theme-dark .mobile-sheet .dropdown-notif-title {
   color: #f8fafc !important;
 }
+
 body.theme-dark .mobile-sheet .dropdown-notif-msg,
 .theme-dark .mobile-sheet .dropdown-notif-msg {
   color: #94a3b8 !important;
 }
+
 body.theme-dark .mobile-sheet .dropdown-notif-meta,
 .theme-dark .mobile-sheet .dropdown-notif-meta {
   color: #64748b !important;
@@ -3341,11 +3386,13 @@ body.theme-dark .mobile-sheet .dropdown-notif-meta,
 .mobile-notif-row-delete-btn {
   transition: all 0.15s ease;
 }
+
 .mobile-notif-row-delete-btn:hover,
 .mobile-notif-row-delete-btn:active {
   color: #ef4444 !important;
   background: #fee2e2 !important;
 }
+
 body.theme-dark .mobile-notif-row-delete-btn:hover,
 .theme-dark .mobile-notif-row-delete-btn:hover,
 body.theme-dark .mobile-notif-row-delete-btn:active,
@@ -3381,16 +3428,16 @@ body.theme-dark .mobile-notif-dropdown,
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
 }
 
-body.theme-dark .mobile-notif-dropdown > div:first-child {
+body.theme-dark .mobile-notif-dropdown>div:first-child {
   background: #1e293b !important;
   border-bottom-color: #334155 !important;
 }
 
-body.theme-dark .mobile-notif-dropdown > div:first-child span {
+body.theme-dark .mobile-notif-dropdown>div:first-child span {
   color: #f8fafc !important;
 }
 
-body.theme-dark .mobile-notif-dropdown > div:last-child {
+body.theme-dark .mobile-notif-dropdown>div:last-child {
   background: #0f172a !important;
   border-top-color: #334155 !important;
 }
@@ -3429,7 +3476,8 @@ body.theme-dark .mobile-btn-export-csv,
 #mobileAppContainer .mobile-filter-date,
 .mobile-approver-search-input,
 .mobile-approver-input-box input {
-  font-size: 0.725rem !important; /* 11.6px */
+  font-size: 0.725rem !important;
+  /* 11.6px */
   line-height: 1.35 !important;
 }
 
@@ -3439,7 +3487,8 @@ body.theme-dark .mobile-btn-export-csv,
 #mobileAppContainer .mobile-search-input::placeholder,
 .mobile-approver-search-input::placeholder,
 .mobile-approver-input-box input::placeholder {
-  font-size: 0.725rem !important; /* 11.6px */
+  font-size: 0.725rem !important;
+  /* 11.6px */
   color: #94a3b8 !important;
 }
 
@@ -3453,8 +3502,8 @@ body.theme-dark .mobile-btn-export-csv,
    ------------------------------------------------------------------- */
 body.theme-dark .mobile-form-label,
 body.theme-dark #mobileCreatePermitForm label,
-body.theme-dark .mobile-form-group > label,
-body.theme-dark .mobile-form-group > div > label,
+body.theme-dark .mobile-form-group>label,
+body.theme-dark .mobile-form-group>div>label,
 body.theme-dark .mobile-form-group label,
 body.theme-dark #mGroupDinasWrapper label,
 body.theme-dark .mobile-card label {
@@ -3481,7 +3530,7 @@ body.theme-dark .mobile-file-upload-card {
   border-color: #334155 !important;
 }
 
-body.theme-dark .mobile-file-upload-card > div:first-child {
+body.theme-dark .mobile-file-upload-card>div:first-child {
   color: #f8fafc !important;
 }
 
