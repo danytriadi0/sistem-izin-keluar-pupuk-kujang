@@ -1128,7 +1128,6 @@ function renderRoleDropdownContent(category) {
           <div class="role-dropdown-item-name">${acc.name}</div>
           <div class="role-dropdown-item-sub">${acc.fullTitle || ''}</div>
         </div>
-        ${isActive ? '<span class="role-dropdown-check">✓</span>' : ''}
       </div>
     `;
   }).join('');

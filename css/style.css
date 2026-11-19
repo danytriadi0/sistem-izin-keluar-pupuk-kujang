@@ -2783,13 +2783,13 @@ body {
 }
 
 .role-dropdown-item.active {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
+  background: transparent;
+  border-color: transparent;
 }
 
 body.theme-dark .role-dropdown-item.active {
-  background: rgba(5, 150, 105, 0.2);
-  border-color: rgba(5, 150, 105, 0.4);
+  background: transparent;
+  border-color: transparent;
 }
 
 .role-dropdown-item-info {
