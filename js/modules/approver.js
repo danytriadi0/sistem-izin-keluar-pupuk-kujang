@@ -827,15 +827,30 @@ function renderApproverCards(list, containerElement, isTracking = false) {
 
             ${isRiwayatView ? `
               <!-- Realization Summary Row (Scan Out, Tap In, & Catatan Atasan) -->
-              <div class="card-realization-box" style="background-color:   #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
-                ${t.scanOutTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Scan Out:</strong> ${t.scanOutTime}</div>` : ''}
-                ${t.scanInTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Tap In:</strong> ${t.scanInTime}</div>` : ''}
-                ${t.approverNote ? `<div style="color: var(--text-secondary, #475569); line-height: 1.35;"><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>` : ''}
+              <div class="card-realization-box" style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
+                ${t.scanOutTime ? `
+                  <div class="card-realization-row">
+                    <span class="card-realization-label"><strong>Scan Out</strong><span>:</span></span>
+                    <span class="card-realization-val" style="color: var(--text-secondary, #475569);">${t.scanOutTime}</span>
+                  </div>` : ''}
+                ${t.scanInTime ? `
+                  <div class="card-realization-row">
+                    <span class="card-realization-label"><strong>Tap In</strong><span>:</span></span>
+                    <span class="card-realization-val" style="color: var(--text-secondary, #475569);">${t.scanInTime}</span>
+                  </div>` : ''}
+                ${t.approverNote ? `
+                  <div class="card-realization-row">
+                    <span class="card-realization-label"><strong>Catatan Keputusan</strong><span>:</span></span>
+                    <span class="card-realization-val" style="color: var(--text-secondary, #475569); line-height: 1.35;">"${t.approverNote}"</span>
+                  </div>` : ''}
                 ${(!t.scanOutTime && !t.scanInTime && !t.approverNote) ? `<div style="color: var(--text-muted);">Belum ada catatan pemindaian gerbang</div>` : ''}
               </div>
             ` : (t.approverNote ? `
-              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); back border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.75rem; flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0.5rem;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
-                <div><strong>Catatan Keputusan:</strong> "${t.approverNote}"</div>
+              <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.75rem; flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 0.5rem;" title="Catatan Keputusan: ${(t.approverNote || '').replace(/"/g, '&quot;')}">
+                <div class="card-realization-row">
+                  <span class="card-realization-label"><strong>Catatan Keputusan</strong><span>:</span></span>
+                  <span class="card-realization-val">"${t.approverNote}"</span>
+                </div>
               </div>
             ` : '')}
 

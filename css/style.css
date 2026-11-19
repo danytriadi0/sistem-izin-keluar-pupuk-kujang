@@ -3883,17 +3883,43 @@ body.theme-dark .role-dropdown-item.active {
   justify-content: center !important;
 }
 
+.card-realization-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.45rem;
+  align-items: baseline;
+  line-height: 1.4;
+}
+
+.card-realization-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.card-realization-label strong {
+  font-weight: 700;
+}
+
+.card-realization-val {
+  min-width: 0;
+  word-break: break-word;
+}
+
 body.theme-dark .card-realization-box {
   background: #141c2c !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   color: #f1f5f9 !important;
 }
 
-body.theme-dark .card-realization-box strong {
+body.theme-dark .card-realization-box strong,
+body.theme-dark .card-realization-label strong {
   color: #f8fafc !important;
 }
 
-body.theme-dark .card-realization-box div {
+body.theme-dark .card-realization-box div,
+body.theme-dark .card-realization-val {
   color: #cbd5e1 !important;
 }
 

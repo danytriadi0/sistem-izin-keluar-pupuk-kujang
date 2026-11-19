@@ -572,11 +572,19 @@ function renderSecurityCards(list, containerElement, isHistoryMode = false) {
 
               <!-- Realization Summary Row (Scan Out & Tap In) -->
               <div class="card-realization-box" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.725rem; display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; flex: 1; min-height: 52px; justify-content: center;">
-                ${t.scanOutTime ? `<div style="color: var(--text-secondary, #475569);"><strong>Scan Out:</strong> ${t.scanOutTime}</div>` : ''}
+                ${t.scanOutTime ? `
+                  <div class="card-realization-row">
+                    <span class="card-realization-label"><strong>Scan Out</strong><span>:</span></span>
+                    <span class="card-realization-val" style="color: var(--text-secondary, #475569);">${t.scanOutTime}</span>
+                  </div>` : ''}
                 ${t.scanInTime ? (() => {
                   const cleanScanIn = t.scanInTime.replace(/\s*\[Terlambat\]/gi, '').trim();
                   const lateDuration = typeof window.formatLateDurationFull === 'function' ? window.formatLateDurationFull(t.lateMinutes || 10) : `${t.lateMinutes || 10} menit`;
-                  return `<div style="color: var(--text-secondary, #475569); font-weight: ${isLateCompleted ? '600' : 'normal'};"><strong>Tap In:</strong> ${cleanScanIn}${isLateCompleted ? ` <span>[Terlambat ${lateDuration}]</span>` : ''}</div>`;
+                  return `
+                    <div class="card-realization-row">
+                      <span class="card-realization-label"><strong>Tap In</strong><span>:</span></span>
+                      <span class="card-realization-val" style="color: var(--text-secondary, #475569); font-weight: ${isLateCompleted ? '600' : 'normal'};">${cleanScanIn}${isLateCompleted ? ` <span>[Terlambat ${lateDuration}]</span>` : ''}</span>
+                    </div>`;
                 })() : ''}
                 ${(!t.scanOutTime && !t.scanInTime) ? `<div style="color: var(--text-muted);">Belum ada catatan pemindaian gerbang</div>` : ''}
               </div>
